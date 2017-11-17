@@ -902,7 +902,7 @@ function GameViewLayer:setListeningCard(cbCardData)
 	end
 	assert(type(cbCardData) == "table")
 	self.spListenBg:removeAllChildren()
-	self.spListenBg:setVisible(true)
+	--self.spListenBg:setVisible(true)
 
 	local cbCardCount = #cbCardData
 	local bTooMany = (cbCardCount >= 16)
