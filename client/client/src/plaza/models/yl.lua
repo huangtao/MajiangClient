@@ -45,7 +45,7 @@ yl.SHOW_IP_ADDRESS                      = true
 -- 是否单游戏模式(游戏列表数目为1生效)
 yl.SINGLE_GAME_MODOLE                   = true
 -- 是否自动登录
-yl.AUTO_LOGIN                           = true
+yl.AUTO_LOGIN                           = false
 
 yl.DOWN_PRO_INFO						= 1
 yl.DOWN_UNZIP_STATUS					= 2

@@ -44,8 +44,8 @@ function CardLayer:onInitData()
 	self.cbListenList = {}
 	self.bWin = false
 	self.currentOutCard = 0
-	self.nTableTailCardTag = 112
-	self.nRemainCardNum = 112
+	self.nTableTailCardTag = cmd.MAX_REPERTORY
+	self.nRemainCardNum = cmd.MAX_REPERTORY
 	self.posTemp = cc.p(0, 0)
 	self.nZOrderTemp = 0
 	self.nMovingIndex = 0
@@ -94,8 +94,8 @@ function CardLayer:onResetData()
 	self.cbListenList = {}
 	self.bWin = false
 	self.currentOutCard = 0
-	self.nTableTailCardTag = 112
-	self.nRemainCardNum = 112
+	self.nTableTailCardTag = cmd.MAX_REPERTORY
+	self.nRemainCardNum = cmd.MAX_REPERTORY
 	self.posTemp = cc.p(0, 0)
 	self:promptListenOutCard(nil)
 	self.bSpreadCardEnabled = false

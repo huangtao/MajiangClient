@@ -111,7 +111,7 @@ function GameViewLayer:onResetData()
 		--self.nodePlayer[i]:getChildByTag(6):setVisible(false)
 		self.nodePlayer[i]:getChildByTag(GameViewLayer.SP_BANKER):setVisible(false)
 	end
-	self:setRemainCardNum(112)
+	self:setRemainCardNum(cmd.MAX_REPERTORY)
 	self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS):setEnabled(true):setColor(cc.c3b(255, 255, 255))
 end
 
