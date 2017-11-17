@@ -12,6 +12,14 @@
 client.config
 client.luaproj
 
+/log/
+/saverec/
+/friend/
+/downrec/
+
 /client/version.plist
+/client/UserDefault.xml
+/client/user_gameconfig.plist
+
 
 

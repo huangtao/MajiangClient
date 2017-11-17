@@ -12,7 +12,7 @@ local ClientConfig = appdf.req(appdf.BASE_SRC .."app.models.ClientConfig")
 
 --local URL_REQUEST = " " --@http_url
 --local URL_REQUEST = " " --@http_url
-local URL_REQUEST = " " --@http_url
+local URL_REQUEST = "http://47.94.252.125:8081" --@http_url
 
 local EXTRA_CMD_KEY = "extra_command_version"
 --全局toast函数(ios/android端调用)
