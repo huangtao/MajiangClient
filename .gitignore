@@ -1,0 +1,17 @@
+.gradle
+.DS_Store
+/__*
+
+
+/info/
+/obj/
+/run/
+/cocostudio/
+/frameworks/
+
+client.config
+client.luaproj
+
+/client/version.plist
+
+
