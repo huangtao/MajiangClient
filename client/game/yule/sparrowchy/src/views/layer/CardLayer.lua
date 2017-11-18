@@ -177,7 +177,8 @@ function CardLayer:createHandCard()
 				local cardData = GameLogic.MAGIC_DATA
 				local nValue = math.mod(cardData, 16)
 				local nColor = math.floor(cardData/16)
-				local strFile = cmd.RES_PATH.."game/font_big/font_"..nColor.."_"..nValue..".png"
+				--local strFile = cmd.RES_PATH.."game/font_big/font_"..nColor.."_"..nValue..".png"
+                local strFile = cmd.RES_PATH.."game/font_big/card_back.png"
 				local font = display.newSprite(strFile)
 					:move(width/2, height/2 - 15)
 					:setTag(1)
@@ -905,8 +906,6 @@ end
 
 function CardLayer:promptListeningCard(cardData)
 	--assert(#self.cbListenList > 0)
-    print("CardLayer:promptListeningCard(cardData) -- for the TEST")
-    dump(cardData)
 	if nil == cardData then
 		assert(self.currentOutCard > 0)
 		cardData = self.currentOutCard

@@ -38,6 +38,10 @@ function GameLayer:OnInitGameEngine()
 	self.lDetailScore = {}
 	self.m_userRecord = {}
 	self.cbMaCount = 0
+
+    self.cbEnabledHuiPai = false
+    self.cbEnabledBaoPai = false
+    self.cbMagicIndex = 0xff
 	--房卡需要
 	self.wRoomHostViewId = 0
 	print("Hello Hello!")
@@ -283,12 +287,8 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_StatusPlay, dataBuffer)
 		--dump(cmd_data.cbHuCardData, "cbHuCardData")
 		--dump(cmd_data.cbOutCardDataEx, "cbOutCardDataEx")
-
-        ---- show components
-        print("----------------- 游戏状态 ------ for the TEST -----") 
-        self._gameView:setShowHide(true)  
-        self._gameView:controlHuiPai(true,8)
-        self.Flag_StartFrom_onGameStatus=true
+        dump(cmd_data, "CMD_S_StatusPlay", 6)
+        
 
 		self.lCellScore = cmd_data.lCellScore
 		self.cbTimeOutCard = cmd_data.cbTimeOutCard
@@ -413,6 +413,15 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		if self.wCurrentUser == wMyChairId then
 			self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
 		end
+
+        ---- show components
+        self._gameView:setShowHide(true)
+        if self.cbEnabledHuiPai then
+            self._gameView:controlHuiPai(true,GameLogic.MAGIC_DATA)
+        end  
+        if self.cbEnabledBaoPai then
+            self._gameView:controlBaoPai(true)
+        end
 	else
 		print("\ndefault\n")
 		return false
@@ -468,7 +477,7 @@ function GameLayer:onSubGameStart(dataBuffer)
 	print("游戏开始")
     self.m_cbGameStatus = cmd.GAME_SCENE_PLAY
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_GameStart, dataBuffer)
-	--dump(cmd_data, "CMD_S_GameStart")
+	dump(cmd_data, "CMD_S_GameStart",6)
 
 	for i = 1, cmd.GAME_PLAYER do
 		local viewId = self:SwitchViewChairID(i - 1)
@@ -497,6 +506,15 @@ function GameLayer:onSubGameStart(dataBuffer)
 		cmd_data.cbCardData[1][cmd.MAX_COUNT] = nil
 	end
 	
+    self.cbMagicIndex = cmd_data.cbMagicIndex + 1
+    if self.cbMagicIndex >= 1 and self.cbMagicIndex <= 34 then
+        GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
+        self.cbEnabledHuiPai = true
+    end
+    if self.cbMagicIndex > 20 then
+        self.cbEnabledBaoPai = true
+    end
+    
 	--筛子
 	local cbSiceCount1 = math.mod(cmd_data.wSiceCount, 256)
 	local cbSiceCount2 = math.floor(cmd_data.wSiceCount/256)
@@ -527,6 +545,24 @@ function GameLayer:onSubGameStart(dataBuffer)
     --计时器
 	self:SetGameClock(self.wCurrentUser, cmd.IDI_OUT_CARD, self.cbTimeOutCard)
 	return true
+end
+
+function GameLayer:getShowingData(magicData)
+    local data = 0xff
+    if magicData == 0x01 then
+        data = 0x09
+    elseif magicData == 0x11 then
+        data = 0x19
+    elseif magicData == 0x21 then
+        data = 0x29 
+    elseif magicData == 0x31 then
+        data = 0x34
+    elseif magicData == 0x35 then 
+        data = 0x37 
+    else
+        data = magicData - 1 
+    end
+    return data
 end
 
 --用户出牌

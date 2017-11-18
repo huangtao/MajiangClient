@@ -241,8 +241,10 @@ function GameViewLayer:ctor(scene)
     self.card_HuiPai=self:getChildByName("card_HuiPai")
     self.card_BaoPai=self:getChildByName("card_BaoPai")
     -- hide components 
+    print("-------------------------- GameViewLayer:ctor(scene) ------------------")
     self:setShowHide(false)
     self:controlHuiPai(false,0)
+    self:controlBaoPai(false)
 end
 
 -- show and hide components (new inserted)
@@ -264,11 +266,11 @@ function GameViewLayer:controlHuiPai(flag, data)
 	    local nColor = math.floor(data/16)
         s_width=60
         s_height=80
+        self.card_HuiPai:removeAllChildren()
         display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
 				    :move(s_width/2, s_height/2 + 8)
 				    :addTo(self.card_HuiPai)
     end
-    self:controlBaoPai(flag)
 end
 
 function GameViewLayer:controlBaoPai(flag)
@@ -600,6 +602,10 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		print("红中麻将开始！")
 		self.btStart:setVisible(false)
 		self:showTableBt(false)
+         -- hide components 
+        self:setShowHide(false)
+        self:controlHuiPai(false,0)
+        self:controlBaoPai(false)
 		self._scene:sendGameStart()
 	elseif tag == GameViewLayer.BT_SWITCH then
 		print("按钮开关")
@@ -699,26 +705,28 @@ end
 --开始
 function GameViewLayer:gameStart(startViewId, wHeapHead, cbCardData, cbCardCount, cbSiceCount1, cbSiceCount2)
     -- display HuiPai and sendCard
-    data=9
-    local display_Hui_card = display.newSprite("#card_round_middle_up.png")
-                    :setPosition(667,375)
-					:addTo(self)
-    width=80
-    height=116
-    local nValue = math.mod(data, 16)
-	local nColor = math.floor(data/16)
-	local hui_num=display.newSprite("game/font_big/font_"..nColor.."_"..nValue..".png")
-		:move(width/2+8, height/2 + 20)
-		:addTo(display_Hui_card)
-    scaleTo=cc.ScaleTo:create(1,1.9)
-    fadeOut = cc.FadeOut:create(1.0)
-    this=display_Hui_card
-    display_Hui_card:runAction(cc.Sequence:create(scaleTo, fadeOut, cc.CallFunc:create(function()
-					this:removeSelf()
-                    self._cardLayer:sendCard(cbCardData, cbCardCount)
-				end)
-			))
-
+    if self._scene.cbEnabledHuiPai then 
+        local display_Hui_card = display.newSprite("#card_round_middle_up.png")
+                        :setPosition(667,375)
+					    :addTo(self)
+        width=80
+        height=116
+        local nValue = math.mod(self._scene:getShowingData(GameLogic.MAGIC_DATA), 16)
+	    local nColor = math.floor(self._scene:getShowingData(GameLogic.MAGIC_DATA)/16)
+	    local hui_num=display.newSprite("game/font_big/font_"..nColor.."_"..nValue..".png")
+		    :move(width/2+8, height/2 + 20)
+		    :addTo(display_Hui_card)
+        scaleTo=cc.ScaleTo:create(1,1.9)
+        fadeOut = cc.FadeOut:create(1.0)
+        this=display_Hui_card
+        display_Hui_card:runAction(cc.Sequence:create(scaleTo, fadeOut, cc.CallFunc:create(function()
+					    this:removeSelf()
+                        self._cardLayer:sendCard(cbCardData, cbCardCount)
+				    end)
+			    ))
+    else 
+        self._cardLayer:sendCard(cbCardData, cbCardCount)
+    end
 	--self:runSiceAnimate(cbSiceCount1, cbSiceCount2, function()
 		--self._cardLayer:sendCard(cbCardData, cbCardCount)
 	--end)
@@ -797,9 +805,13 @@ function GameViewLayer:sendCardFinish()
 	end	
 	self._scene:sendCardFinish()
     -- show components
-    print("-------------- GameViewLayer:sendCardFinish() --- for the TEST -----")
     self:setShowHide(true)
-    self:controlHuiPai(true,8)
+    if self._scene.cbEnabledHuiPai then
+        self:controlHuiPai(true,self._scene:getShowingData(GameLogic.MAGIC_DATA))
+    end
+    if self._scene.cbEnabledBaoPai then
+        self:controlBaoPai(true)
+    end
 end
 
 function GameViewLayer:gameConclude()

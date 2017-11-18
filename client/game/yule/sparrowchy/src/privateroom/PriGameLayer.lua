@@ -194,15 +194,8 @@ function PriGameLayer:onRefreshInfo()
 end
 
 function PriGameLayer:onRefreshInviteBtn()
-    print("invite .. ")
+    print("invite ..")
     print(self._gameLayer.m_cbGameStatus)
-
-    -- hide HuiPai and BaoPai
-    if self._gameLayer.Flag_StartFrom_onGameStatus == false then
-        self._gameLayer._gameView:setShowHide(false)
-        self._gameLayer._gameView:controlHuiPai(false,0)
-    end 
-    self._gameLayer.Flag_StartFrom_onGameStatus = false
 
     if self._gameLayer.m_cbGameStatus ~= 0 then --不是空闲场景
         self.m_btnInvite:setVisible(false)
