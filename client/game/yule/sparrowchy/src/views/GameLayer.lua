@@ -294,7 +294,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
             GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
             self.cbEnabledHuiPai = true
         end
-        if self.cbMagicIndex > 20 then
+        if cmd_data.cbEnabled_BaoPai == 1 then 
             self.cbEnabledBaoPai = true
         end
 
@@ -519,7 +519,7 @@ function GameLayer:onSubGameStart(dataBuffer)
         GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
         self.cbEnabledHuiPai = true
     end
-    if self.cbMagicIndex > 20 then
+    if cmd_data.cbEnabled_BaoPai == 1 then 
         self.cbEnabledBaoPai = true
     end
     

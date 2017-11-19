@@ -77,6 +77,15 @@ cmd.CMD_S_StatusPlay =
 	{k = "wCurrentUser", t = "word"},							--当前用户
 	{k = "cbMagicIndex", t = "byte"},							--财神索引
 
+    {k = "cbInningsCount_cy", t = "byte"},
+    {k = "cbEnabled_DianPao", t = "byte"},
+    {k = "cbEnabled_FengGang", t = "byte"},
+    {k = "cbEnabled_HuiPai", t = "byte"},
+    {k = "cbEnabled_BaoPai", t = "byte"},
+    {k = "cbEnabled_ZhanLiHu", t = "byte"},
+    {k = "cbEnabled_JiaHu", t = "byte"},
+    {k = "cbEnabled_ChangMaoGang", t = "byte"},
+
 	{k = "cbPlayerCount", t = "byte"},
 	{k = "cbMaCount", t = "byte"},
 
@@ -131,10 +140,21 @@ cmd.CMD_S_GameStart =
 	{k = "wHeapHead", t = "word"},								--牌堆头部
 	{k = "wHeapTail", t = "word"},								--牌堆尾部
 	{k = "cbMagicIndex", t = "byte"},							--财神索引
+
+    {k = "cbInningsCount_cy", t = "byte"},
+    {k = "cbEnabled_DianPao", t = "byte"},
+    {k = "cbEnabled_FengGang", t = "byte"},
+    {k = "cbEnabled_HuiPai", t = "byte"},
+    {k = "cbEnabled_BaoPai", t = "byte"},
+    {k = "cbEnabled_ZhanLiHu", t = "byte"},
+    {k = "cbEnabled_JiaHu", t = "byte"},
+    {k = "cbEnabled_ChangMaoGang", t = "byte"},
+
 	{k = "cbHeapCardInfo", t = "byte", l = {2,2,2,2}},          --堆立信息
 	{k = "cbUserAction", t = "byte"},							--用户动作
 	{k = "cbCardData", t = "byte", l = {cmd.MAX_COUNT}},		--麻将列表
 }
+
 -- --机器人扑克
 -- cmd.CMD_S_AndroidCard = 
 -- {
