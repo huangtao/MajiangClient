@@ -241,7 +241,6 @@ function GameViewLayer:ctor(scene)
     self.card_HuiPai=self:getChildByName("card_HuiPai")
     self.card_BaoPai=self:getChildByName("card_BaoPai")
     -- hide components 
-    print("-------------------------- GameViewLayer:ctor(scene) ------------------")
     self:setShowHide(false)
     self:controlHuiPai(false,0)
     self:controlBaoPai(false)

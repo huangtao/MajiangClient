@@ -289,6 +289,14 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		--dump(cmd_data.cbOutCardDataEx, "cbOutCardDataEx")
         dump(cmd_data, "CMD_S_StatusPlay", 6)
         
+        self.cbMagicIndex = cmd_data.cbMagicIndex + 1
+        if self.cbMagicIndex >= 1 and self.cbMagicIndex <= 34 then
+            GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
+            self.cbEnabledHuiPai = true
+        end
+        if self.cbMagicIndex > 20 then
+            self.cbEnabledBaoPai = true
+        end
 
 		self.lCellScore = cmd_data.lCellScore
 		self.cbTimeOutCard = cmd_data.cbTimeOutCard
@@ -417,7 +425,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
         ---- show components
         self._gameView:setShowHide(true)
         if self.cbEnabledHuiPai then
-            self._gameView:controlHuiPai(true,GameLogic.MAGIC_DATA)
+            self._gameView:controlHuiPai(true,self:getShowingData(GameLogic.MAGIC_DATA))
         end  
         if self.cbEnabledBaoPai then
             self._gameView:controlBaoPai(true)
@@ -1041,7 +1049,7 @@ function GameLayer:insertAppearCard(cbCardData)
 	for i = 1, #self.cbAppearCardData do
 		str = str..string.format("%x,", self.cbAppearCardData[i])
 	end
-	--print("已出现的牌:", str)
+	print("已出现的牌:", str)
 end
 
 function GameLayer:getDetailScore()

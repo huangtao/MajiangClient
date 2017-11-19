@@ -187,7 +187,7 @@ function CardLayer:createHandCard()
 				--card:setTextureRect(cc.rect(0, 0, 69, 136))
 				if j == 1 then
 					local x, y = card:getPosition()
-					card:setPositionX(x + 20)						--每次抓的牌
+					card:setPositionX(x+40)						--每次抓的牌
 				end
 				--提示听牌的小标记
 				display.newSprite("#sp_listenPromptFlag.png")
@@ -328,7 +328,6 @@ function CardLayer:onTouchMoved(touch, event)
 			assert(false)
 		end
 		local index = nCount - self.nCurrentTouchCardTag + 1
-
 		self.cbCardStatus[index] = CardLayer.ENUM_CARD_MOVING
 		local card = self.nodeHandCard[cmd.MY_VIEWID]:getChildByTag(self.nCurrentTouchCardTag)
 		card:setPosition(posRelativeCard)
@@ -530,6 +529,7 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 
 	local HandCard = self.nodeHandCard[viewId]:getChildByTag(1)
 	HandCard:setVisible(true)
+    HandCard:removeChildByName("green_round")
 	self.cbCardCount[viewId] = self.cbCardCount[viewId] + 1
 	self.nRemainCardNum = self.nRemainCardNum - 1
 	self._scene:setRemainCardNum(self.nRemainCardNum)
@@ -537,6 +537,16 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 		table.insert(self.cbCardData, cardData)
 		--设置纹理
 		--local rectX = self:switchToCardRectX(cardData)
+        
+        -- set green round to HuiPai when pick a card --
+        if cardData == GameLogic.MAGIC_DATA then
+            local strFile = cmd.RES_PATH.."game/sp_round_big.png"
+			local font = display.newSprite(strFile)
+                :move(44,72)
+				:setName("green_round")
+				:addTo(HandCard)
+        end
+        
 		local nValue = math.mod(cardData, 16)
 		local nColor = math.floor(cardData/16)
 		local strFile = cmd.RES_PATH.."game/font_big/font_"..nColor.."_"..nValue..".png"
@@ -561,6 +571,7 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
 	for j = 1, cmd.MAX_COUNT do
 		self.nodeHandCard[viewId]:getChildByTag(j):setVisible(false)
 		self.nodeHandDownCard[viewId]:getChildByTag(j):setVisible(false)
+        self.nodeHandCard[viewId]:getChildByTag(j):removeChildByName("green_round")
 	end
 	--再显示
 	if self.cbCardCount[viewId] ~= 0 then
@@ -578,11 +589,21 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
 			card:setVisible(true)
 			if viewId == cmd.MY_VIEWID then
 				--local rectX = self:switchToCardRectX(self.cbCardData[j])
+                -- set green round at HuiPai --
+                if self.cbCardData[j] == GameLogic.MAGIC_DATA then
+                    print(j)
+                    print(self.cbCardData[j])
+                    local strFile = cmd.RES_PATH.."game/sp_round_big.png"
+				    local font = display.newSprite(strFile)
+                        :move(44,72)
+					    :setName("green_round")
+					    :addTo(card)
+                end
 
 				local cardFont = card:getChildByTag(CardLayer.TAG_CARD_FONT)
 				local nValue = math.mod(self.cbCardData[j], 16)
 				local nColor = math.floor(self.cbCardData[j]/16)
-				local strFile = "game/font_big/font_"..nColor.."_"..nValue..".png"
+                local strFile = "game/font_big/font_"..nColor.."_"..nValue..".png" 
 				cardFont:setTexture(strFile)
 			end
 		end
