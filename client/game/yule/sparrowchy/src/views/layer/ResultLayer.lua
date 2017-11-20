@@ -240,23 +240,32 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 		end
 
         -- show HuiPai and BaoPai
-        valueOfHuiPai=5
-        valueOfBaoPai=23
-        m_width=98
-        m_height=142
-        local cardHuiPai=self:getChildByName("card_HuiPai")
-        local nValue = math.mod(valueOfHuiPai, 16)
-		local nColor = math.floor(valueOfHuiPai/16)
-        display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
-					:move(m_width/2, m_height/2 + 8)
-					:addTo(cardHuiPai)
+        if self._scene._scene.cbEnabledHuiPai then
+            m_width=98
+            m_height=142
+            local cardHuiPai=self:getChildByName("card_HuiPai")
+            local nValue = math.mod(GameLogic.MAGIC_DATA, 16)
+		    local nColor = math.floor(GameLogic.MAGIC_DATA/16)
+            display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
+					    :move(m_width/2, m_height/2 + 8)
+					    :addTo(cardHuiPai)
+        else 
+            self:getChildByName("card_HuiPai"):setVisible(false)
+            self:getChildByName("sp_HuiPai_30"):setVisible(false)
+        end
 
-        local cardBaoPai=self:getChildByName("card_BaoPai")
-        local nValue = math.mod(valueOfBaoPai, 16)
-		local nColor = math.floor(valueOfBaoPai/16)
-        display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
-					:move(m_width/2, m_height/2 + 8)
-					:addTo(cardBaoPai)
+        if self._scene._scene.cbEnabledBaoPai then
+            valueOfBaoPai=23
+            local cardBaoPai=self:getChildByName("card_BaoPai")
+            local nValue = math.mod(valueOfBaoPai, 16)
+		    local nColor = math.floor(valueOfBaoPai/16)
+            display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
+					    :move(m_width/2, m_height/2 + 8)
+					    :addTo(cardBaoPai)
+        else 
+            self:getChildByName("card_BaoPai"):setVisible(false)
+            self:getChildByName("sp_BaoPai_31"):setVisible(false)
+        end
 	end
 
     --[[

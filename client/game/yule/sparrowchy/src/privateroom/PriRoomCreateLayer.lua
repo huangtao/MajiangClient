@@ -252,7 +252,7 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
             local buffer = CCmd_Data:create(188)
             buffer:setcmdinfo(self._cmd_pri_game.MDM_GR_PERSONAL_TABLE,self._cmd_pri_game.SUB_GR_CREATE_TABLE)
             buffer:pushscore(1)
-            buffer:pushdword(self.m_tabSelectConfig.dwDrawCountLimit)
+            buffer:pushdword(self.m_tabSelectConfig.dwDrawCountLimit)  --self.m_tabSelectConfig.dwDrawCountLimit
             buffer:pushdword(self.m_tabSelectConfig.dwDrawTimeLimit)
             buffer:pushword(0)
             buffer:pushdword(0)
