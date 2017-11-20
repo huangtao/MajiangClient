@@ -289,13 +289,15 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		--dump(cmd_data.cbOutCardDataEx, "cbOutCardDataEx")
         dump(cmd_data, "CMD_S_StatusPlay", 6)
         
-        if cmd_data.cbEnabled_HuiPai == 1 then
-            self.cbEnabledHuiPai = true
+        if cmd_data.cbEnabled_HuiPai == false then
+            self.cbEnabledHuiPai = false
+        else
             self.cbMagicIndex = cmd_data.cbMagicIndex + 1
             GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
         end
-        if cmd_data.cbEnabled_BaoPai == 1 then 
-            self.cbEnabledBaoPai = true
+
+        if cmd_data.cbEnabled_BaoPai == false then 
+            self.cbEnabledBaoPai = false
         end
 
 		self.lCellScore = cmd_data.lCellScore

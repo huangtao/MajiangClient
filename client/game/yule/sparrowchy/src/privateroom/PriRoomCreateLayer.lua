@@ -337,26 +337,26 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
         if self.m_csbNode:getChildByTag(CBX_COUNT2):isSelected() then
             self.cbInningsCount_cy = 32
         end
-        if self.m_csbNode:getChildByName("cbx_DianPao"):isSelected() == true then
-            self.cbEnabled_DianPao = 1
+        if self.m_csbNode:getChildByName("cbx_DianPao"):isSelected() == false then
+            self.cbEnabled_DianPao = false
         end
-        if self.m_csbNode:getChildByName("cbx_FengGang"):isSelected() == true then
-            self.cbEnabled_FengGang = 1
+        if self.m_csbNode:getChildByName("cbx_FengGang"):isSelected() == false then
+            self.cbEnabled_FengGang = false
         end
-        if self.m_csbNode:getChildByName("cbx_HuiPai"):isSelected() == true then
-            self.cbEnabled_HuiPai = 1
+        if self.m_csbNode:getChildByName("cbx_HuiPai"):isSelected() == false then
+            self.cbEnabled_HuiPai = false
         end
-        if self.m_csbNode:getChildByName("cbx_BaoPai"):isSelected() == true then
-            self.cbEnabled_BaoPai = 1
+        if self.m_csbNode:getChildByName("cbx_BaoPai"):isSelected() == false then
+            self.cbEnabled_BaoPai = false
         end
-        if self.m_csbNode:getChildByName("cbx_ZhanLiHu"):isSelected() == true then
-            self.cbEnabled_ZhanLiHu = 1
+        if self.m_csbNode:getChildByName("cbx_ZhanLiHu"):isSelected() == false then
+            self.cbEnabled_ZhanLiHu = false
         end
-        if self.m_csbNode:getChildByName("cbx_JiaHu"):isSelected() == true then
-            self.cbEnabled_JiaHu = 1
+        if self.m_csbNode:getChildByName("cbx_JiaHu"):isSelected() == false then
+            self.cbEnabled_JiaHu = false
         end
-        if self.m_csbNode:getChildByName("cbx_ChangMaoGang"):isSelected() == true then
-            self.cbEnabled_ChangMaoGang = 1
+        if self.m_csbNode:getChildByName("cbx_ChangMaoGang"):isSelected() == false then
+            self.cbEnabled_ChangMaoGang = false
         end
 
         PriRoom:getInstance():showPopWait()
