@@ -815,7 +815,7 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 
 	if nShowStatus ~= GameLogic.SHOW_CHI then
 		--明杠
-		if nShowStatus == GameLogic.SHOW_MING_GANG then
+		if nShowStatus == GameLogic.SHOW_BU_GANG then
 			nodeParentMG = self.nodeBpBgCard[viewId]:getChildByTag(cbCardData[1])
 			--assert(nodeParentMG, "None of this bump card!")
 			if nodeParentMG then
@@ -859,7 +859,7 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 			card:removeChildByTag(1)
 		end
 		--添加牌到记录里
-		if nShowStatus ~= GameLogic.SHOW_MING_GANG or i == 4 then
+		if nShowStatus ~= GameLogic.SHOW_BU_GANG or i == 4 then
 			local pos = 1
 			while pos <= #self.cbBpBgCardData[viewId] do
 				if self.cbBpBgCardData[viewId][pos] == cbCardData[i] then

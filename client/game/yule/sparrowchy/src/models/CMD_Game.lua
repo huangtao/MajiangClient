@@ -78,13 +78,13 @@ cmd.CMD_S_StatusPlay =
 	{k = "cbMagicIndex", t = "byte"},							--财神索引
 
     {k = "cbInningsCount_cy", t = "byte"},
-    {k = "cbEnabled_DianPao", t = "byte"},
-    {k = "cbEnabled_FengGang", t = "byte"},
-    {k = "cbEnabled_HuiPai", t = "byte"},
-    {k = "cbEnabled_BaoPai", t = "byte"},
-    {k = "cbEnabled_ZhanLiHu", t = "byte"},
-    {k = "cbEnabled_JiaHu", t = "byte"},
-    {k = "cbEnabled_ChangMaoGang", t = "byte"},
+    {k = "cbEnabled_DianPao", t = "bool"},
+    {k = "cbEnabled_FengGang", t = "bool"},
+    {k = "cbEnabled_HuiPai", t = "bool"},
+    {k = "cbEnabled_BaoPai", t = "bool"},
+    {k = "cbEnabled_ZhanLiHu", t = "bool"},
+    {k = "cbEnabled_JiaHu", t = "bool"},
+    {k = "cbEnabled_ChangMaoGang", t = "bool"},
 
 	{k = "cbPlayerCount", t = "byte"},
 	{k = "cbMaCount", t = "byte"},
@@ -142,13 +142,13 @@ cmd.CMD_S_GameStart =
 	{k = "cbMagicIndex", t = "byte"},							--财神索引
 
     {k = "cbInningsCount_cy", t = "byte"},
-    {k = "cbEnabled_DianPao", t = "byte"},
-    {k = "cbEnabled_FengGang", t = "byte"},
-    {k = "cbEnabled_HuiPai", t = "byte"},
-    {k = "cbEnabled_BaoPai", t = "byte"},
-    {k = "cbEnabled_ZhanLiHu", t = "byte"},
-    {k = "cbEnabled_JiaHu", t = "byte"},
-    {k = "cbEnabled_ChangMaoGang", t = "byte"},
+    {k = "cbEnabled_DianPao", t = "bool"},
+    {k = "cbEnabled_FengGang", t = "bool"},
+    {k = "cbEnabled_HuiPai", t = "bool"},
+    {k = "cbEnabled_BaoPai", t = "bool"},
+    {k = "cbEnabled_ZhanLiHu", t = "bool"},
+    {k = "cbEnabled_JiaHu", t = "bool"},
+    {k = "cbEnabled_ChangMaoGang", t = "bool"},
 
 	{k = "cbHeapCardInfo", t = "byte", l = {2,2,2,2}},          --堆立信息
 	{k = "cbUserAction", t = "word"},							--用户动作

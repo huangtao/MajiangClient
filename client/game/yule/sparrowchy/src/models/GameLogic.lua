@@ -13,8 +13,8 @@ GameLogic.NORMAL_INDEX_MAX 			= 27
 GameLogic.SHOW_NULL					= 0							--无操作
 GameLogic.SHOW_CHI 					= 1 						--吃
 GameLogic.SHOW_PENG					= 2 						--碰
-GameLogic.SHOW_MING_GANG			= 3							--明杠（碰后再杠）
-GameLogic.SHOW_FANG_GANG			= 4							--放杠
+GameLogic.SHOW_BU_GANG			    = 3							--补杠（碰后再杠）
+GameLogic.SHOW_MING_GANG			= 4							--明杠
 GameLogic.SHOW_AN_GANG				= 5							--暗杠
 
 --动作标志

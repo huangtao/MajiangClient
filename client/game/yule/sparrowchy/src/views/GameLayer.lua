@@ -364,9 +364,9 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 						nShowStatus = GameLogic.SHOW_CHI
 					end
 				elseif cbParam == GameLogic.WIK_MING_GANG then
-					nShowStatus = GameLogic.SHOW_MING_GANG
+					nShowStatus = GameLogic.SHOW_BU_GANG
 				elseif cbParam == GameLogic.WIK_FANG_GANG then
-					nShowStatus = GameLogic.SHOW_FANG_GANG
+					nShowStatus = GameLogic.SHOW_MING_GANG
 				elseif cbParam == GameLogic.WIK_AN_GANG then
 					nShowStatus = GameLogic.SHOW_AN_GANG
 				end
@@ -514,14 +514,15 @@ function GameLayer:onSubGameStart(dataBuffer)
 		cmd_data.cbCardData[1][cmd.MAX_COUNT] = nil
 	end
 	
-    if cmd_data.cbEnabled_HuiPai == 1 then
-        self.cbEnabledHuiPai = true
+    if cmd_data.cbEnabled_HuiPai == false then
+        self.cbEnabledHuiPai = false
+    else
         self.cbMagicIndex = cmd_data.cbMagicIndex + 1
         GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
     end
 
-    if cmd_data.cbEnabled_BaoPai == 1 then 
-        self.cbEnabledBaoPai = true
+    if cmd_data.cbEnabled_BaoPai == false then 
+        self.cbEnabledBaoPai = false
     end
     
 	--筛子
@@ -721,12 +722,12 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			local cbCardCount = self._gameView._cardLayer.cbCardCount[wOperateViewId]
 			if math.mod(cbCardCount - 2, 3) == 0 then
 				if self._gameView._cardLayer:checkBumpOrBridgeCard(wOperateViewId, data1) then
-					nShowStatus = GameLogic.SHOW_MING_GANG
+					nShowStatus = GameLogic.SHOW_BU_GANG
 				else
 					nShowStatus = GameLogic.SHOW_AN_GANG
 				end
 			else
-				nShowStatus = GameLogic.SHOW_FANG_GANG
+				nShowStatus = GameLogic.SHOW_MING_GANG
 			end
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_PENG then
 			cbOperateData = {data1, data1, data1}
@@ -753,7 +754,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
 		local bRemoveSuccess = false
 		if nShowStatus == GameLogic.SHOW_AN_GANG then
 			self._gameView._cardLayer:removeHandCard(wOperateViewId, cbOperateData, false)
-		elseif nShowStatus == GameLogic.SHOW_MING_GANG then
+		elseif nShowStatus == GameLogic.SHOW_BU_GANG then
 			self._gameView._cardLayer:removeHandCard(wOperateViewId, {data1}, false)
 		else
 			self._gameView._cardLayer:removeHandCard(wOperateViewId, cbRemoveData, false)
@@ -767,7 +768,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
 		if wOperateViewId ~= cmd.MY_VIEWID then
 			if nShowStatus == GameLogic.SHOW_AN_GANG then
 				self:insertAppearCard(cbOperateData)
-			elseif nShowStatus == GameLogic.SHOW_MING_GANG then
+			elseif nShowStatus == GameLogic.SHOW_BU_GANG then
 				self:insertAppearCard({data1})
 			else
 				self:insertAppearCard(cbRemoveData)

@@ -53,13 +53,13 @@ function PriRoomCreateLayer:onInitData()
 
     -- insert setting data in ChaoYang
     self.cbInningsCount_cy=0
-    self.cbEnabled_DianPao=0
-    self.cbEnabled_FengGang=0
-    self.cbEnabled_HuiPai=0
-    self.cbEnabled_BaoPai=0
-    self.cbEnabled_ZhanLiHu=0
-    self.cbEnabled_JiaHu=0
-    self.cbEnabled_ChangMaoGang = 0
+    self.cbEnabled_DianPao=true
+    self.cbEnabled_FengGang=true
+    self.cbEnabled_HuiPai=true
+    self.cbEnabled_BaoPai=true
+    self.cbEnabled_ZhanLiHu=true
+    self.cbEnabled_JiaHu=true
+    self.cbEnabled_ChangMaoGang = true
 end
 
 function PriRoomCreateLayer:onResetData()
@@ -69,13 +69,13 @@ function PriRoomCreateLayer:onResetData()
 
     -- insert setting data in ChaoYang
     self.cbInningsCount_cy=0
-    self.cbEnabled_DianPao=0
-    self.cbEnabled_FengGang=0
-    self.cbEnabled_HuiPai=0
-    self.cbEnabled_BaoPai=0
-    self.cbEnabled_ZhanLiHu=0
-    self.cbEnabled_JiaHu=0
-    self.cbEnabled_ChangMaoGang = 0
+    self.cbEnabled_DianPao=true
+    self.cbEnabled_FengGang=true
+    self.cbEnabled_HuiPai=true
+    self.cbEnabled_BaoPai=true
+    self.cbEnabled_ZhanLiHu=true
+    self.cbEnabled_JiaHu=true
+    self.cbEnabled_ChangMaoGang = true
 end
 
 function PriRoomCreateLayer:ctor( scene )
@@ -263,13 +263,13 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
             buffer:pushbyte(self.cbMaCount)
             -- insert in ChaoYang
             buffer:pushbyte(self.cbInningsCount_cy)  -- count of round
-            buffer:pushbyte(self.cbEnabled_DianPao)
-            buffer:pushbyte(self.cbEnabled_FengGang)
-            buffer:pushbyte(self.cbEnabled_HuiPai)
-            buffer:pushbyte(self.cbEnabled_BaoPai)
-            buffer:pushbyte(self.cbEnabled_ZhanLiHu)
-            buffer:pushbyte(self.cbEnabled_JiaHu)
-            buffer:pushbyte(self.cbEnabled_ChangMaoGang)
+            buffer:pushbool(self.cbEnabled_DianPao)
+            buffer:pushbool(self.cbEnabled_FengGang)
+            buffer:pushbool(self.cbEnabled_HuiPai)
+            buffer:pushbool(self.cbEnabled_BaoPai)
+            buffer:pushbool(self.cbEnabled_ZhanLiHu)
+            buffer:pushbool(self.cbEnabled_JiaHu)
+            buffer:pushbool(self.cbEnabled_ChangMaoGang)
             print(self.cbUserNum,self.cbInningsCount_cy,self.cbEnabled_DianPao,self.cbEnabled_FengGang,self.cbEnabled_HuiPai,self.cbEnabled_BaoPai,self.cbEnabled_ZhanLiHu,self.cbEnabled_JiaHu,self.cbEnabled_ChangMaoGang)
             for i = 1, 100 - 11 do
                 buffer:pushbyte(0)
