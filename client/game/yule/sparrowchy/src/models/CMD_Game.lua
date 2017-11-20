@@ -151,7 +151,7 @@ cmd.CMD_S_GameStart =
     {k = "cbEnabled_ChangMaoGang", t = "byte"},
 
 	{k = "cbHeapCardInfo", t = "byte", l = {2,2,2,2}},          --堆立信息
-	{k = "cbUserAction", t = "byte"},							--用户动作
+	{k = "cbUserAction", t = "word"},							--用户动作
 	{k = "cbCardData", t = "byte", l = {cmd.MAX_COUNT}},		--麻将列表
 }
 
@@ -188,7 +188,7 @@ cmd.CMD_S_OutCard =
 cmd.CMD_S_SendCard = 
 {
 	{k = "cbCardData", t = "byte"},								--扑克数据
-	{k = "cbActionMask", t = "byte"},							--动作掩码
+	{k = "cbActionMask", t = "word"},							--动作掩码
 	{k = "wCurrentUser", t = "word"},							--当前用户
 	{k = "wSendCardUser", t = "word"},							--发牌用户
 	{k = "wReplaceUser", t = "word"},							--补牌用户
@@ -197,16 +197,16 @@ cmd.CMD_S_SendCard =
 --操作提示
 cmd.CMD_S_OperateNotify = 
 {
-	{k = "cbActionMask", t = "byte"},							--动作掩码
+	{k = "cbActionMask", t = "word"},							--动作掩码
 	{k = "cbActionCard", t = "byte"}							--动作扑克
 }
 --操作命令
 cmd.CMD_S_OperateResult = 
 {
 	{k = "wOperateUser", t = "word"},							--操作用户
-	{k = "cbActionMask", t = "byte"},							--动作掩码
+	{k = "cbActionMask", t = "word"},							--动作掩码
 	{k = "wProvideUser", t = "word"},							--供应用户
-	{k = "cbOperateCode", t = "byte"},							--操作代码
+	{k = "cbOperateCode", t = "word"},							--操作代码
 	{k = "cbOperateCard", t = "byte", l = {3}},					--操作扑克
 }
 --提示听牌
@@ -290,7 +290,7 @@ cmd.CMD_C_OutCard =
 --操作命令
 cmd.CMD_C_OperateCard = 
 {
-	{k = "cbOperateCode", t = "byte"},							--操作代码
+	{k = "cbOperateCode", t = "word"},							--操作代码
 	{k = "cbOperateCard", t = "byte", l = {3}}					--操作扑克
 }
 --用户听牌

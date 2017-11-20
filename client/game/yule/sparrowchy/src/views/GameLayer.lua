@@ -662,7 +662,7 @@ end
 function GameLayer:onSubOperateNotify(dataBuffer)
 	print("操作提示")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateNotify, dataBuffer)
-	--dump(cmd_data, "CMD_S_OperateNotify")
+	dump(cmd_data, "CMD_S_OperateNotify")
 
 	if self.bSendCardFinsh then 	--发牌完成
 		self._gameView:recognizecbActionMask(cmd_data.cbActionMask, cmd_data.cbActionCard)
@@ -700,7 +700,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
 	print("操作结果")
 
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateResult, dataBuffer)
-	--dump(cmd_data, "CMD_S_OperateResult")
+	dump(cmd_data, "CMD_S_OperateResult")
 	if cmd_data.cbOperateCode == GameLogic.WIK_NULL then
 		assert(false, "没有操作也会进来？")
 		return true
@@ -745,6 +745,9 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		end
+        print("nShowStatus"..nShowStatus)
+        dump(cbOperateData)
+        dump(cbRemoveData)
 		local bAnGang = nShowStatus == GameLogic.SHOW_AN_GANG
 		self._gameView._cardLayer:bumpOrBridgeCard(wOperateViewId, cbOperateData, nShowStatus)
 		local bRemoveSuccess = false
@@ -1050,7 +1053,6 @@ function GameLayer:insertAppearCard(cbCardData)
 	for i = 1, #self.cbAppearCardData do
 		str = str..string.format("%x,", self.cbAppearCardData[i])
 	end
-	print("已出现的牌:", str)
 end
 
 function GameLayer:getDetailScore()
@@ -1123,12 +1125,12 @@ function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
 
 	--发送操作
 	--local cmd_data = ExternalFun.create_netdata(cmd.CMD_C_OperateCard)
-    local cmd_data = CCmd_Data:create(4)
-	cmd_data:pushbyte(cbOperateCode)
+    local cmd_data = CCmd_Data:create(5)
+	cmd_data:pushword(cbOperateCode)
 	for i = 1, 3 do
 		cmd_data:pushbyte(cbOperateCard[i])
 	end
-	--dump(cmd_data, "operate")
+	dump(cmd_data, "operate",3)
 	self:SendData(cmd.SUB_C_OPERATE_CARD, cmd_data)
 end
 --用户听牌

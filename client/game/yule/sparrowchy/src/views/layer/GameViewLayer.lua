@@ -42,6 +42,8 @@ GameViewLayer.BT_WIN 				= 65				--游戏操作按钮胡
 GameViewLayer.BT_PASS 				= 66				--游戏操作按钮过
 GameViewLayer.BT_EAT 				= 67				--游戏操作按钮过
 
+GameViewLayer.Chi_TAGS              = 70  
+
 GameViewLayer.SP_ROOMINFO 			= 7					--房间信息
 GameViewLayer.TEXT_ROOMNUM 			= 1					--房间信息房号
 GameViewLayer.TEXT_ROOMNAME 		= 2					--房间信息房名
@@ -381,16 +383,39 @@ function GameViewLayer:initButtons()
 		:setEnabled(false)
 		:setColor(cc.c3b(158, 112, 8))
 	btBump:addTouchEventListener(btnCallback)
+
+    local btEat = self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT) 	-- CHI
+		:setEnabled(false)
+		:setColor(cc.c3b(158, 112, 8))
+	btEat:addTouchEventListener(btnCallback)
+
 	local btBrigde = self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE) 		--杠
 		:setEnabled(false)
 		:setColor(cc.c3b(158, 112, 8))
 	btBrigde:addTouchEventListener(btnCallback)
+
+    local btListen = self.spGameBtn:getChildByTag(GameViewLayer.BT_LISTEN) 	-- TING
+		:setEnabled(false)
+		:setColor(cc.c3b(158, 112, 8))
+	btListen:addTouchEventListener(btnCallback)
+
 	local btWin = self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)		--胡
 		:setEnabled(false)
 		:setColor(cc.c3b(158, 112, 8))
 	btWin:addTouchEventListener(btnCallback)
 	local btPass = self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS)		--过
 	btPass:addTouchEventListener(btnCallback)
+
+    self.btnGroupChi = {}
+    for i = 1, 3 do 
+        self.btnGroupChi[i] = self:getChildByName("FileNode_Chi_"..i)
+        for j = 1, 3 do 
+            self.btnGroupChi[i]:getChildByName("btnChi"..j)
+                :setTag(GameViewLayer.Chi_TAGS + (i-1)*3 + j)
+                :addTouchEventListener(btnCallback)
+        end
+        self.btnGroupChi[i]:setVisible(false)
+    end
 
 	--语音
 	self.btVoice = self:getChildByTag(GameViewLayer.BT_VOICE)
@@ -670,6 +695,12 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self._scene:sendOperateCard(GameLogic.WIK_GANG, cbOperateCard)
 
 		self:HideGameBtn()
+    elseif tag == GameViewLayer.BT_EAT then
+        print("吃！")
+        --local cbChiCode = self._cardLayer:getChiCode(self.cbActionCard)
+
+    elseif tag == GameViewLayer.BT_LISTEN then
+        print("GameViewLayer.BT_LISTEN")
 	elseif tag == GameViewLayer.BT_WIN then
 		print("胡！")
 
@@ -683,7 +714,13 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self._scene:sendOperateCard(GameLogic.WIK_NULL, cbOperateCard)
 
 		self:HideGameBtn()
-	else
+	elseif tag > GameViewLayer.Chi_TAGS and tag <= GameViewLayer.Chi_TAGS + 3 then
+        print("chi_left")
+    elseif tag > GameViewLayer.Chi_TAGS + 3 and tag <= GameViewLayer.Chi_TAGS + 6 then 
+        print("chi_center")
+    elseif tag > GameViewLayer.Chi_TAGS + 6 and tag <= GameViewLayer.Chi_TAGS + 9 then
+        print("chi_right")
+    else 
 		print("default")
 	end
 end
@@ -828,9 +865,6 @@ function GameViewLayer:HideGameBtn()
 			bt:setColor(cc.c3b(158, 112, 8))
 		end
 	end
-    
-    self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT):setEnabled(false):setColor(cc.c3b(158, 112, 8))   -- hide Chi button
-
 	self.spGameBtn:setVisible(false)
 end
 
@@ -872,6 +906,9 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 	end
 	if cbActionMask >= 32 then 					--听
 		cbActionMask = cbActionMask - 32
+        self.spGameBtn:getChildByTag(GameViewLayer.BT_LISTEN)
+			:setEnabled(true)
+			:setColor(cc.c3b(255, 255, 255))
 	end
 	if cbActionMask >= 16 then 					--杠
 		cbActionMask = cbActionMask - 16
@@ -887,6 +924,13 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 				:setColor(cc.c3b(255, 255, 255))
 		end
 	end
+
+    if cbActionMask > 0 then     -- Chi
+        self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT)
+				:setEnabled(true)
+				:setColor(cc.c3b(255, 255, 255))
+    end
+
 	self.spGameBtn:setVisible(true)
 	self._scene:SetGameOperateClock()
 

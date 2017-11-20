@@ -18,15 +18,21 @@ GameLogic.SHOW_FANG_GANG			= 4							--放杠
 GameLogic.SHOW_AN_GANG				= 5							--暗杠
 
 --动作标志
-GameLogic.WIK_NULL					= 0x00						--没有类型--0
-GameLogic.WIK_LEFT					= 0x01						--左吃类型--1
-GameLogic.WIK_CENTER				= 0x02						--中吃类型--2
-GameLogic.WIK_RIGHT					= 0x04						--右吃类型--4
-GameLogic.WIK_PENG					= 0x08						--碰牌类型--8
-GameLogic.WIK_GANG					= 0x10						--杠牌类型--16
-GameLogic.WIK_LISTEN				= 0x20						--听牌类型--32
-GameLogic.WIK_CHI_HU				= 0x40						--吃胡类型--64
-GameLogic.WIK_FANG_PAO				= 0x80						--放炮--128
+GameLogic.WIK_NULL					= 0x0000						--没有类型--0
+GameLogic.WIK_LEFT					= 0x0001						--左吃类型--1
+GameLogic.WIK_CENTER				= 0x0002						--中吃类型--2
+GameLogic.WIK_RIGHT					= 0x0004						--右吃类型--4
+GameLogic.WIK_PENG					= 0x0008						--碰牌类型--8
+GameLogic.WIK_GANG					= 0x0010						--杠牌类型--16
+GameLogic.WIK_LISTEN				= 0x0020						--听牌类型--32
+GameLogic.WIK_CHI_HU				= 0x0040						--吃胡类型--64
+GameLogic.WIK_FANG_PAO				= 0x0080						--放炮--128
+--朝阳麻将 Additional Flag
+GameLogic.WIK_ARROW					= 0x0100							--【中发白】三张【箭牌】在一起组成的杠 --256
+GameLogic.WIK_WIND					= 0x0200							--【东南西北】四张【风牌】在一起组成的杠 --512
+GameLogic.WIK_CHASEARROW			= 0x0400							--【中发白】的杠追加【中发白】牌后的杠 --1024
+GameLogic.WIK_CHASEWIND				= 0x0800							--【东南西北】的杠追加风牌后的杠 --2048
+
 --动作类型
 GameLogic.WIK_GANERAL				= 0x00						--普通操作
 GameLogic.WIK_MING_GANG				= 0x01						--明杠（碰后再杠）

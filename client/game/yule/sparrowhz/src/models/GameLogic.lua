@@ -4,7 +4,7 @@ local cmd = appdf.req(appdf.GAME_SRC.."yule.sparrowhz.src.models.CMD_Game")
 
 --牌库数目
 GameLogic.FULL_COUNT				= 112
-GameLogic.MAGIC_DATA 				= 0x35 -- 53
+GameLogic.MAGIC_DATA 				= 0xff -- 53
 GameLogic.MAGIC_INDEX 				= 32
 GameLogic.NORMAL_DATA_MAX 			= 0x29 -- 41
 GameLogic.NORMAL_INDEX_MAX 			= 27
@@ -128,6 +128,9 @@ end
 
 --混乱扑克
 function GameLogic.RandCardList(cbCardData)
+    print("------------------ GameLogic.RandCardList(cbCardData) ----------------------")
+    dump(dbCardData,"dbCardData",2)
+
 	assert(type(cbCardData) == "table")
 	--混乱准备
 	local cbCardCount = #cbCardData
@@ -141,11 +144,15 @@ function GameLogic.RandCardList(cbCardData)
 		cbCardTemp[cbPosition] = cbCardTemp[cbCardCount - cbRandCount]
 		cbRandCount = cbRandCount + 1
 	end
+    dump(cbCardBuffer,"dbCardBuffer",2)
+
 	return cbCardBuffer
 end
 
 --排序
 function GameLogic.SortCardList(cbCardData)
+print("------------ GameLogic.SortCardList(cbCardData) ------------------")
+    dump(cbCardData,"cbCardData",2)
 	--校验
 	assert(type(cbCardData) == "table" and #cbCardData > 0)
 	local cbCardCount = #cbCardData
@@ -162,6 +169,7 @@ function GameLogic.SortCardList(cbCardData)
 		end
 		cbLast = cbLast - 1
 	end
+    dump(cbCardData,"cbCardData",2)
 end
 
 --分析打哪一张牌后听哪张牌
@@ -210,6 +218,9 @@ end
 
 --分析是否胡牌(带红中)
 function GameLogic.AnalyseChiHuCard(cbCardData, bNoneThePair)
+    print("------- GameLogic.AnalyseChiHuCard(cbCardData, bNoneThePair) -----------")
+    dump(cbCardData)
+    dump(bNoneThePair)
 	local cbCardCount = #cbCardData
 	--红中统计
 	local cbCardIndex = GameLogic.DataToCardIndex(cbCardData)
@@ -314,6 +325,8 @@ end
 
 --胡牌分析(在不考虑红中的情况下)
 function GameLogic.AnalyseHuPai(cbCardData)
+    print("---------- GameLogic.AnalyseHuPai(cbCardData) ---------------")
+    dump(cbCardData)
 	--校验
 	assert(type(cbCardData) == "table")
 	local cbCardCount = #cbCardData

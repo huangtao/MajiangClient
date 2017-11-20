@@ -529,7 +529,9 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 
 	local HandCard = self.nodeHandCard[viewId]:getChildByTag(1)
 	HandCard:setVisible(true)
-    HandCard:removeChildByName("green_round")
+    if HandCard:getChildByName("green_round") then
+        HandCard:removeChildByName("green_round")
+    end
 	self.cbCardCount[viewId] = self.cbCardCount[viewId] + 1
 	self.nRemainCardNum = self.nRemainCardNum - 1
 	self._scene:setRemainCardNum(self.nRemainCardNum)
@@ -571,7 +573,9 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
 	for j = 1, cmd.MAX_COUNT do
 		self.nodeHandCard[viewId]:getChildByTag(j):setVisible(false)
 		self.nodeHandDownCard[viewId]:getChildByTag(j):setVisible(false)
-        self.nodeHandCard[viewId]:getChildByTag(j):removeChildByName("green_round")
+        if self.nodeHandCard[viewId]:getChildByTag(j) then
+            self.nodeHandCard[viewId]:getChildByTag(j):removeChildByName("green_round")
+        end
 	end
 	--再显示
 	if self.cbCardCount[viewId] ~= 0 then
@@ -612,6 +616,10 @@ end
 
 --删除手上的牌
 function CardLayer:removeHandCard(viewId, cardData, bOutCard)
+    print("-------- CardLayer:removeHandCard(viewId, cardData, bOutCard) -------")
+    print(viewId)
+    dump(cardData)
+
 	assert(type(cardData) == "table")
 	local cbRemainCount = self.cbCardCount[viewId] - #cardData
 	if bOutCard and math.mod(cbRemainCount, 3) ~= 1 then
@@ -954,8 +962,6 @@ function CardLayer:startListenCard()
 end
 
 function CardLayer:promptListenOutCard(cbPromptOutData)
-    print("CardLayer:promptListenOutCard -- for the TEST")
-    dump(cbPromptOutData)
 	--还原
 	local cbCardCount = #self.cbCardData
 	for i = 1, cmd.MAX_COUNT do
