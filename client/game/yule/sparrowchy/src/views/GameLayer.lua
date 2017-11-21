@@ -39,8 +39,8 @@ function GameLayer:OnInitGameEngine()
 	self.m_userRecord = {}
 	self.cbMaCount = 0
 
-    self.cbEnabledHuiPai = false
-    self.cbEnabledBaoPai = false
+    self.cbEnabledHuiPai = true
+    self.cbEnabledBaoPai = true
     self.cbMagicIndex = 0xff
 	--房卡需要
 	self.wRoomHostViewId = 0
@@ -365,9 +365,9 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 					else 											--吃
 						nShowStatus = GameLogic.SHOW_CHI
 					end
-				elseif cbParam == GameLogic.WIK_MING_GANG then
+				elseif cbParam == GameLogic.WIK_BU_GANG then
 					nShowStatus = GameLogic.SHOW_BU_GANG
-				elseif cbParam == GameLogic.WIK_FANG_GANG then
+				elseif cbParam == GameLogic.WIK_MING_GANG then
 					nShowStatus = GameLogic.SHOW_MING_GANG
 				elseif cbParam == GameLogic.WIK_AN_GANG then
 					nShowStatus = GameLogic.SHOW_AN_GANG

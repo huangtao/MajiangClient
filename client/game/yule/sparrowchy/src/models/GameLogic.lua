@@ -35,8 +35,8 @@ GameLogic.WIK_CHASEWIND				= 0x0800							--【东南西北】的杠追加风牌
 
 --动作类型
 GameLogic.WIK_GANERAL				= 0x00						--普通操作
-GameLogic.WIK_MING_GANG				= 0x01						--明杠（碰后再杠）
-GameLogic.WIK_FANG_GANG				= 0x02						--放杠
+GameLogic.WIK_BU_GANG				= 0x01						--补杠（碰后再杠）
+GameLogic.WIK_MING_GANG				= 0x02						--明杠
 GameLogic.WIK_AN_GANG				= 0x03						--暗杠
 
 GameLogic.LocalCardData = 
