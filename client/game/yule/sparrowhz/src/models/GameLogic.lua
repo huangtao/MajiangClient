@@ -4,7 +4,7 @@ local cmd = appdf.req(appdf.GAME_SRC.."yule.sparrowhz.src.models.CMD_Game")
 
 --牌库数目
 GameLogic.FULL_COUNT				= 112
-GameLogic.MAGIC_DATA 				= 0xff -- 53
+GameLogic.MAGIC_DATA 				= 0x35 -- 53
 GameLogic.MAGIC_INDEX 				= 32
 GameLogic.NORMAL_DATA_MAX 			= 0x29 -- 41
 GameLogic.NORMAL_INDEX_MAX 			= 27

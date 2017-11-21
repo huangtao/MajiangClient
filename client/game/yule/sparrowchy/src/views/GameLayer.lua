@@ -289,16 +289,12 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		--dump(cmd_data.cbOutCardDataEx, "cbOutCardDataEx")
         dump(cmd_data, "CMD_S_StatusPlay", 6)
         
-        if cmd_data.cbEnabled_HuiPai == false then
-            self.cbEnabledHuiPai = false
-        else
+        self.cbEnabledHuiPai = cmd_data.cbEnabled_HuiPai
+        if self.cbEnabledHuiPai then
             self.cbMagicIndex = cmd_data.cbMagicIndex + 1
             GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
         end
-
-        if cmd_data.cbEnabled_BaoPai == false then 
-            self.cbEnabledBaoPai = false
-        end
+        self.cbEnabledBaoPai = cmd_data.cbEnabled_BaoPai
 
 		self.lCellScore = cmd_data.lCellScore
 		self.cbTimeOutCard = cmd_data.cbTimeOutCard
@@ -516,16 +512,12 @@ function GameLayer:onSubGameStart(dataBuffer)
 		cmd_data.cbCardData[1][cmd.MAX_COUNT] = nil
 	end
 	
-    if cmd_data.cbEnabled_HuiPai == false then
-        self.cbEnabledHuiPai = false
-    else
+    self.cbEnabledHuiPai = cmd_data.cbEnabled_HuiPai
+    if self.cbEnabledHuiPai then
         self.cbMagicIndex = cmd_data.cbMagicIndex + 1
         GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
     end
-
-    if cmd_data.cbEnabled_BaoPai == false then 
-        self.cbEnabledBaoPai = false
-    end
+    self.cbEnabledBaoPai = cmd_data.cbEnabled_BaoPai
     
 	--筛子
 	local cbSiceCount1 = math.mod(cmd_data.wSiceCount, 256)
@@ -737,11 +729,11 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			nShowStatus = GameLogic.SHOW_PENG
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_RIGHT then
 			cbOperateData = cmd_data.cbOperateCard[1]
-			cbRemoveData = {data1, data2}
+			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_CENTER then
 			cbOperateData = cmd_data.cbOperateCard[1]
-			cbRemoveData = {data1, data3}
+			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_LEFT then
 			cbOperateData = cmd_data.cbOperateCard[1]

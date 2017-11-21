@@ -42,7 +42,7 @@ GameViewLayer.BT_WIN 				= 65				--游戏操作按钮胡
 GameViewLayer.BT_PASS 				= 66				--游戏操作按钮过
 GameViewLayer.BT_EAT 				= 67				--游戏操作按钮过
 
-GameViewLayer.Chi_TAGS              = 70  
+GameViewLayer.Chi_TAG              = 70  
 
 GameViewLayer.SP_ROOMINFO 			= 7					--房间信息
 GameViewLayer.TEXT_ROOMNUM 			= 1					--房间信息房号
@@ -411,7 +411,7 @@ function GameViewLayer:initButtons()
         self.btnGroupChi[i] = self:getChildByName("FileNode_Chi_"..i)
         for j = 1, 3 do 
             self.btnGroupChi[i]:getChildByName("btnChi"..j)
-                :setTag(GameViewLayer.Chi_TAGS + (i-1)*3 + j)
+                :setTag(GameViewLayer.Chi_TAG + (i-1)*3 + j)
                 :addTouchEventListener(btnCallback)
         end
         self.btnGroupChi[i]:setVisible(false)
@@ -701,17 +701,20 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
         if len == 1 then
             local cbOperateCard = {self.chi_data[1][1], self.chi_data[1][2], self.chi_data[1][3]}
             self._scene:sendOperateCard(self.chi_data[1][4], cbOperateCard)
-            
-        elseif len == 2 then
-            self.btnGroupChi[1]:setVisible(true)
-            self.btnGroupChi[2]:setVisible(true)
-        elseif len == 3 then
-            self.btnGroupChi[1]:setVisible(true)
-            self.btnGroupChi[2]:setVisible(true)
-            self.btnGroupChi[3]:setVisible(true)
+        else
+            for i = 1, len do 
+                for j = 1, 3 do
+                    value = self.chi_data[i][j]
+                    local nValue = math.mod(value, 16)
+	                local nColor = math.floor(value/16)
+	                display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
+		                :move(35, 58)
+		                :addTo(self.btnGroupChi[i]:getChildByName("btnChi"..j))
+                end
+                self.btnGroupChi[i]:setVisible(true)
+            end
         end
         dump(self.chi_data)
-
         self:HideGameBtn()
     elseif tag == GameViewLayer.BT_LISTEN then
         print("GameViewLayer.BT_LISTEN")
@@ -727,17 +730,28 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		print("过！")
 		local cbOperateCard = {0, 0, 0}
 		self._scene:sendOperateCard(GameLogic.WIK_NULL, cbOperateCard)
-
 		self:HideGameBtn()
-	elseif tag > GameViewLayer.Chi_TAGS and tag <= GameViewLayer.Chi_TAGS + 3 then
-        print("chi_left")
-    elseif tag > GameViewLayer.Chi_TAGS + 3 and tag <= GameViewLayer.Chi_TAGS + 6 then 
-        print("chi_center")
-    elseif tag > GameViewLayer.Chi_TAGS + 6 and tag <= GameViewLayer.Chi_TAGS + 9 then
-        print("chi_right")
+	elseif tag > GameViewLayer.Chi_TAG and tag <= GameViewLayer.Chi_TAG + 3 then
+        local cbOperateCard = {self.chi_data[1][1], self.chi_data[1][2], self.chi_data[1][3]}
+        self._scene:sendOperateCard(self.chi_data[1][4], cbOperateCard)
+        self:eatBtnHide()
+    elseif tag > GameViewLayer.Chi_TAG + 3 and tag <= GameViewLayer.Chi_TAG + 6 then
+        local cbOperateCard = {self.chi_data[2][1], self.chi_data[2][2], self.chi_data[2][3]}
+        self._scene:sendOperateCard(self.chi_data[2][4], cbOperateCard)
+        self:eatBtnHide()
+    elseif tag > GameViewLayer.Chi_TAG + 6 and tag <= GameViewLayer.Chi_TAG + 9 then
+        local cbOperateCard = {self.chi_data[3][1], self.chi_data[3][2], self.chi_data[3][3]}
+        self._scene:sendOperateCard(self.chi_data[3][4], cbOperateCard)
+        self:eatBtnHide()
     else 
 		print("default")
 	end
+end
+
+function GameViewLayer:eatBtnHide()
+    for i = 1, 3 do 
+        self.btnGroupChi[i]:setVisible(false)
+    end
 end
 
 --计时器刷新
@@ -873,12 +887,14 @@ function GameViewLayer:gameConclude()
 end
 
 function GameViewLayer:HideGameBtn()
-	for i = GameViewLayer.BT_BUMP, GameViewLayer.BT_WIN do
-		local bt = self.spGameBtn:getChildByTag(i)
-		if bt then
-			bt:setEnabled(false)
-			bt:setColor(cc.c3b(158, 112, 8))
-		end
+	for i = GameViewLayer.BT_BUMP, GameViewLayer.BT_EAT do
+        if i ~= GameViewLayer.BT_PASS then
+            local bt = self.spGameBtn:getChildByTag(i)
+		    if bt then
+			    bt:setEnabled(false)
+			    bt:setColor(cc.c3b(158, 112, 8))
+		    end
+        end
 	end
 	self.spGameBtn:setVisible(false)
 end
@@ -945,14 +961,14 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 				:setEnabled(true)
 				:setColor(cc.c3b(255, 255, 255))
         self.chi_data = {}
-        if math.mod(cbActionMask, 2*1) >= 1 then
-            table.insert(self.chi_data, {cbCardData, cbCardData + 1, cbCardData + 2, 1})
+        if math.mod(cbActionMask, 4*2) >= 4 then
+            table.insert(self.chi_data, {cbCardData, cbCardData - 2, cbCardData - 1, 4})
         end
         if math.mod(cbActionMask, 2*2) >= 2 then
-            table.insert(self.chi_data, {cbCardData - 1, cbCardData, cbCardData + 1, 2})
+            table.insert(self.chi_data, {cbCardData, cbCardData - 1, cbCardData + 1, 2})
         end
-        if math.mod(cbActionMask, 4*2) >= 4 then
-            table.insert(self.chi_data, {cbCardData - 2, cbCardData - 1, cbCardData, 4})
+        if math.mod(cbActionMask, 2*1) >= 1 then
+            table.insert(self.chi_data, {cbCardData, cbCardData + 1, cbCardData + 2, 1})
         end
     end
 
