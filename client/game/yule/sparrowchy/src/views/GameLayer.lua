@@ -728,15 +728,15 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			cbRemoveData = {data1, data1}
 			nShowStatus = GameLogic.SHOW_PENG
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_RIGHT then
-			cbOperateData = cmd_data.cbOperateCard[1]
+			cbOperateData = {cmd_data.cbOperateCard[1][2], cmd_data.cbOperateCard[1][3], cmd_data.cbOperateCard[1][1]}
 			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_CENTER then
-			cbOperateData = cmd_data.cbOperateCard[1]
+			cbOperateData = {cmd_data.cbOperateCard[1][2], cmd_data.cbOperateCard[1][1], cmd_data.cbOperateCard[1][3]}
 			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_LEFT then
-			cbOperateData = cmd_data.cbOperateCard[1]
+			cbOperateData = {cmd_data.cbOperateCard[1][1], cmd_data.cbOperateCard[1][2], cmd_data.cbOperateCard[1][3]}
 			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		end

@@ -414,7 +414,8 @@ function GameViewLayer:initButtons()
                 :setTag(GameViewLayer.Chi_TAG + (i-1)*3 + j)
                 :addTouchEventListener(btnCallback)
         end
-        self.btnGroupChi[i]:setVisible(false)
+        self.btnGroupChi[i]:setLocalZOrder(1)
+            :setVisible(false)
     end
 
 	--语音
@@ -703,8 +704,19 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
             self._scene:sendOperateCard(self.chi_data[1][4], cbOperateCard)
         else
             for i = 1, len do 
+                local direct = self.chi_data[i][4]
+                local font_data = {0, 0, 0}
+                if direct == 1 then
+                    font_data = {self.chi_data[i][1], self.chi_data[i][2], self.chi_data[i][3]}
+                end
+                if direct == 2 then
+                    font_data = {self.chi_data[i][2], self.chi_data[i][1], self.chi_data[i][3]}
+                end 
+                if direct == 4 then
+                    font_data = {self.chi_data[i][2], self.chi_data[i][3], self.chi_data[i][1]}
+                end
                 for j = 1, 3 do
-                    value = self.chi_data[i][j]
+                    value = font_data[j]
                     local nValue = math.mod(value, 16)
 	                local nColor = math.floor(value/16)
 	                display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
@@ -714,7 +726,6 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
                 self.btnGroupChi[i]:setVisible(true)
             end
         end
-        dump(self.chi_data)
         self:HideGameBtn()
     elseif tag == GameViewLayer.BT_LISTEN then
         print("GameViewLayer.BT_LISTEN")
@@ -902,7 +913,7 @@ end
 --识别动作掩码
 function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 	print("收到提示操作：", cbActionMask, cbCardData)
-	if cbActionMask == GameLogic.WIK_NULL or cbActionMask == 32 then
+	if cbActionMask == GameLogic.WIK_NULL then
 		assert("false")
 		return false
 	end
