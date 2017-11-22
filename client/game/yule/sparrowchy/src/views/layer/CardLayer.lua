@@ -856,8 +856,10 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 			card:setLocalZOrder(5)
         end
         if nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
-			card:setTexture(resFont[viewId].."card_back.png")
-			card:removeChildByTag(1)
+            if i ~= 4 or viewId ~= cmd.MY_VIEWID then
+			    card:setTexture(resFont[viewId].."card_back.png")
+			    card:removeChildByTag(1)
+            end
 		end
 		--添加牌到记录里
 		if nShowStatus ~= GameLogic.SHOW_BU_GANG or i == 4 then
