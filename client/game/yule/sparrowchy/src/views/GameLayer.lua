@@ -288,7 +288,8 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		--dump(cmd_data.cbHuCardData, "cbHuCardData")
 		--dump(cmd_data.cbOutCardDataEx, "cbOutCardDataEx")
         dump(cmd_data, "CMD_S_StatusPlay", 6)
-        
+
+        -- get HuiPai and BaoPai state -- 
         self.cbEnabledHuiPai = cmd_data.cbEnabled_HuiPai
         if self.cbEnabledHuiPai then
             self.cbMagicIndex = cmd_data.cbMagicIndex + 1
@@ -511,14 +512,14 @@ function GameLayer:onSubGameStart(dataBuffer)
 	if self.wBankerUser ~= self:GetMeChairID() then
 		cmd_data.cbCardData[1][cmd.MAX_COUNT] = nil
 	end
-	
+	-- get HuiPai and BaoPai state -- 
     self.cbEnabledHuiPai = cmd_data.cbEnabled_HuiPai
     if self.cbEnabledHuiPai then
         self.cbMagicIndex = cmd_data.cbMagicIndex + 1
         GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
     end
     self.cbEnabledBaoPai = cmd_data.cbEnabled_BaoPai
-    
+    self._gameView.listen_state = false
 	--筛子
 	local cbSiceCount1 = math.mod(cmd_data.wSiceCount, 256)
 	local cbSiceCount2 = math.floor(cmd_data.wSiceCount/256)
@@ -740,9 +741,9 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		end
-        print("nShowStatus"..nShowStatus)
-        dump(cbOperateData)
-        dump(cbRemoveData)
+        print("nShowStatus:"..nShowStatus)
+        dump(cbOperateData,"operateData")
+        dump(cbRemoveData,"removeData")
 		local bAnGang = nShowStatus == GameLogic.SHOW_AN_GANG
 		self._gameView._cardLayer:bumpOrBridgeCard(wOperateViewId, cbOperateData, nShowStatus)
 		local bRemoveSuccess = false
@@ -778,7 +779,9 @@ function GameLayer:onSubOperateResult(dataBuffer)
 	local cbTime = self.cbTimeOutCard - self.cbTimeOperateCard
 	self:SetGameClock(cmd_data.wOperateUser, cmd.IDI_OUT_CARD, cbTime > 0 and cbTime or self.cbTimeOutCard)
 
-    
+    if self._gameView.spGameBtn:isVisible() then
+        self._gameView:HideGameBtn()
+    end
 	return true
 end
 
@@ -1099,6 +1102,13 @@ function GameLayer:sendOutCard(card)
 	if card == GameLogic.MAGIC_DATA then
 		return false
 	end
+    print(self._gameView.listen_state)
+    dump(self.cbListenPromptOutCard)
+    if self._gameView.listen_state then
+        if self:isListenCard(card) == false then
+            return false
+        end
+    end
 
 	self._gameView:HideGameBtn()
 	print("发送出牌", card)
@@ -1106,6 +1116,20 @@ function GameLayer:sendOutCard(card)
 	local cmd_data = ExternalFun.create_netdata(cmd.CMD_C_OutCard)
 	cmd_data:pushbyte(card)
 	return self:SendData(cmd.SUB_C_OUT_CARD, cmd_data)
+end
+
+function GameLayer:isListenCard(card)
+    local n = 0
+    for i =1, #self.cbListenPromptOutCard do
+        if self.cbListenPromptOutCard[i] == card then
+            n = n + 1
+        end
+    end
+    if n >= 1 then
+        return true
+    else 
+        return false
+    end
 end
 --操作扑克
 function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
@@ -1125,7 +1149,6 @@ function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
 	for i = 1, 3 do
 		cmd_data:pushbyte(cbOperateCard[i])
 	end
-	dump(cmd_data, "operate",3)
 	self:SendData(cmd.SUB_C_OPERATE_CARD, cmd_data)
 end
 --用户听牌

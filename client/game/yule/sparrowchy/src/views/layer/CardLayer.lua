@@ -17,6 +17,7 @@ local multipleTableCard = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 local multipleDownCard = {{1, 0}, {0, -1}, {1, 0}, {0, -1}}
 local multipleBpBgCard = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}}
 
+CardLayer.GREEN_ROUND = 100
 --local cbCardData = {1, 5, 7, 6, 34, 12, 32, 25, 18, 19, 27, 22, 33, 33}
 
 CardLayer.TAG_BUMPORBRIDGE = 1
@@ -517,7 +518,9 @@ function CardLayer:spreadCardFinish()
 		end
 		self:setHandCard(i, self.cbCardCount[i], self.cbCardData)
 	end
-
+    if self._scene._scene.cbEnabledBaoPai then
+       self.nRemainCardNum = self.nRemainCardNum - 1
+    end
 	self._scene:setRemainCardNum(self.nRemainCardNum)
 	self._scene:sendCardFinish()
 end
@@ -529,8 +532,8 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 
 	local HandCard = self.nodeHandCard[viewId]:getChildByTag(1)
 	HandCard:setVisible(true)
-    if HandCard:getChildByName("green_round") then
-        HandCard:removeChildByName("green_round")
+    if HandCard:getChildByTag(CardLayer.GREEN_ROUND) then
+        HandCard:removeChildByTag(CardLayer.GREEN_ROUND)
     end
 	self.cbCardCount[viewId] = self.cbCardCount[viewId] + 1
 	self.nRemainCardNum = self.nRemainCardNum - 1
@@ -545,7 +548,8 @@ function CardLayer:catchCard(viewId, cardData, bTail)
             local strFile = cmd.RES_PATH.."game/sp_round_big.png"
 			local font = display.newSprite(strFile)
                 :move(44,72)
-				:setName("green_round")
+				:setTag(CardLayer.GREEN_ROUND)
+                :setLocalZOrder(1)
 				:addTo(HandCard)
         end
         
@@ -574,7 +578,9 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
 		self.nodeHandCard[viewId]:getChildByTag(j):setVisible(false)
 		self.nodeHandDownCard[viewId]:getChildByTag(j):setVisible(false)
         if self.nodeHandCard[viewId]:getChildByTag(j) then
-            self.nodeHandCard[viewId]:getChildByTag(j):removeChildByName("green_round")
+            if self.nodeHandCard[viewId]:getChildByTag(j):getChildByTag(CardLayer.GREEN_ROUND) then
+                self.nodeHandCard[viewId]:getChildByTag(j):removeChildByTag(CardLayer.GREEN_ROUND)
+            end
         end
 	end
 	--再显示
@@ -600,7 +606,8 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
                     local strFile = cmd.RES_PATH.."game/sp_round_big.png"
 				    local font = display.newSprite(strFile)
                         :move(44,72)
-					    :setName("green_round")
+                        :setLocalZOrder(1)
+					    :setTag(CardLayer.GREEN_ROUND)
 					    :addTo(card)
                 end
 
@@ -616,10 +623,6 @@ end
 
 --删除手上的牌
 function CardLayer:removeHandCard(viewId, cardData, bOutCard)
-    print("-------- CardLayer:removeHandCard(viewId, cardData, bOutCard) -------")
-    print(viewId)
-    dump(cardData)
-
 	assert(type(cardData) == "table")
 	local cbRemainCount = self.cbCardCount[viewId] - #cardData
 	if bOutCard and math.mod(cbRemainCount, 3) ~= 1 then
@@ -735,9 +738,6 @@ function CardLayer:discard(viewId, cardData)
 		local nOrder = 0
 		if self.nDiscardCount[viewId] >= nLimit*6 then
             print("-------------------------修改了Z轴顺序，设置重叠效果   **** 需注意处理 ******------------------------------")
-            dump(self.nDiscardCount,"self.nDiscardCount",3)
-            print("nLimit="..nLimit)
-            print("viewId="..viewId)
 			--assert(false)
 		elseif self.nDiscardCount[viewId] >= nLimit*4 then
 			nOrder = 80 - (self.nDiscardCount[viewId] - nLimit*4)
@@ -814,7 +814,7 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 		:addTo(self.nodeBpBgCard[viewId])
 
 	if nShowStatus ~= GameLogic.SHOW_CHI then
-		--明杠
+		--补杠
 		if nShowStatus == GameLogic.SHOW_BU_GANG then
 			nodeParentMG = self.nodeBpBgCard[viewId]:getChildByTag(cbCardData[1])
 			--assert(nodeParentMG, "None of this bump card!")
@@ -854,7 +854,8 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 			local moveUp = {17, 14, 23, 14}
 			card:move(2*fSpacing*multipleBpBgCard[viewId][1], 2*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
 			card:setLocalZOrder(5)
-		elseif nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
+        end
+		if nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
 			card:setTexture(resFont[viewId].."card_back.png")
 			card:removeChildByTag(1)
 		end
@@ -868,6 +869,7 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 				pos = pos + 1
 			end
 			table.insert(self.cbBpBgCardData[viewId], pos, cbCardData[i])
+            dump(self.cbBpBgCardData[viewId],"cbBpBgCardData["..viewId.."]")
 		end
 	end
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1

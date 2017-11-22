@@ -77,6 +77,9 @@ cmd.CMD_S_StatusPlay =
 	{k = "wCurrentUser", t = "word"},							--当前用户
 	{k = "cbMagicIndex", t = "byte"},							--财神索引
 
+	{k = "cbPlayerCount", t = "byte"},
+	{k = "cbMaCount", t = "byte"},
+
     {k = "cbInningsCount_cy", t = "byte"},
     {k = "cbEnabled_DianPao", t = "bool"},
     {k = "cbEnabled_FengGang", t = "bool"},
@@ -85,9 +88,6 @@ cmd.CMD_S_StatusPlay =
     {k = "cbEnabled_ZhanLiHu", t = "bool"},
     {k = "cbEnabled_JiaHu", t = "bool"},
     {k = "cbEnabled_ChangMaoGang", t = "bool"},
-
-	{k = "cbPlayerCount", t = "byte"},
-	{k = "cbMaCount", t = "byte"},
 
 	{k = "cbActionCard", t = "byte"},							--动作扑克
 	{k = "cbActionMask", t = "byte"},							--动作掩码

@@ -85,6 +85,13 @@ GameViewLayer.SP_OPERATFLAG			= 29				--操作标志
 GameViewLayer.SP_TRUSTEEBG 			= 1					--托管底图
 GameViewLayer.BT_TRUSTEECANCEL 		= 30 				--取消托管
 
+function GameViewLayer:onEnterTransitionFinish()
+    
+end
+
+function GameViewLayer:exitTransitionStart()
+
+end
 
 function GameViewLayer:onInitData()
 	self.cbActionCard = 0
@@ -94,6 +101,51 @@ function GameViewLayer:onInitData()
 	self.m_bNormalState = {}
 	--房卡需要
 	self.m_sparrowUserItem = {}
+
+    self.m_nodeHuanBaoAnim = nil
+    self.m_actHuanBaoAnim = nil
+    self.m_nodeJinBaoAnim = nil
+    self.m_actJinBaoAnim = nil
+    
+    self.listen_state = false
+end
+
+function GameViewLayer:playAnimHuanBao()
+    if self.m_nodeHuanBaoAnim == nil then
+        self.m_nodeHuanBaoAnim = ExternalFun.loadCSB("animHuanBao.csb", self)
+		self.m_nodeHuanBaoAnim:setPosition(display.center)
+		self.m_actHuanBaoAnim = ExternalFun.loadTimeLine("animHuanBao.csb")
+		ExternalFun.SAFE_RETAIN(self.m_actHuanBaoAnim)
+    end
+
+    local function onFrameEvent(frame)
+        print("animation play")
+    end
+    self.m_actHuanBaoAnim:setFrameEventCallFunc(onFrameEvent)
+    --self.m_nodeHuanBaoAnim:setVisible(true)
+	--self.m_nodeHuanBaoAnim:setLocalZOrder(1)
+	self.m_nodeHuanBaoAnim:stopAllActions()
+	self.m_actHuanBaoAnim:gotoFrameAndPlay(0,false)
+	self.m_nodeHuanBaoAnim:runAction(self.m_actHuanBaoAnim)
+end
+
+function GameViewLayer:playAnimJinBao()
+    if self.m_nodeJinBaoAnim == nil then
+        self.m_nodeJinBaoAnim = ExternalFun.loadCSB("animJinBao.csb", self)
+		self.m_nodeJinBaoAnim:setPosition(display.center)
+		self.m_actJinBaoAnim = ExternalFun.loadTimeLine("animJinBao.csb")
+		ExternalFun.SAFE_RETAIN(self.m_actJinBaoAnim)
+    end
+
+    local function onFrameEvent(frame)
+        print("animation play")
+    end
+    self.m_actJinBaoAnim:setFrameEventCallFunc(onFrameEvent)
+    --self.m_nodeHuanBaoAnim:setVisible(true)
+	--self.m_nodeJinBaoAnim:setLocalZOrder(1)
+	self.m_nodeJinBaoAnim:stopAllActions()
+	self.m_actJinBaoAnim:gotoFrameAndPlay(0,false)
+	self.m_nodeJinBaoAnim:runAction(self.m_actJinBaoAnim)
 end
 
 function GameViewLayer:onResetData()
@@ -125,6 +177,11 @@ function GameViewLayer:onExit()
     cc.Director:getInstance():getTextureCache():removeUnusedTextures()
     cc.SpriteFrameCache:getInstance():removeUnusedSpriteFrames()
     AnimationMgr.removeCachedAnimation(cmd.VOICE_ANIMATION_KEY)
+
+    ExternalFun.SAFE_RELEASE(self.m_actHuanBaoAnim)
+	self.m_actHuanBaoAnim = nil
+    ExternalFun.SAFE_RELEASE(self.m_actJinBaoAnim)
+	self.m_actJinBaoAnim = nil
 end
 
 local this
@@ -138,6 +195,17 @@ function GameViewLayer:ctor(scene)
 	self._resultLayer = ResultLayer:create(self):addTo(self):setVisible(false)	--结算框
     self._chatLayer = GameChatLayer:create(self._scene._gameFrame):addTo(self, 4)	--聊天框
     self._setLayer = SetLayer:create(self):addTo(self, 4)
+
+    self:registerScriptHandler(function(eventType)
+		if eventType == "enterTransitionFinish" then	-- 进入场景而且过渡动画结束时候触发。			
+			self:onEnterTransitionFinish()			
+		elseif eventType == "exitTransitionStart" then	-- 退出场景而且开始过渡动画时候触发。
+			self:onExitTransitionStart()
+		elseif eventType == "exit" then
+			self:onExit()
+		end
+	end)
+
 	--聊天泡泡
 	self.chatBubble = {}
 	for i = 1 , cmd.GAME_PLAYER do
@@ -720,7 +788,8 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
                     local nValue = math.mod(value, 16)
 	                local nColor = math.floor(value/16)
 	                display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
-		                :move(35, 58)
+		                :move(35, 53)
+                        :setTag(1)
 		                :addTo(self.btnGroupChi[i]:getChildByName("btnChi"..j))
                 end
                 self.btnGroupChi[i]:setVisible(true)
@@ -728,8 +797,11 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
         end
         self:HideGameBtn()
     elseif tag == GameViewLayer.BT_LISTEN then
-        print("GameViewLayer.BT_LISTEN")
-
+        print("听!")
+        local cbOperateCard = {0, 0, 0}
+		--self._scene:sendOperateCard(GameLogic.WIK_LISTEN, cbOperateCard)
+        self.listen_state = true
+        self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_WIN then
 		print("胡！")
 
@@ -761,6 +833,11 @@ end
 
 function GameViewLayer:eatBtnHide()
     for i = 1, 3 do 
+        for j = 1, 3 do
+            if #self.btnGroupChi[i]:getChildByName("btnChi"..j):getChildren() > 0 then
+                self.btnGroupChi[i]:getChildByName("btnChi"..j):removeChildByTag(1)
+            end
+        end
         self.btnGroupChi[i]:setVisible(false)
     end
 end
@@ -965,9 +1042,11 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 				:setEnabled(true)
 				:setColor(cc.c3b(255, 255, 255))
 		end
+        self:playAnimHuanBao()
 	end
 
     if cbActionMask > 0 then     -- Chi
+        self:playAnimJinBao()
         self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT)
 				:setEnabled(true)
 				:setColor(cc.c3b(255, 255, 255))
