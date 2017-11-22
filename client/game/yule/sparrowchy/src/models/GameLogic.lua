@@ -17,6 +17,10 @@ GameLogic.SHOW_BU_GANG			    = 3							--补杠（碰后再杠）
 GameLogic.SHOW_MING_GANG			= 4							--明杠
 GameLogic.SHOW_AN_GANG				= 5							--暗杠
 
+GameLogic.SHOW_FENG_GANG            = 6
+GameLogic.SHOW_CHANGMAO_GANG        = 7
+
+
 --动作标志
 GameLogic.WIK_NULL					= 0x0000						--没有类型--0
 GameLogic.WIK_LEFT					= 0x0001						--左吃类型--1
@@ -32,6 +36,7 @@ GameLogic.WIK_ARROW					= 0x0100							--【中发白】三张【箭牌】在一
 GameLogic.WIK_WIND					= 0x0200							--【东南西北】四张【风牌】在一起组成的杠 --512
 GameLogic.WIK_CHASEARROW			= 0x0400							--【中发白】的杠追加【中发白】牌后的杠 --1024
 GameLogic.WIK_CHASEWIND				= 0x0800							--【东南西北】的杠追加风牌后的杠 --2048
+GameLogic.WIK_UPDATE_BAO			= 0x8000							-- UPDATED BAO PAI  --32768
 
 --动作类型
 GameLogic.WIK_GANERAL				= 0x00						--普通操作

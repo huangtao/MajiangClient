@@ -16,6 +16,8 @@ cmd.MAX_REPERTORY 				= 136
 --最大组合
 cmd.MAX_WEAVE 					= 4
 
+cmd.MAX_CHASE_COUNT             = 21
+
 -- 语音动画
 cmd.VOICE_ANIMATION_KEY = "voice_ani_key"
 
@@ -101,6 +103,7 @@ cmd.CMD_S_StatusPlay =
 	{k = "cbCardCount", t = "byte", l = {cmd.GAME_PLAYER}},		--扑克数目
 	{k = "cbCardData", t = "byte", l = {cmd.MAX_COUNT}},		--扑克列表
 	{k = "cbSendCardData", t = "byte"},							--发送扑克
+    {k = "cbChaseArrowArray", t = "byte", l = {21,21,21,21}},
 	{k = "cbWeaveItemCount", t = "byte", l = {cmd.GAME_PLAYER}},--组合数目
 	{k = "WeaveItemArray", t = "table", d = cmd.tagWeaveItem, l = {4, 4, 4, 4}},--组合扑克
 	{k = "wHeapHead", t = "word"},								--堆立头部
@@ -208,6 +211,7 @@ cmd.CMD_S_OperateResult =
 	{k = "wProvideUser", t = "word"},							--供应用户
 	{k = "cbOperateCode", t = "word"},							--操作代码
 	{k = "cbOperateCard", t = "byte", l = {3}},					--操作扑克
+    {k = "cbChaseArrowArray", t = "byte", l = {21}},
 }
 --提示听牌
 cmd.CMD_S_Hu_Data = 
@@ -248,6 +252,7 @@ cmd.CMD_S_GameConclude =
 	--{k = "cbMaCount", t = "byte"},							--码数
 	{k = "cbMaCount", t = "byte", l = {cmd.GAME_PLAYER}},		--码数
 	{k = "cbMaData", t = "byte", l = {7}},						--码数据
+    {k = "cbChaseArrowArray", t = "byte", l = {21,21,21,21}}
 }
 --用户托管
 cmd.CMD_S_Trustee = 

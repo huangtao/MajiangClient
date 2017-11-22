@@ -1010,6 +1010,12 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 	if cbCardData then
 		self.cbActionCard = cbCardData
 	end
+
+    if cbActionMask >= 32768 then
+        cbActionMask = cbActionMask - 32768
+        self:playAnimHuanBao()
+    end
+
 	if cbActionMask >= 128 then 				--放炮
 		cbActionMask = cbActionMask - 128
 		self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
@@ -1041,7 +1047,6 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 				:setEnabled(true)
 				:setColor(cc.c3b(255, 255, 255))
 		end
-        self:playAnimHuanBao()
 	end
 
     if cbActionMask > 0 then     -- Chi

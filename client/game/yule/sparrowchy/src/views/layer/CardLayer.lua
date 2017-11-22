@@ -877,6 +877,120 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
 end
 
+--碰或杠
+function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
+	assert(type(cbCardData) == "table")
+	local resCard = 
+	{
+		cmd.RES_PATH.."game/font_small/card_down.png",
+		cmd.RES_PATH.."game/font_small_side/card_down.png", 
+		cmd.RES_PATH.."game/font_middle/card_down.png",
+		cmd.RES_PATH.."game/font_small_side/card_down.png"
+	}
+	local resFont = 
+	{
+		cmd.RES_PATH.."game/font_small/",
+		cmd.RES_PATH.."game/font_small_side/", 
+		cmd.RES_PATH.."game/font_middle/",
+		cmd.RES_PATH.."game/font_small_side/"
+	}
+	local width = 0
+	local height = 0
+	local widthTotal = 0
+	local heightTotal = 0
+	local fSpacing = 0
+	if viewId == 1 then
+		width = 44
+		height = 67
+		fSpacing = width
+	elseif viewId == 3 then
+		width = 80
+		height = 116
+		fSpacing = width
+	else
+		width = 55
+		height = 47
+		fSpacing = 32
+	end
+
+	local fN = {15, 15, 15, 15}
+	local fParentSpacing = fSpacing*3 + fN[viewId]
+	local nodeParent = cc.Node:create()
+		:move(self.nBpBgCount[viewId]*fParentSpacing*multipleBpBgCard[viewId][1], 
+				self.nBpBgCount[viewId]*fParentSpacing*multipleBpBgCard[viewId][2])
+		:addTo(self.nodeBpBgCard[viewId])
+
+	if nShowStatus ~= GameLogic.SHOW_CHI then
+		--补杠
+		if nShowStatus == GameLogic.SHOW_BU_GANG or nShowStatus == GameLogic.SHOW_CHANGMAO_GANG then
+			nodeParentMG = self.nodeBpBgCard[viewId]:getChildByTag(cbCardData[1])
+			--assert(nodeParentMG, "None of this bump card!")
+			if nodeParentMG then
+				self.nBpBgCount[viewId] = self.nBpBgCount[viewId] - 1
+				nodeParent:removeFromParent()
+				nodeParentMG:removeAllChildren()
+				nodeParent = nodeParentMG
+			end
+		end
+		nodeParent:setTag(cbCardData[1])
+	end
+
+	for i = 1, #cbCardData do
+		--local rectX = self:switchToCardRectX(cbCardData[i])
+		--牌底
+		local card = display.newSprite(resCard[viewId])
+			:move(i*fSpacing*multipleBpBgCard[viewId][1], i*fSpacing*multipleBpBgCard[viewId][2])
+			--:setTextureRect(cc.rect(width*rectX, 0, width, height))
+			:addTo(nodeParent)
+		--字体
+		local nValue = math.mod(cbCardData[i], 16)
+		local nColor = math.floor(cbCardData[i]/16)
+		local strFile = resFont[viewId].."font_"..nColor.."_"..nValue..".png"
+		local cardFont = display.newSprite(strFile)
+			:move(width/2, height/2 + 8)
+			:setTag(1)
+			:addTo(card)
+		if viewId == 1 or viewId == 4 then
+			cardFont:setRotation(180)
+		end
+
+		if viewId == 4 then
+			card:setLocalZOrder(5 - i)
+		end
+
+        local moveUp = {17, 14, 23, 14}
+		if i == 4 then 		--杠
+            if nShowStatus == GameLogic.SHOW_FENG_GANG then 
+                card:move(1*fSpacing*multipleBpBgCard[viewId][1], 1*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
+			    card:setLocalZOrder(5)
+            else
+			    card:move(2*fSpacing*multipleBpBgCard[viewId][1], 2*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
+			    card:setLocalZOrder(5)
+            end
+        end
+        
+        if nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
+            if i ~= 4 or viewId ~= cmd.MY_VIEWID then
+			    card:setTexture(resFont[viewId].."card_back.png")
+			    card:removeChildByTag(1)
+            end
+		end
+		--添加牌到记录里
+		if nShowStatus ~= GameLogic.SHOW_BU_GANG or nShowStatus ~= GameLogic.SHOW_CHANGMAO_GANG or i == #cbCardData then
+			local pos = 1
+			while pos <= #self.cbBpBgCardData[viewId] do
+				if self.cbBpBgCardData[viewId][pos] == cbCardData[i] then
+					break
+				end
+				pos = pos + 1
+			end
+			table.insert(self.cbBpBgCardData[viewId], pos, cbCardData[i])
+            dump(self.cbBpBgCardData[viewId],"cbBpBgCardData["..viewId.."]")
+		end
+	end
+	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
+end
+
 --检查碰、杠牌里是否有这张牌
 function CardLayer:checkBumpOrBridgeCard(viewId, cbCardData)
 	local card = self.nodeBpBgCard[viewId]:getChildByTag(cbCardData)
