@@ -42,7 +42,7 @@ cmd.GAME_SCENE_PLAY				= 100
 --组合子项
 cmd.tagWeaveItem = 
 {
-	{k = "cbWeaveKind", t = "byte"},							--组合类型
+	{k = "cbWeaveKind", t = "word"},							--组合类型
 	{k = "cbCenterCard", t = "byte"},							--中心扑克
 	{k = "cbParam", t = "byte"},								--类型标志
 	{k = "wProvideUser", t = "word"},							--供应用户

@@ -855,7 +855,7 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 			card:move(2*fSpacing*multipleBpBgCard[viewId][1], 2*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
 			card:setLocalZOrder(5)
         end
-		if nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
+        if nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
 			card:setTexture(resFont[viewId].."card_back.png")
 			card:removeChildByTag(1)
 		end

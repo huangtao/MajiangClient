@@ -798,9 +798,8 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
         self:HideGameBtn()
     elseif tag == GameViewLayer.BT_LISTEN then
         print("听!")
-        local cbOperateCard = {0, 0, 0}
-		--self._scene:sendOperateCard(GameLogic.WIK_LISTEN, cbOperateCard)
         self.listen_state = true
+		--self._scene:sendUserListenCard(true)
         self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_WIN then
 		print("胡！")

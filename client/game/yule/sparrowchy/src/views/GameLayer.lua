@@ -389,6 +389,9 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 			end
 			--牌堆
 			self._gameView._cardLayer:setTableCardByHeapInfo(viewId, cmd_data.cbHeapCardInfo[i], wViewHeapHead, wViewHeapTail)
+            if self.cbEnabledBaoPai then
+                self._gameView:setRemainCardNum(self._gameView._cardLayer.nRemainCardNum - 1)
+            end
 			--托管
 			self._gameView:setUserTrustee(viewId, cmd_data.bTrustee[1][i])
 			if viewId == cmd.MY_VIEWID then
@@ -1152,11 +1155,12 @@ function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
 	self:SendData(cmd.SUB_C_OPERATE_CARD, cmd_data)
 end
 --用户听牌
--- function GameLayer:sendUserListenCard(bListen)
--- 	local cmd_data = CCmd_Data:create(1)
--- 	cmd_data:pushbool(bListen)
--- 	self:SendData(cmd.SUB_C_LISTEN_CARD, cmd_data)
--- end
+ function GameLayer:sendUserListenCard(bListen)
+ 	local cmd_data = CCmd_Data:create(1)
+ 	cmd_data:pushbool(bListen)
+ 	self:SendData(cmd.SUB_C_LISTEN_CARD, cmd_data)
+ end
+
 --用户托管
 function GameLayer:sendUserTrustee(isTrustee)
 	if not self.bSendCardFinsh then
