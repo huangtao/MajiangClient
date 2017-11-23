@@ -52,7 +52,8 @@ function CardLayer:onInitData()
 	self.nMovingIndex = 0
 	self.bSpreadCardEnabled = false
 	self.bSendOutCardEnabled = false
-	self.cbBpBgCardData = {{}, {}, {}, {}}
+	self.cbBpBgCardData = {{{},{},{},{}}, {{},{},{},{}}, {{},{},{},{}}, {{},{},{},{}}}
+    self.operationIndex = {0,0,0,0}
 
     -- show arrow
     local Arrow_Show_Flag = true
@@ -101,7 +102,8 @@ function CardLayer:onResetData()
 	self:promptListenOutCard(nil)
 	self.bSpreadCardEnabled = false
 	self.bSendOutCardEnabled = false
-	self.cbBpBgCardData = {{}, {}, {}, {}}
+	self.cbBpBgCardData = {{{},{},{},{}}, {{},{},{},{}}, {{},{},{},{}}, {{},{},{},{}}}
+    self.operationIndex = {0,0,0,0}
 end
 
 function CardLayer:ctor(scene)
@@ -877,6 +879,7 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
 end
 
+
 --碰或杠
 function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
 	assert(type(cbCardData) == "table")
@@ -920,6 +923,10 @@ function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
 				self.nBpBgCount[viewId]*fParentSpacing*multipleBpBgCard[viewId][2])
 		:addTo(self.nodeBpBgCard[viewId])
 
+    if nShowStatus ~= GameLogic.SHOW_BU_GANG and nShowStatus ~= GameLogic.SHOW_CHANGMAO_GANG then
+        self.operationIndex[viewId] = self.operationIndex[viewId] + 1
+    end
+
 	if nShowStatus ~= GameLogic.SHOW_CHI then
 		--补杠
 		if nShowStatus == GameLogic.SHOW_BU_GANG or nShowStatus == GameLogic.SHOW_CHANGMAO_GANG then
@@ -955,13 +962,18 @@ function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
 		end
 
 		if viewId == 4 then
-			card:setLocalZOrder(5 - i)
+            card:setLocalZOrder(5-i)
 		end
 
-        local moveUp = {17, 14, 23, 14}
-		if i == 4 then 		--杠
-            if nShowStatus == GameLogic.SHOW_FENG_GANG then 
-                card:move(1*fSpacing*multipleBpBgCard[viewId][1], 1*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
+        local moveUp = {15, 14, 20, 14}
+		if i >= 4 then 		--杠
+            if nShowStatus == GameLogic.SHOW_CHANGMAO_GANG then 
+                nX = math.mod(i, 3)
+                nY = math.floor((i-1)/3)
+                if nX == 0 then
+                    nX = 3
+                end
+                card:move(nX*fSpacing*multipleBpBgCard[viewId][1], nX*fSpacing*multipleBpBgCard[viewId][2] + nY*moveUp[viewId])
 			    card:setLocalZOrder(5)
             else
 			    card:move(2*fSpacing*multipleBpBgCard[viewId][1], 2*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
@@ -975,8 +987,10 @@ function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
 			    card:removeChildByTag(1)
             end
 		end
-		--添加牌到记录里
-		if nShowStatus ~= GameLogic.SHOW_BU_GANG or nShowStatus ~= GameLogic.SHOW_CHANGMAO_GANG or i == #cbCardData then
+		
+        --[[
+        --添加牌到记录里
+		if nShowStatus ~= GameLogic.SHOW_BU_GANG or i == 4 then
 			local pos = 1
 			while pos <= #self.cbBpBgCardData[viewId] do
 				if self.cbBpBgCardData[viewId][pos] == cbCardData[i] then
@@ -987,7 +1001,28 @@ function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
 			table.insert(self.cbBpBgCardData[viewId], pos, cbCardData[i])
             dump(self.cbBpBgCardData[viewId],"cbBpBgCardData["..viewId.."]")
 		end
+        ]]
+
 	end
+
+    --添加牌到记录里
+    if nShowStatus ~= GameLogic.SHOW_BU_GANG and nShowStatus ~= GameLogic.SHOW_CHANGMAO_GANG then
+        self.cbBpBgCardData[viewId][self.operationIndex[viewId]] = cbCardData
+    else
+        for i = 1, #self.cbBpBgCardData do
+            if cbCardData[1] == cbCardData[2] then
+                if cbCardData[1] == self.cbBpBgCardData[viewId][i][1] and cbCardData[1] == self.cbBpBgCardData[viewId][i][2] and cbCardData[1] == self.cbBpBgCardData[viewId][i][3] then
+                    table.insert(self.cbBpBgCardData[viewId][i], 4, cbCardData[1])
+                end
+            elseif cbCardData[1] ~= cbCardData[2] then
+                if cbCardData[1] == self.cbBpBgCardData[viewId][i][1] and cbCardData[2] == self.cbBpBgCardData[viewId][i][2] and cbCardData[3] == self.cbBpBgCardData[viewId][i][3] then
+                    table.insert(self.cbBpBgCardData[viewId][i], #cbCardData, cbCardData[#cbCardData])
+                end
+            end
+        end
+    end
+    dump(self.cbBpBgCardData[viewId], "cbBpBgCardData["..viewId.."]", 4)
+
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
 end
 
@@ -1186,6 +1221,33 @@ function CardLayer:getGangCard(data)
 	end
     dump(data,"result data",3)
 	return data
+end
+
+function CardLayer:getAllGangData()
+    local cardData = self.cbCardData
+    local data = {}
+    for i = 1, #cardData do 
+        local card = cardData[i]
+        if self:getNum(card, cardData) == 4 then
+           table.insert(data, card)
+        end
+    end
+    local result = {}
+    for i = 1, #data, 4 do 
+        local n = data[i]
+        table.insert(result, n)
+    end
+    return result
+end
+
+function CardLayer:getNum(card, cardData)
+    local n = 0
+    for i = 1, #cardData do
+        if cardData[i] == card then
+            n = n + 1
+        end
+    end
+    return n
 end
 
 --用户必须点胡牌

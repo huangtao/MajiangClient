@@ -108,6 +108,13 @@ function GameViewLayer:onInitData()
     self.m_actJinBaoAnim = nil
     
     self.listen_state = false
+    self.GangTable = {{0, 0, 0, 0, 16}, 
+                      {0, 0, 0, 0, 16}, 
+                      {0, 0, 0, 0, 16}, 
+                      {0, 0, 0, 0, 512}, 
+                      {0, 0, 0, 0, 256}, 
+                      {0, 0, 0, 0, 0}}
+
 end
 
 function GameViewLayer:playAnimHuanBao()
@@ -486,6 +493,34 @@ function GameViewLayer:initButtons()
             :setVisible(false)
     end
 
+    self.btnGroupGang = {}
+    for i = 1, 4 do 
+        self.btnGroupGang[i] = self:getChildByName("FileNode_Gang_"..i)
+        for j = 1, 4 do 
+            self.btnGroupGang[i]:getChildByName("btn"..j)
+                :setTag(100 + (i-1)*4 + j)
+                :addTouchEventListener(btnCallback)
+        end
+        self.btnGroupGang[i]:setLocalZOrder(1)
+            :setVisible(false)
+    end
+
+    self.btnZhongGang = self:getChildByName("FileNode_ZhongGang")
+    for i = 1, 3 do 
+        self.btnZhongGang:getChildByName("btn"..i)
+            :setTag(116 + i)
+            :addTouchEventListener(btnCallback)
+    end
+    self.btnZhongGang:setLocalZOrder(1)
+        :setVisible(false)
+
+    self.btnChangMaoGang = self:getChildByName("FileNode_ChangMaoGang")
+        :setLocalZOrder(1)
+        :setVisible(false)
+    self.btnChangMaoGang:getChildByName("btn")
+        :setTag(120)
+        :addTouchEventListener(btnCallback)
+   
 	--语音
 	self.btVoice = self:getChildByTag(GameViewLayer.BT_VOICE)
 	self.btVoice:setLocalZOrder(3)
@@ -759,10 +794,70 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_BRIGDE then
 		print("杠！")
-		local cbGangCard = self._cardLayer:getGangCard(self.cbActionCard)
-		local cbOperateCard = {cbGangCard, cbGangCard, cbGangCard}
-		self._scene:sendOperateCard(GameLogic.WIK_GANG, cbOperateCard)
-
+        local n = 0
+        for i = 1, 6 do
+            if self.GangTable[i][1] >0 then
+                n = n + 1
+            end
+        end
+        local xflag = {1, 1, 1, 1, 1}
+        local xBtnGang = {300, 300, 300, 250, 140}
+        if n <= 1 then
+            local cbOperateCard = {self.cbActionCard, self.cbActionCard, self.cbActionCard}
+            self._scene:sendOperateCard(GameLogic.WIK_GANG, cbOperateCard)
+        else 
+            for i = 1, 4 do
+                if self.GangTable[i][1] ~= 0 then
+                    xflag[i] = 0
+                    for j = 1, 4 do
+                        value = self.GangTable[i][j]
+                        local nValue = math.mod(value, 16)
+	                    local nColor = math.floor(value/16)
+	                    display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
+		                    :move(35, 53)
+                            :setTag(1)
+		                    :addTo(self.btnGroupGang[i]:getChildByName("btn"..j))
+                    end
+                    self.btnGroupGang[i]:setVisible(true)
+                end
+            end
+            if self.GangTable[5][1] ~= 0 then
+                xflag[5] = 0
+                for i = 1, 3 do
+                    value = self.GangTable[5][i]
+                    local nValue = math.mod(value, 16)
+	                local nColor = math.floor(value/16)
+                    display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
+		                    :move(35, 53)
+                            :setTag(1)
+		                    :addTo(self.btnZhongGang:getChildByName("btn"..i))
+                end
+                self.btnZhongGang:setVisible(true)
+            end
+            if self.GangTable[6][1] ~= 0 then
+                value = self.GangTable[6][1]
+                local nValue = math.mod(value, 16)
+	            local nColor = math.floor(value/16)
+                display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
+		                :move(35, 53)
+                        :setTag(1)
+		                :addTo(self.btnChangMaoGang:getChildByName("btn"))
+                self.btnChangMaoGang:setVisible(true)
+            end
+            -- set position of Gangbtns
+            self.btnGroupGang[1]:move(300, 200)
+            dump(xflag)
+            for i = 1, 5 do 
+                xBtnGang[i] = xBtnGang[i] * (1 - xflag[i])
+            end
+            dump(xBtnGang)
+            self.btnGroupGang[2]:move(300 + xBtnGang[1], 200)
+            self.btnGroupGang[3]:move(300 + xBtnGang[1] + xBtnGang[2], 200)
+            self.btnGroupGang[4]:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3], 200)
+            self.btnZhongGang:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3] + xBtnGang[4], 200)
+            self.btnChangMaoGang:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3] + xBtnGang[4] + xBtnGang[5], 200)
+        end
+        
 		self:HideGameBtn()
     elseif tag == GameViewLayer.BT_EAT then
         print("吃！")
@@ -825,6 +920,30 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
         local cbOperateCard = {self.chi_data[3][1], self.chi_data[3][2], self.chi_data[3][3]}
         self._scene:sendOperateCard(self.chi_data[3][4], cbOperateCard)
         self:eatBtnHide()
+    elseif tag > 100 and tag <= 104 then
+        local cbOperateCard = {self.GangTable[1][1], self.GangTable[1][2], self.GangTable[1][3]}
+        self._scene:sendOperateCard(self.GangTable[1][5], cbOperateCard)
+        self:gangBtnHide()
+    elseif tag > 104 and tag <= 108 then
+        local cbOperateCard = {self.GangTable[2][1], self.GangTable[2][2], self.GangTable[2][3]}
+        self._scene:sendOperateCard(self.GangTable[2][5], cbOperateCard)
+        self:gangBtnHide()
+    elseif tag > 108 and tag <= 112 then
+        local cbOperateCard = {self.GangTable[3][1], self.GangTable[3][2], self.GangTable[3][3]}
+        self._scene:sendOperateCard(self.GangTable[3][5], cbOperateCard)
+        self:gangBtnHide()
+    elseif tag > 112 and tag <= 116 then
+        local cbOperateCard = {self.GangTable[4][1], self.GangTable[4][2], self.GangTable[4][3]}
+        self._scene:sendOperateCard(self.GangTable[4][5], cbOperateCard)
+        self:gangBtnHide()
+    elseif tag > 116 and tag <= 119 then
+        local cbOperateCard = {self.GangTable[5][1], self.GangTable[5][2], self.GangTable[5][3]}
+        self._scene:sendOperateCard(self.GangTable[5][5], cbOperateCard)
+        self:gangBtnHide()
+    elseif tag == 120 then
+        local cbOperateCard = {self.GangTable[6][1], self.GangTable[6][2], self.GangTable[6][3]}
+        self._scene:sendOperateCard(self.GangTable[6][5], cbOperateCard)
+        self:gangBtnHide()
     else 
 		print("default")
 	end
@@ -839,6 +958,69 @@ function GameViewLayer:eatBtnHide()
         end
         self.btnGroupChi[i]:setVisible(false)
     end
+end
+
+function GameViewLayer:gangBtnHide()
+    for i = 1, 4 do 
+        for j = 1, 4 do 
+            if #self.btnGroupGang[i]:getChildByName("btn"..j):getChildren() > 0 then
+                self.btnGroupGang[i]:getChildByName("btn"..j):removeChildByTag(1)
+            end
+        end
+        self.btnGroupGang[i]:setVisible(false)
+    end
+    for i = 1, 3 do 
+        if #self.btnZhongGang:getChildByName("btn"..i):getChildren() > 0 then
+            self.btnZhongGang:getChildByName("btn"..i):removeChildByTag(1)
+        end
+    end
+    self.btnZhongGang:setVisible(false)
+    if #self.btnChangMaoGang:getChildByName("btn"):getChildren() > 0 then
+        self.btnChangMaoGang:getChildByName("btn"):removeChildByTag(1)
+    end
+    self.btnChangMaoGang:setVisible(false)
+end
+
+function GameViewLayer:allKindGang()
+    local handGangData = self._cardLayer:getAllGangData()
+    if #handGangData >= 1 then
+        for i = 1, #handGangData do
+            self.GangTable[i][1] = handGangData[i]
+            self.GangTable[i][2] = handGangData[i]
+            self.GangTable[i][3] = handGangData[i]
+            self.GangTable[i][4] = handGangData[i]
+            self.GangTable[i][5] = GameLogic.WIK_GANG
+        end
+    end
+    if math.mod(self.actionMask, 512*2) >= 512 then
+        self.GangTable[4][1] = 49
+        self.GangTable[4][2] = 50
+        self.GangTable[4][3] = 51
+        self.GangTable[4][4] = 52
+        self.GangTable[4][5] = GameLogic.WIK_WIND
+    end
+    if math.mod(self.actionMask, 256*2) >= 256 then
+        self.GangTable[5][1] = 53
+        self.GangTable[5][2] = 54
+        self.GangTable[5][3] = 55
+        self.GangTable[5][4] = 0
+        self.GangTable[5][5] = GameLogic.WIK_ARROW
+    end
+    if math.mod(self.actionMask, 1024*2) >= 1024 then
+        self.GangTable[6][1] = self.cbActionCard
+        self.GangTable[6][2] = 0
+        self.GangTable[6][3] = 0
+        self.GangTable[6][4] = 0
+        self.GangTable[6][5] = GameLogic.WIK_CHASEARROW
+    end
+    if math.mod(self.actionMask, 2048*2) >= 2048 then
+        self.GangTable[6][1] = self.cbActionCard
+        self.GangTable[6][2] = 0
+        self.GangTable[6][3] = 0
+        self.GangTable[6][4] = 0
+        self.GangTable[6][5] = GameLogic.WIK_CHASEWIND
+    end
+    return self.GangTable
 end
 
 --计时器刷新
@@ -993,7 +1175,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		assert("false")
 		return false
 	end
-
+    self.actionMask = cbActionMask
 	if self._cardLayer:isUserMustWin() then
 		--必须胡牌的情况
 		self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS)
@@ -1014,6 +1196,35 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
     if cbActionMask >= 32768 then
         cbActionMask = cbActionMask - 32768
         self:playAnimHuanBao()
+        return true
+    end
+
+    if cbActionMask >= 2048 then
+        cbActionMask = cbActionMask - 2048
+        self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
+			:setEnabled(true)
+			:setColor(cc.c3b(255, 255, 255))
+    end
+
+    if cbActionMask >= 1024 then
+        cbActionMask = cbActionMask - 1024
+        self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
+			:setEnabled(true)
+			:setColor(cc.c3b(255, 255, 255))
+    end
+    
+    if cbActionMask >= 512 then
+        cbActionMask = cbActionMask - 512
+        self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
+			:setEnabled(true)
+			:setColor(cc.c3b(255, 255, 255))
+    end
+
+    if cbActionMask >= 256 then
+        cbActionMask = cbActionMask - 256
+        self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
+			:setEnabled(true)
+			:setColor(cc.c3b(255, 255, 255))
     end
 
 	if cbActionMask >= 128 then 				--放炮

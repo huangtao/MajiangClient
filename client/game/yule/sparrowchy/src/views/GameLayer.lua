@@ -706,14 +706,35 @@ function GameLayer:onSubOperateResult(dataBuffer)
 	end
 
 	local wOperateViewId = self:SwitchViewChairID(cmd_data.wOperateUser)
-	if cmd_data.cbOperateCode < GameLogic.WIK_LISTEN then 		--并非听牌
+	--if cmd_data.cbOperateCode < GameLogic.WIK_LISTEN then 		--并非听牌
 		local nShowStatus = GameLogic.SHOW_NULL
 		local data1 = cmd_data.cbOperateCard[1][1]
 		local data2 = cmd_data.cbOperateCard[1][2]
 		local data3 = cmd_data.cbOperateCard[1][3]
 		local cbOperateData = {}
 		local cbRemoveData = {}
-		if cmd_data.cbOperateCode == GameLogic.WIK_GANG then
+
+        if cmd_data.cbOperateCode == GameLogic.WIK_ARROW then
+            cbOperateData = {data1, data1+1, data1+2}
+            cbRemoveData = {data1, data1+1, data1+2}
+            nShowStatus = GameLogic.SHOW_FENG_GANG
+            self.arrowGangData = cbOperateData
+        elseif cmd_data.cbOperateCode == GameLogic.WIK_WIND then
+            cbOperateData = {data1, data1+1, data1+2, data1+3}
+            cbRemoveData = {data1, data1+1, data1+2, data1+3}
+            nShowStatus = GameLogic.SHOW_FENG_GANG
+            self.windGandData = cbOperateData
+        elseif cmd_data.cbOperateCode == GameLogic.WIK_CHASEARROW then
+            table.insert(self.arrowGangData, data1)
+            cbOperateData = self.arrowGangData
+            cbRemoveData = {data1}
+            nShowStatus = GameLogic.SHOW_CHANGMAO_GANG
+        elseif cmd_data.cbOperateCode == GameLogic.WIK_CHASEWIND then
+            table.insert(self.windGandData, data1)
+            cbOperateData = self.windGandData
+            cbRemoveData = {data1}
+            nShowStatus = GameLogic.SHOW_CHANGMAO_GANG
+		elseif cmd_data.cbOperateCode == GameLogic.WIK_GANG then
 			cbOperateData = {data1, data1, data1, data1}
 			cbRemoveData = {data1, data1, data1}
 			--检查杠的类型
@@ -776,7 +797,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
 		if wOperateViewId == cmd.MY_VIEWID and cmd_data.cbOperateCode == GameLogic.WIK_PENG then
 			self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
 		end
-	end
+	--end
 	self._gameView:showOperateFlag(wOperateViewId, cmd_data.cbOperateCode)
 
 	local cbTime = self.cbTimeOutCard - self.cbTimeOperateCard
