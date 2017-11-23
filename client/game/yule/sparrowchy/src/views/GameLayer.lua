@@ -723,15 +723,15 @@ function GameLayer:onSubOperateResult(dataBuffer)
             cbOperateData = {data1, data1+1, data1+2, data1+3}
             cbRemoveData = {data1, data1+1, data1+2, data1+3}
             nShowStatus = GameLogic.SHOW_FENG_GANG
-            self.windGandData = cbOperateData
+            self.windGangData = cbOperateData
         elseif cmd_data.cbOperateCode == GameLogic.WIK_CHASEARROW then
             table.insert(self.arrowGangData, data1)
             cbOperateData = self.arrowGangData
             cbRemoveData = {data1}
             nShowStatus = GameLogic.SHOW_CHANGMAO_GANG
         elseif cmd_data.cbOperateCode == GameLogic.WIK_CHASEWIND then
-            table.insert(self.windGandData, data1)
-            cbOperateData = self.windGandData
+            table.insert(self.windGangData, data1)
+            cbOperateData = self.windGangData
             cbRemoveData = {data1}
             nShowStatus = GameLogic.SHOW_CHANGMAO_GANG
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_GANG then

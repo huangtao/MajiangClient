@@ -773,7 +773,7 @@ function CardLayer:recycleDiscard(viewId)
 end
 
 --碰或杠
-function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
+function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
 	assert(type(cbCardData) == "table")
 	local resCard = 
 	{
@@ -877,11 +877,15 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 		end
 	end
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
+    
 end
 
 
 --碰或杠
-function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
+function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
+    print("--------------- cbBpBgCardData -------------------")
+    dump(self.cbBpBgCardData)
+
 	assert(type(cbCardData) == "table")
 	local resCard = 
 	{

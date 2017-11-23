@@ -794,6 +794,7 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_BRIGDE then
 		print("杠！")
+        self:allKindGang()
         local n = 0
         for i = 1, 6 do
             if self.GangTable[i][1] >0 then
@@ -801,7 +802,7 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
             end
         end
         local xflag = {1, 1, 1, 1, 1}
-        local xBtnGang = {300, 300, 300, 250, 140}
+        local xBtnGang = {300, 300, 300, 260, 160}
         if n <= 1 then
             local cbOperateCard = {self.cbActionCard, self.cbActionCard, self.cbActionCard}
             self._scene:sendOperateCard(GameLogic.WIK_GANG, cbOperateCard)
@@ -846,11 +847,9 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
             end
             -- set position of Gangbtns
             self.btnGroupGang[1]:move(300, 200)
-            dump(xflag)
             for i = 1, 5 do 
                 xBtnGang[i] = xBtnGang[i] * (1 - xflag[i])
             end
-            dump(xBtnGang)
             self.btnGroupGang[2]:move(300 + xBtnGang[1], 200)
             self.btnGroupGang[3]:move(300 + xBtnGang[1] + xBtnGang[2], 200)
             self.btnGroupGang[4]:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3], 200)
@@ -1020,7 +1019,7 @@ function GameViewLayer:allKindGang()
         self.GangTable[6][4] = 0
         self.GangTable[6][5] = GameLogic.WIK_CHASEWIND
     end
-    return self.GangTable
+    return true
 end
 
 --计时器刷新
@@ -1191,6 +1190,8 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 
 	if cbCardData then
 		self.cbActionCard = cbCardData
+    else 
+        self.cbActionCard = 0
 	end
 
     if cbActionMask >= 32768 then
@@ -1489,7 +1490,7 @@ function GameViewLayer:showOperateFlag(viewId, operateCode)
 		strFile = "#sp_other_Hu.png"
 	elseif operateCode == GameLogic.WIK_LISTEN then
 		strFile = "#sp_other_Ting.png"
-	elseif operateCode == GameLogic.WIK_GANG then
+	elseif operateCode == GameLogic.WIK_GANG or operateCode == GameLogic.WIK_ARROW or operateCode == GameLogic.WIK_WIND or operateCode == GameLogic.WIK_CHASEARROW or GameLogic.WIK_CHASEWIND then
 		strFile = "#sp_other_Gang.png"
 	elseif operateCode == GameLogic.WIK_PENG then
 		strFile = "#sp_other_Peng.png"
