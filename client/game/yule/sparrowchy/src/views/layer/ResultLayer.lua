@@ -143,6 +143,32 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 			--个人麻将
 			local nodeUserCard = self.nodeUser[order]:getChildByTag(ResultLayer.TAG_NODE_CARD)
 			local fX = 82
+            
+            for j = 1, 4 do 
+                if #resultList[i].cbBpBgCardData[j] >= 0 then 
+                     for k = 1, #resultList[i].cbBpBgCardData[j] do 
+                        --牌底
+				        --local rectX = CardLayer:switchToCardRectX(resultList[i].cbBpBgCardData[j])
+				        local card = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
+					        --:setTextureRect(cc.rect(width*rectX, 0, width, height))
+					        :move(fX, 0)
+					        :addTo(nodeUserCard)
+                        --字体
+				        local nValue = math.mod(resultList[i].cbBpBgCardData[j][k], 16)
+				        local nColor = math.floor(resultList[i].cbBpBgCardData[j][k]/16)
+				        display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
+					        :move(width/2, height/2 + 8)
+					        :addTo(card)
+                        fX = fX + width + 3
+                     end
+                     fX = fX + 30
+                     --末尾
+				     if j == 4 then
+					     fX = fX + 20
+				     end
+                end
+            end
+            --[[
 			for j = 1, #resultList[i].cbBpBgCardData do 											--碰杠牌
 				--牌底
 				--local rectX = CardLayer:switchToCardRectX(resultList[i].cbBpBgCardData[j])
@@ -167,6 +193,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 					fX = fX + 20
 				end
 			end
+            ]]
 			for j = 1, #resultList[i].cbCardData do  											 	--剩余手牌
 				--牌底
 				--local rectX = CardLayer:switchToCardRectX(resultList[i].cbCardData[j])

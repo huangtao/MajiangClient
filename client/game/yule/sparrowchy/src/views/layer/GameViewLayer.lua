@@ -15,8 +15,8 @@ local SetLayer = appdf.req(appdf.GAME_SRC.."yule.sparrowchy.src.views.layer.SetL
 local GameChatLayer = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.game.GameChatLayer")
 local AnimationMgr = appdf.req(appdf.EXTERNAL_SRC .. "AnimationMgr")
 
-local anchorPointHead = {cc.p(1, 1), cc.p(0, 0.5), cc.p(0, 0), cc.p(1, 0.5)}
-local posHead = {cc.p(577, 295), cc.p(165, 332), cc.p(166, 257), cc.p(724, 273)}
+local anchorPointHead = {cc.p(0, 1), cc.p(0, 0.5), cc.p(0, 0), cc.p(1, 0.5)}
+local posHead = {cc.p(400, 260), cc.p(165, 300), cc.p(166, 230), cc.p(750, 273)}
 local posReady = {cc.p(150, 0), cc.p(135, 0), cc.p(516, -140), cc.p(-134, 0)}
 local posPlate = {cc.p(667, 589), cc.p(237, 464), cc.p(667, 174), cc.p(1093, 455)}
 local posChat = {cc.p(873, 660), cc.p(229, 558), cc.p(270, 285), cc.p(1095, 528)}
@@ -108,12 +108,7 @@ function GameViewLayer:onInitData()
     self.m_actJinBaoAnim = nil
     
     self.listen_state = false
-    self.GangTable = {{0, 0, 0, 0, 16}, 
-                      {0, 0, 0, 0, 16}, 
-                      {0, 0, 0, 0, 16}, 
-                      {0, 0, 0, 0, 512}, 
-                      {0, 0, 0, 0, 256}, 
-                      {0, 0, 0, 0, 0}}
+    
 
 end
 
@@ -794,7 +789,14 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_BRIGDE then
 		print("杠！")
+        self.GangTable = {{0, 0, 0, 0, 16}, 
+                          {0, 0, 0, 0, 16}, 
+                          {0, 0, 0, 0, 16}, 
+                          {0, 0, 0, 0, 512}, 
+                          {0, 0, 0, 0, 256}, 
+                          {0, 0, 0, 0, 0}}
         self:allKindGang()
+        dump(self.GangTable, "GangTable",3)
         local n = 0
         for i = 1, 6 do
             if self.GangTable[i][1] >0 then
@@ -803,9 +805,16 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
         end
         local xflag = {1, 1, 1, 1, 1}
         local xBtnGang = {300, 300, 300, 260, 160}
-        if n <= 1 then
+        if n < 1 then
             local cbOperateCard = {self.cbActionCard, self.cbActionCard, self.cbActionCard}
             self._scene:sendOperateCard(GameLogic.WIK_GANG, cbOperateCard)
+        elseif n == 1 then
+            for i = 1, 6 do
+                if self.GangTable[i][1] ~= 0 then
+                    local cbOperateCard = {self.GangTable[i][1], self.GangTable[i][2], self.GangTable[i][3]}
+                    self._scene:sendOperateCard(self.GangTable[i][5], cbOperateCard)
+                end
+            end
         else 
             for i = 1, 4 do
                 if self.GangTable[i][1] ~= 0 then
@@ -991,6 +1000,8 @@ function GameViewLayer:allKindGang()
             self.GangTable[i][5] = GameLogic.WIK_GANG
         end
     end
+    print("-------- self.actionMask -------------------")
+    print(self.actionMask)
     if math.mod(self.actionMask, 512*2) >= 512 then
         self.GangTable[4][1] = 49
         self.GangTable[4][2] = 50
