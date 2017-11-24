@@ -1501,7 +1501,7 @@ function GameViewLayer:showOperateFlag(viewId, operateCode)
 		strFile = "#sp_other_Hu.png"
 	elseif operateCode == GameLogic.WIK_LISTEN then
 		strFile = "#sp_other_Ting.png"
-	elseif operateCode == GameLogic.WIK_GANG or operateCode == GameLogic.WIK_ARROW or operateCode == GameLogic.WIK_WIND or operateCode == GameLogic.WIK_CHASEARROW or GameLogic.WIK_CHASEWIND then
+	elseif operateCode == GameLogic.WIK_GANG or operateCode == GameLogic.WIK_ARROW or operateCode == GameLogic.WIK_WIND or operateCode == GameLogic.WIK_CHASEARROW or operateCode == GameLogic.WIK_CHASEWIND then
 		strFile = "#sp_other_Gang.png"
 	elseif operateCode == GameLogic.WIK_PENG then
 		strFile = "#sp_other_Peng.png"

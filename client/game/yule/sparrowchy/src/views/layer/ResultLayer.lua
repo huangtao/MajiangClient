@@ -84,6 +84,14 @@ function ResultLayer:ctor(scene)
 	self.nodeRemainCard = cc.Node:create():addTo(self)
 	--庄标志
 	self.spBanker = self:getChildByTag(6):setLocalZOrder(1)
+    -- init flags --
+    self:getChildByName("sp_ZhuangJia"):setVisible(false)
+    self:getChildByName("sp_ZiMo_cy"):setVisible(false)
+    self:getChildByName("sp_QingYiSe"):setVisible(false)
+    self:getChildByName("sp_PiaoHu"):setVisible(false)
+    self:getChildByName("sp_QiongHu"):setVisible(false)
+    self:getChildByName("sp_ShiSanYao"):setVisible(false)
+    self:getChildByName("sp_QiDui"):setVisible(false)
 end
 
 function ResultLayer:onTouchBegan(touch, event)
@@ -161,7 +169,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 					        :addTo(card)
                         fX = fX + width + 3
                      end
-                     fX = fX + 30
+                     fX = fX + 5
                      --末尾
 				     if j == 4 then
 					     fX = fX + 20
@@ -229,6 +237,8 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 				display.newSprite("#sp_ziMo.png")
 					:move(fX + 21, 0 + 32)
 					:addTo(nodeUserCard)
+                self:getChildByName("sp_ZiMo_cy")
+                    :setVisible(true)
 			end
 			--奖码
 			fX = fX + 110
@@ -267,9 +277,10 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 		end
 
         -- show HuiPai and BaoPai
+        local m_width=98
+        local m_height=142
         if self._scene._scene.cbEnabledHuiPai then
-            m_width=98
-            m_height=142
+            
             local cardHuiPai=self:getChildByName("card_HuiPai")
             local nValue = math.mod(GameLogic.MAGIC_DATA, 16)
 		    local nColor = math.floor(GameLogic.MAGIC_DATA/16)
@@ -282,7 +293,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
         end
 
         if self._scene._scene.cbEnabledBaoPai then
-            valueOfBaoPai=23
+            local valueOfBaoPai = 23
             local cardBaoPai=self:getChildByName("card_BaoPai")
             local nValue = math.mod(valueOfBaoPai, 16)
 		    local nColor = math.floor(valueOfBaoPai/16)
