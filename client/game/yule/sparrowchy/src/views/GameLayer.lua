@@ -1135,6 +1135,8 @@ function GameLayer:sendOutCard(card)
     end
 
 	self._gameView:HideGameBtn()
+    self._gameView:eatBtnHide()
+    self._gameView:gangBtnHide()
 	print("发送出牌", card)
 
 	local cmd_data = ExternalFun.create_netdata(cmd.CMD_C_OutCard)
