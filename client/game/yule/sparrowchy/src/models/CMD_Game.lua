@@ -252,7 +252,9 @@ cmd.CMD_S_GameConclude =
 	--{k = "cbMaCount", t = "byte"},							--码数
 	{k = "cbMaCount", t = "byte", l = {cmd.GAME_PLAYER}},		--码数
 	{k = "cbMaData", t = "byte", l = {7}},						--码数据
-    {k = "cbChaseArrowArray", t = "byte", l = {21,21,21,21}}
+    {k = "cbChaseArrowArray", t = "byte", l = {21,21,21,21}},
+    {k = "cbHuKindData", t = "word"},
+    {k = "cbBaopaiCardData", t = "byte"},
 }
 --用户托管
 cmd.CMD_S_Trustee = 

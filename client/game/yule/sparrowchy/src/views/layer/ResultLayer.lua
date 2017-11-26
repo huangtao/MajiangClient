@@ -167,12 +167,12 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 				        display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
 					        :move(width/2, height/2 + 8)
 					        :addTo(card)
-                        fX = fX + width + 3
+                        fX = fX + width
                      end
                      fX = fX + 5
                      --末尾
 				     if j == 4 then
-					     fX = fX + 20
+					     fX = fX + 10
 				     end
                 end
             end
@@ -234,9 +234,11 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 					:move(width/2, height/2 + 8)
 					:addTo(huCard)
 				--自摸或放炮标记
+                --[[
 				display.newSprite("#sp_ziMo.png")
 					:move(fX + 21, 0 + 32)
-					:addTo(nodeUserCard)
+					:addTo(nodeUserCard) 
+                    ]]
                 self:getChildByName("sp_ZiMo_cy")
                     :setVisible(true)
 			end

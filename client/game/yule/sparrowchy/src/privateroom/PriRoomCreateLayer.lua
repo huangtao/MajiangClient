@@ -45,6 +45,8 @@ local BT_MYROOM = 19
 -- insert in ChaoYang
 local CBX_COUNT1 = 20
 local CBX_COUNT2 = 21
+local CBX_ChangMaoGang = 22
+local CBX_FengGang = 23
 
 function PriRoomCreateLayer:onInitData()
     self.cbMaCount = 0
@@ -150,7 +152,12 @@ function PriRoomCreateLayer:ctor( scene )
     self.m_csbNode:getChildByName("cbx_roundCount2")
         :setTag(CBX_COUNT2)
         :addEventListener(cbtlistener)
-
+    self.m_csbNode:getChildByName("cbx_ChangMaoGang")
+        :setTag(CBX_ChangMaoGang)
+        :addEventListener(cbtlistener)
+    self.m_csbNode:getChildByName("cbx_FengGang")
+        :setTag(CBX_FengGang)
+        :addEventListener(cbtlistener)
     --房间限制
     local roomConfigList = PriRoom:getInstance().m_tabFeeConfigList
     self.m_tabSelectConfig = PriRoom:getInstance().m_tabFeeConfigList[1]
@@ -439,6 +446,15 @@ function PriRoomCreateLayer:onSelectedEvent(tag, sender)
     elseif CBX_COUNT2 == tag then
         self.m_csbNode:getChildByTag(CBX_COUNT1)
             :setSelected(false)
+    elseif CBX_ChangMaoGang == tag then
+        if checkBox:isSelected() then 
+            self.m_csbNode:getChildByName("cbx_FengGang")
+                :setSelected(true)
+        end
+    elseif CBX_FengGang == tag then
+        if checkBox:isSelected() == false then
+            self.m_csbNode:getChildByName("cbx_ChangMaoGang"):setSelected(false)
+        end
     else
         assert(false)
     end

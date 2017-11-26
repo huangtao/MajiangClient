@@ -389,9 +389,6 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 			end
 			--牌堆
 			self._gameView._cardLayer:setTableCardByHeapInfo(viewId, cmd_data.cbHeapCardInfo[i], wViewHeapHead, wViewHeapTail)
-            if self.cbEnabledBaoPai then
-                self._gameView:setRemainCardNum(self._gameView._cardLayer.nRemainCardNum - 1)
-            end
 			--托管
 			self._gameView:setUserTrustee(viewId, cmd_data.bTrustee[1][i])
 			if viewId == cmd.MY_VIEWID then
@@ -511,7 +508,7 @@ function GameLayer:onSubGameStart(dataBuffer)
 			end
 		end
 	end
-
+    self.cbHeapCard = cmd_data.cbHeapCardInfo
 	if self.wBankerUser ~= self:GetMeChairID() then
 		cmd_data.cbCardData[1][cmd.MAX_COUNT] = nil
 	end
@@ -533,7 +530,6 @@ function GameLayer:onSubGameStart(dataBuffer)
 	local nStartCard = math.min(cbSiceCount1, cbSiceCount2)*2 + 1
 	--开始发牌
 	self._gameView:gameStart(wStartViewId, nStartCard, cmd_data.cbCardData[1], cbCardCount, cbSiceCount1, cbSiceCount2)
-
 	--记录已出现的牌
 	self:insertAppearCard(cmd_data.cbCardData[1])
 
@@ -1126,9 +1122,14 @@ function GameLayer:sendOutCard(card)
 	if card == GameLogic.MAGIC_DATA then
 		return false
 	end
+
     print(self._gameView.listen_state)
     dump(self.cbListenPromptOutCard)
-    if self._gameView.listen_state then
+    -- if this player is on Ting state
+    if self._gameView.listen_state then 
+        if self._gameView.listen_count == 0 then
+            self._gameView.listen_count = 1
+        end 
         if self:isListenCard(card) == false then
             return false
         end

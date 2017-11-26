@@ -514,15 +514,12 @@ end
 function CardLayer:spreadCardFinish()
 	GameLogic.SortCardList(self.cbCardData)
 	for i = 1, cmd.GAME_PLAYER do
-		self.nRemainCardNum = self.nRemainCardNum - self.cbCardCount[i]
+        self.nRemainCardNum = self.nRemainCardNum - self._scene._scene.cbHeapCard[i][1] - self._scene._scene.cbHeapCard[i][2]
 		for j = 1, cmd.MAX_COUNT do
 			self.nodeHandDownCard[i]:getChildByTag(j):setVisible(false)
 		end
 		self:setHandCard(i, self.cbCardCount[i], self.cbCardData)
 	end
-    if self._scene._scene.cbEnabledBaoPai then
-       self.nRemainCardNum = self.nRemainCardNum - 1
-    end
 	self._scene:setRemainCardNum(self.nRemainCardNum)
 	self._scene:sendCardFinish()
 end

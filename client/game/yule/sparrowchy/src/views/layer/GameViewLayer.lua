@@ -94,6 +94,7 @@ function GameViewLayer:exitTransitionStart()
 end
 
 function GameViewLayer:onInitData()
+    print("---------------------- GameViewLayer:onInitData() ----------------------------")
 	self.cbActionCard = 0
 	self.cbOutCardTemp = 0
 	self.chatDetails = {}
@@ -108,8 +109,9 @@ function GameViewLayer:onInitData()
     self.m_actJinBaoAnim = nil
     
     self.listen_state = false
-    
-
+    self.listen_count = 0
+    print(self.listen_state)
+    print(self.listen_count)
 end
 
 function GameViewLayer:playAnimHuanBao()
@@ -1000,8 +1002,6 @@ function GameViewLayer:allKindGang()
             self.GangTable[i][5] = GameLogic.WIK_GANG
         end
     end
-    print("-------- self.actionMask -------------------")
-    print(self.actionMask)
     if math.mod(self.actionMask, 512*2) >= 512 then
         self.GangTable[4][1] = 49
         self.GangTable[4][2] = 50
@@ -1185,6 +1185,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		assert("false")
 		return false
 	end
+
     self.actionMask = cbActionMask
 	if self._cardLayer:isUserMustWin() then
 		--必须胡牌的情况
