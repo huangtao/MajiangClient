@@ -904,7 +904,7 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
     elseif tag == GameViewLayer.BT_LISTEN then
         print("听!")
         self.listen_state = true
-		--self._scene:sendUserListenCard(true)
+		self._scene:sendUserListenCard(true)
         self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_WIN then
 		print("胡！")
