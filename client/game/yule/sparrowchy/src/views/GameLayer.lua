@@ -581,6 +581,7 @@ function GameLayer:onSubOutCard(dataBuffer)
 	--记录已出现的牌
 	if wViewId ~= cmd.MY_VIEWID then
 		local cbAppearCard = {cmd_data.cbOutCardData}
+
 		self:insertAppearCard(cbAppearCard)
 	end
 
@@ -626,10 +627,10 @@ function GameLayer:onSubSendCard(dataBuffer)
 
 	self.wCurrentUser = cmd_data.wCurrentUser
 	local wCurrentViewId = self:SwitchViewChairID(self.wCurrentUser)
-	self._gameView:gameSendCard(wCurrentViewId, cmd_data.cbCardData, cmd_data.bTail)
-
+    if cmd_data.cbCardData ~= 0 then
+	    self._gameView:gameSendCard(wCurrentViewId, cmd_data.cbCardData, cmd_data.bTail)
+    end
 	self:SetGameClock(self.wCurrentUser, cmd.IDI_OUT_CARD, self.cbTimeOutCard)
-
 	self._gameView:HideGameBtn()
 	if self.wCurrentUser == self:GetMeChairID()  then
 		self._gameView:recognizecbActionMask(cmd_data.cbActionMask, cmd_data.cbCardData)
@@ -638,18 +639,18 @@ function GameLayer:onSubSendCard(dataBuffer)
 			self._gameView:onButtonClickedEvent(GameViewLayer.BT_WIN)
 		end
 	end
-
 	--记录已出现的牌
-	if wCurrentViewId == cmd.MY_VIEWID then
-		local cbAppearCard = {cmd_data.cbCardData}
-		self:insertAppearCard(cbAppearCard)
-	end
-
-	self.bMoPaiStatus = true
-	self:PlaySound(cmd.RES_PATH.."sound/SEND_CARD.wav")
-	if cmd_data.bTail then
-		self:playCardOperateSound(wOperateViewId, true, nil)
-	end
+    if cmd_data.cbCardData ~= 0 then
+        if wCurrentViewId == cmd.MY_VIEWID then
+		    local cbAppearCard = {cmd_data.cbCardData}
+		    self:insertAppearCard(cbAppearCard)
+	    end
+	    self.bMoPaiStatus = true
+	    self:PlaySound(cmd.RES_PATH.."sound/SEND_CARD.wav")
+	    if cmd_data.bTail then
+		    self:playCardOperateSound(wOperateViewId, true, nil)
+	    end
+    end
 	return true
 end
 
@@ -1085,7 +1086,8 @@ function GameLayer:getListenPromptHuCard(cbOutCard)
 	if not cbOutCard then
 		return nil
 	end
-
+    print("getListenPromptHuCard")
+    dump(self.cbListenCardList, "cbListenCardList")
 	for i = 1, #self.cbListenPromptOutCard do
 		if self.cbListenPromptOutCard[i] == cbOutCard then
 			assert(#self.cbListenCardList > 0 and self.cbListenCardList[i] and #self.cbListenCardList[i] > 0)

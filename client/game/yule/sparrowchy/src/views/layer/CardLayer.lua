@@ -387,6 +387,9 @@ function CardLayer:onTouchEnded(touch, event)
 					--有则提示听牌
 					if math.mod(self.cbCardCount[cmd.MY_VIEWID], 3) == 2 then
 						local cbPromptHuCard = self._scene._scene:getListenPromptHuCard(self.cbCardData[index])
+                        print("---- hancholgul -----------")
+                        dump(self.cbCardData)
+                        dump(cbPromptHuCard)
 						self._scene:setListeningCard(cbPromptHuCard)
 					end
 				elseif self.cbCardStatus[index] == CardLayer.ENUM_CARD_POPUP then 		--弹出状态
@@ -537,6 +540,9 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 	self.cbCardCount[viewId] = self.cbCardCount[viewId] + 1
 	self.nRemainCardNum = self.nRemainCardNum - 1
 	self._scene:setRemainCardNum(self.nRemainCardNum)
+    print("CardLayer:catchCard(viewId, cardData, bTail) --------- for the TEST")
+    print(self.nRemainCardNum)
+    dump(self.cbCardData)
 	if viewId == cmd.MY_VIEWID then
 		table.insert(self.cbCardData, cardData)
 		--设置纹理
@@ -559,6 +565,8 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 		cardFont:setTexture(strFile)
 		--假如可以听牌
 		local cbPromptCardData = self._scene._scene:getListenPromptOutCard()
+        dump(self.cbCardData)
+        dump(cbPromptCardData, "cbPromptCardData")
 		if #cbPromptCardData > 0 then
 			self:promptListenOutCard(cbPromptCardData)
 		end
@@ -1118,6 +1126,7 @@ end
 function CardLayer:promptListenOutCard(cbPromptOutData)
 	--还原
 	local cbCardCount = #self.cbCardData
+    print(cbCardCount)
 	for i = 1, cmd.MAX_COUNT do
 		local card = self.nodeHandCard[cmd.MY_VIEWID]:getChildByTag(i)
 		card:getChildByTag(CardLayer.TAG_LISTEN_FLAG):setVisible(false)
