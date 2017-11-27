@@ -38,13 +38,16 @@ function GameLayer:OnInitGameEngine()
 	self.lDetailScore = {}
 	self.m_userRecord = {}
 	self.cbMaCount = 0
-
+    print("GameLayer:OnInitGameEngine() -------------- for the test")
+    self.cbMagicIndex = 0xff
+    -- HuiPai and BaoPai
     self.cbEnabledHuiPai = true
     self.cbEnabledBaoPai = true
-    self.cbMagicIndex = 0xff
+    -- ChangMaoGang data initialize
+    self.windGangData = {{},{},{},{}}
+    self.arrowGangData = {{},{},{},{}}
 	--房卡需要
 	self.wRoomHostViewId = 0
-	print("Hello Hello!")
 end
 
 function GameLayer:OnResetGameEngine()
@@ -283,10 +286,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 
 	elseif cbGameStatus == cmd.GAME_SCENE_PLAY then
 		print("游戏状态", wMyChairId)
-        
 		local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_StatusPlay, dataBuffer)
-		--dump(cmd_data.cbHuCardData, "cbHuCardData")
-		--dump(cmd_data.cbOutCardDataEx, "cbOutCardDataEx")
         dump(cmd_data, "CMD_S_StatusPlay", 6)
 
         -- get HuiPai and BaoPai state -- 
@@ -344,6 +344,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		--记录已出现牌
 		self:insertAppearCard(cbHandCardData)
 		--组合牌
+        
 		for i = 1, cmd.GAME_PLAYER do
 			local wViewChairId = self:SwitchViewChairID(i - 1)
 			for j = 1, cmd_data.cbWeaveItemCount[1][i] do
@@ -371,9 +372,28 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 				end
 				--dump(cmd_data.WeaveItemArray[i][j], "weaveItem")
 				self._gameView._cardLayer:bumpOrBridgeCard(wViewChairId, cbOperateData, nShowStatus)
-				--记录已出现牌
-				self:insertAppearCard(cbOperateData)
+                --记录已出现牌
+                self:insertAppearCard(cbOperateData)
 			end
+            --insert ChangMaoGang 
+            local m_cbChaseArrowArray = cmd_data.cbChaseArrowArray[i] 
+            local data_wind = {49, 50, 51, 52}
+            local data_arrow = {53, 54, 55}
+            for k = 1, 21 do 
+                if m_cbChaseArrowArray[k] > 0 then
+                    if m_cbChaseArrowArray[k] >= 49 and m_cbChaseArrowArray[k] <=52 then
+                        table.insert(data_wind, m_cbChaseArrowArray[k])
+                        self._gameView._cardLayer:bumpOrBridgeCard(wViewChairId, data_wind, GameLogic.SHOW_CHANGMAO_GANG)
+                    end
+                    if m_cbChaseArrowArray[k] >= 53 and m_cbChaseArrowArray[k] <=55 then
+                        table.insert(data_arrow, m_cbChaseArrowArray[k])
+                        self._gameView._cardLayer:bumpOrBridgeCard(wViewChairId, data_arrow, GameLogic.SHOW_CHANGMAO_GANG)
+                    end
+                    self:insertAppearCard({m_cbChaseArrowArray[k]})
+                end
+            end
+            self.arrowGangData[wViewChairId] = data_arrow
+            self.windGangData[wViewChairId] = data_wind
 		end
 		--设置牌堆
 		local wViewHeapHead = self:SwitchViewChairID(cmd_data.wHeapHead)
@@ -519,6 +539,7 @@ function GameLayer:onSubGameStart(dataBuffer)
         GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
     end
     self.cbEnabledBaoPai = cmd_data.cbEnabled_BaoPai
+    -- get Ting state
     self._gameView.listen_state = false
 	--筛子
 	local cbSiceCount1 = math.mod(cmd_data.wSiceCount, 256)
@@ -674,7 +695,7 @@ end
 function GameLayer:onSubListenNotify(dataBuffer)
 	print("听牌提示")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_Hu_Data, dataBuffer)
-	--dump(cmd_data, "CMD_S_Hu_Data")
+	dump(cmd_data, "CMD_S_Hu_Data")
 
 	self.cbListenPromptOutCard = {}
 	self.cbListenCardList = {}
@@ -694,7 +715,6 @@ end
 --操作结果
 function GameLayer:onSubOperateResult(dataBuffer)
 	print("操作结果")
-
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateResult, dataBuffer)
 	dump(cmd_data, "CMD_S_OperateResult")
 	if cmd_data.cbOperateCode == GameLogic.WIK_NULL then
@@ -710,25 +730,24 @@ function GameLayer:onSubOperateResult(dataBuffer)
 		local data3 = cmd_data.cbOperateCard[1][3]
 		local cbOperateData = {}
 		local cbRemoveData = {}
-
         if cmd_data.cbOperateCode == GameLogic.WIK_ARROW then
-            cbOperateData = {data1, data1+1, data1+2}
-            cbRemoveData = {data1, data1+1, data1+2}
+            cbOperateData = {53, 54, 55}
+            cbRemoveData = {53, 54, 55}
             nShowStatus = GameLogic.SHOW_FENG_GANG
-            self.arrowGangData = cbOperateData
+            self.arrowGangData[wOperateViewId] = {53, 54, 55}
         elseif cmd_data.cbOperateCode == GameLogic.WIK_WIND then
-            cbOperateData = {data1, data1+1, data1+2, data1+3}
-            cbRemoveData = {data1, data1+1, data1+2, data1+3}
+            cbOperateData = {49, 50, 51, 52}
+            cbRemoveData = {49, 50, 51, 52}
             nShowStatus = GameLogic.SHOW_FENG_GANG
-            self.windGangData = cbOperateData
+            self.windGangData[wOperateViewId] = {49, 50, 51, 52}
         elseif cmd_data.cbOperateCode == GameLogic.WIK_CHASEARROW then
-            table.insert(self.arrowGangData, data1)
-            cbOperateData = self.arrowGangData
+            table.insert(self.arrowGangData[wOperateViewId], data1)
+            cbOperateData = self.arrowGangData[wOperateViewId]
             cbRemoveData = {data1}
             nShowStatus = GameLogic.SHOW_CHANGMAO_GANG
         elseif cmd_data.cbOperateCode == GameLogic.WIK_CHASEWIND then
-            table.insert(self.windGangData, data1)
-            cbOperateData = self.windGangData
+            table.insert(self.windGangData[wOperateViewId], data1)
+            cbOperateData = self.windGangData[wOperateViewId]
             cbRemoveData = {data1}
             nShowStatus = GameLogic.SHOW_CHANGMAO_GANG
 		elseif cmd_data.cbOperateCode == GameLogic.WIK_GANG then
@@ -762,9 +781,6 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			cbRemoveData = {data2, data3}
 			nShowStatus = GameLogic.SHOW_CHI
 		end
-        print("nShowStatus:"..nShowStatus)
-        dump(cbOperateData,"operateData")
-        dump(cbRemoveData,"removeData")
 		local bAnGang = nShowStatus == GameLogic.SHOW_AN_GANG
 		self._gameView._cardLayer:bumpOrBridgeCard(wOperateViewId, cbOperateData, nShowStatus)
 		local bRemoveSuccess = false
@@ -1086,15 +1102,12 @@ function GameLayer:getListenPromptHuCard(cbOutCard)
 	if not cbOutCard then
 		return nil
 	end
-    print("getListenPromptHuCard")
-    dump(self.cbListenCardList, "cbListenCardList")
 	for i = 1, #self.cbListenPromptOutCard do
 		if self.cbListenPromptOutCard[i] == cbOutCard then
 			assert(#self.cbListenCardList > 0 and self.cbListenCardList[i] and #self.cbListenCardList[i] > 0)
 			return self.cbListenCardList[i]
 		end
 	end
-
 	return nil
 end
 

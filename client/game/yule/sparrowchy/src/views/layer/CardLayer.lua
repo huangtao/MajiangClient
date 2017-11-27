@@ -387,9 +387,6 @@ function CardLayer:onTouchEnded(touch, event)
 					--有则提示听牌
 					if math.mod(self.cbCardCount[cmd.MY_VIEWID], 3) == 2 then
 						local cbPromptHuCard = self._scene._scene:getListenPromptHuCard(self.cbCardData[index])
-                        print("---- hancholgul -----------")
-                        dump(self.cbCardData)
-                        dump(cbPromptHuCard)
 						self._scene:setListeningCard(cbPromptHuCard)
 					end
 				elseif self.cbCardStatus[index] == CardLayer.ENUM_CARD_POPUP then 		--弹出状态
@@ -540,9 +537,6 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 	self.cbCardCount[viewId] = self.cbCardCount[viewId] + 1
 	self.nRemainCardNum = self.nRemainCardNum - 1
 	self._scene:setRemainCardNum(self.nRemainCardNum)
-    print("CardLayer:catchCard(viewId, cardData, bTail) --------- for the TEST")
-    print(self.nRemainCardNum)
-    dump(self.cbCardData)
 	if viewId == cmd.MY_VIEWID then
 		table.insert(self.cbCardData, cardData)
 		--设置纹理
@@ -778,119 +772,7 @@ function CardLayer:recycleDiscard(viewId)
 end
 
 --碰或杠
-function CardLayer:bumpOrBridgeCard_1(viewId, cbCardData, nShowStatus)
-	assert(type(cbCardData) == "table")
-	local resCard = 
-	{
-		cmd.RES_PATH.."game/font_small/card_down.png",
-		cmd.RES_PATH.."game/font_small_side/card_down.png", 
-		cmd.RES_PATH.."game/font_middle/card_down.png",
-		cmd.RES_PATH.."game/font_small_side/card_down.png"
-	}
-	local resFont = 
-	{
-		cmd.RES_PATH.."game/font_small/",
-		cmd.RES_PATH.."game/font_small_side/", 
-		cmd.RES_PATH.."game/font_middle/",
-		cmd.RES_PATH.."game/font_small_side/"
-	}
-	local width = 0
-	local height = 0
-	local widthTotal = 0
-	local heightTotal = 0
-	local fSpacing = 0
-	if viewId == 1 then
-		width = 44
-		height = 67
-		fSpacing = width
-	elseif viewId == 3 then
-		width = 80
-		height = 116
-		fSpacing = width
-	else
-		width = 55
-		height = 47
-		fSpacing = 32
-	end
-
-	local fN = {15, 15, 15, 15}
-	local fParentSpacing = fSpacing*3 + fN[viewId]
-	local nodeParent = cc.Node:create()
-		:move(self.nBpBgCount[viewId]*fParentSpacing*multipleBpBgCard[viewId][1], 
-				self.nBpBgCount[viewId]*fParentSpacing*multipleBpBgCard[viewId][2])
-		:addTo(self.nodeBpBgCard[viewId])
-
-	if nShowStatus ~= GameLogic.SHOW_CHI then
-		--补杠
-		if nShowStatus == GameLogic.SHOW_BU_GANG then
-			nodeParentMG = self.nodeBpBgCard[viewId]:getChildByTag(cbCardData[1])
-			--assert(nodeParentMG, "None of this bump card!")
-			if nodeParentMG then
-				self.nBpBgCount[viewId] = self.nBpBgCount[viewId] - 1
-				nodeParent:removeFromParent()
-				nodeParentMG:removeAllChildren()
-				nodeParent = nodeParentMG
-			end
-		end
-		nodeParent:setTag(cbCardData[1])
-	end
-
-	for i = 1, #cbCardData do
-		--local rectX = self:switchToCardRectX(cbCardData[i])
-		--牌底
-		local card = display.newSprite(resCard[viewId])
-			:move(i*fSpacing*multipleBpBgCard[viewId][1], i*fSpacing*multipleBpBgCard[viewId][2])
-			--:setTextureRect(cc.rect(width*rectX, 0, width, height))
-			:addTo(nodeParent)
-		--字体
-		local nValue = math.mod(cbCardData[i], 16)
-		local nColor = math.floor(cbCardData[i]/16)
-		local strFile = resFont[viewId].."font_"..nColor.."_"..nValue..".png"
-		local cardFont = display.newSprite(strFile)
-			:move(width/2, height/2 + 8)
-			:setTag(1)
-			:addTo(card)
-		if viewId == 1 or viewId == 4 then
-			cardFont:setRotation(180)
-		end
-
-		if viewId == 4 then
-			card:setLocalZOrder(5 - i)
-		end
-		if i == 4 then 		--杠
-			local moveUp = {17, 14, 23, 14}
-			card:move(2*fSpacing*multipleBpBgCard[viewId][1], 2*fSpacing*multipleBpBgCard[viewId][2] + moveUp[viewId])
-			card:setLocalZOrder(5)
-        end
-        if nShowStatus == GameLogic.SHOW_AN_GANG then 		--暗杠
-            if i ~= 4 or viewId ~= cmd.MY_VIEWID then
-			    card:setTexture(resFont[viewId].."card_back.png")
-			    card:removeChildByTag(1)
-            end
-		end
-		--添加牌到记录里
-		if nShowStatus ~= GameLogic.SHOW_BU_GANG or i == 4 then
-			local pos = 1
-			while pos <= #self.cbBpBgCardData[viewId] do
-				if self.cbBpBgCardData[viewId][pos] == cbCardData[i] then
-					break
-				end
-				pos = pos + 1
-			end
-			table.insert(self.cbBpBgCardData[viewId], pos, cbCardData[i])
-            dump(self.cbBpBgCardData[viewId],"cbBpBgCardData["..viewId.."]")
-		end
-	end
-	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
-    
-end
-
-
---碰或杠
 function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
-    print("--------------- cbBpBgCardData -------------------")
-    dump(self.cbBpBgCardData)
-
 	assert(type(cbCardData) == "table")
 	local resCard = 
 	{
@@ -1031,7 +913,6 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
         end
     end
     dump(self.cbBpBgCardData[viewId], "cbBpBgCardData["..viewId.."]", 4)
-
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
 end
 
@@ -1204,9 +1085,6 @@ function CardLayer:outCardAuto()
 end
 --检查手里的杠
 function CardLayer:getGangCard(data)
-    print("CardLayer:getGangCard(data)  -- for the TEST")
-    dump(data,"data",3)
-    dump(self.cbCardData,"self.cbCardData",2)
 	local cbCardCount = #self.cbCardData
 	local num = 0
 	if math.mod(cbCardCount, 3) == 2 then

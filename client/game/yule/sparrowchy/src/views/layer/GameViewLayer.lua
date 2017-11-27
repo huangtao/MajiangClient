@@ -783,11 +783,9 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 	-- 	self._scene._scene:stopVoiceRecord()
 	elseif tag == GameViewLayer.BT_BUMP then
 		print("碰！")
-
 		--发送碰牌
 		local cbOperateCard = {self.cbActionCard, self.cbActionCard, self.cbActionCard}
 		self._scene:sendOperateCard(GameLogic.WIK_PENG, cbOperateCard)
-
 		self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_BRIGDE then
 		print("杠！")
@@ -798,15 +796,14 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
                           {0, 0, 0, 0, 256}, 
                           {0, 0, 0, 0, 0}}
         self:allKindGang()
-        dump(self.GangTable, "GangTable",3)
+        --dump(self.GangTable, "GangTable",3)
         local n = 0
         for i = 1, 6 do
             if self.GangTable[i][1] >0 then
                 n = n + 1
             end
         end
-        local xflag = {1, 1, 1, 1, 1}
-        local xBtnGang = {300, 300, 300, 260, 160}
+        local xflag = {1, 1, 1, 1, 1}   
         if n < 1 then
             local cbOperateCard = {self.cbActionCard, self.cbActionCard, self.cbActionCard}
             self._scene:sendOperateCard(GameLogic.WIK_GANG, cbOperateCard)
@@ -857,17 +854,17 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
                 self.btnChangMaoGang:setVisible(true)
             end
             -- set position of Gangbtns
-            self.btnGroupGang[1]:move(300, 200)
+            local xBtnGang = {300, 300, 300, 260, 160}
             for i = 1, 5 do 
                 xBtnGang[i] = xBtnGang[i] * (1 - xflag[i])
             end
+            self.btnGroupGang[1]:move(300, 200)
             self.btnGroupGang[2]:move(300 + xBtnGang[1], 200)
             self.btnGroupGang[3]:move(300 + xBtnGang[1] + xBtnGang[2], 200)
             self.btnGroupGang[4]:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3], 200)
             self.btnZhongGang:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3] + xBtnGang[4], 200)
             self.btnChangMaoGang:move(300 + xBtnGang[1] + xBtnGang[2] + xBtnGang[3] + xBtnGang[4] + xBtnGang[5], 200)
         end
-        
 		self:HideGameBtn()
     elseif tag == GameViewLayer.BT_EAT then
         print("吃！")
@@ -1202,9 +1199,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 
 	if cbCardData then
 		self.cbActionCard = cbCardData
-    else 
-        self.cbActionCard = 0
-	end
+    end
 
     if cbActionMask >= 32768 then
         cbActionMask = cbActionMask - 32768
@@ -1375,6 +1370,8 @@ function GameViewLayer:setListeningCard(cbCardData)
 		-- 	:addTo(self.spListenBg, 1)
 	end
 	--牌、番、数
+    dump(self._scene.cbAppearCardData)
+
 	self.cbAppearCardIndex = GameLogic.DataToCardIndex(self._scene.cbAppearCardData)
 	for i = 1, cbCardCount do
 		if bTooMany then
