@@ -32,11 +32,22 @@ GameLogic.WIK_LISTEN				= 0x0020						--听牌类型--32
 GameLogic.WIK_CHI_HU				= 0x0040						--吃胡类型--64
 GameLogic.WIK_FANG_PAO				= 0x0080						--放炮--128
 --朝阳麻将 Additional Flag
-GameLogic.WIK_ARROW					= 0x0100							--【中发白】三张【箭牌】在一起组成的杠 --256
-GameLogic.WIK_WIND					= 0x0200							--【东南西北】四张【风牌】在一起组成的杠 --512
-GameLogic.WIK_CHASEARROW			= 0x0400							--【中发白】的杠追加【中发白】牌后的杠 --1024
-GameLogic.WIK_CHASEWIND				= 0x0800							--【东南西北】的杠追加风牌后的杠 --2048
-GameLogic.WIK_UPDATE_BAO			= 0x8000							-- UPDATED BAO PAI  --32768
+GameLogic.WIK_ARROW					= 0x0100						--【中发白】三张【箭牌】在一起组成的杠 --256
+GameLogic.WIK_WIND					= 0x0200						--【东南西北】四张【风牌】在一起组成的杠 --512
+GameLogic.WIK_CHASEARROW			= 0x0400						--【中发白】的杠追加【中发白】牌后的杠 --1024
+GameLogic.WIK_CHASEWIND				= 0x0800						--【东南西北】的杠追加风牌后的杠 --2048
+GameLogic.WIK_UPDATE_BAO			= 0x8000						-- UPDATED BAO PAI  --32768
+
+--CMD_S_GameConclude.wHuKindData 
+GameLogic.HK_ZHUANG_JIA				= 0x0001			            -- 庄家
+GameLogic.HK_ZI_MO					= 0x0002			            -- 自摸
+GameLogic.HK_QING_YI_SE				= 0x0004			            -- 清一色
+GameLogic.HK_PIAO_HU				= 0x0008			            -- 飘胡
+GameLogic.HK_QIONG_HU				= 0x0010			            -- 穷胡
+GameLogic.HK_SHI_SAN_YAO			= 0x0020			            -- 十三幺
+GameLogic.HK_QI_DUI					= 0x0040			            -- 七对
+
+GameLogic.HK_JIN_BAO				= 0x1000			            -- 进宝  4096
 
 --动作类型
 GameLogic.WIK_GANERAL				= 0x00						--普通操作

@@ -101,11 +101,9 @@ function GameViewLayer:onInitData()
 	self.m_bNormalState = {}
 	--房卡需要
 	self.m_sparrowUserItem = {}
-
+    -- HuanBao animation
     self.m_nodeHuanBaoAnim = nil
     self.m_actHuanBaoAnim = nil
-    self.m_nodeJinBaoAnim = nil
-    self.m_actJinBaoAnim = nil
 end
 
 function GameViewLayer:playAnimHuanBao()
@@ -114,41 +112,21 @@ function GameViewLayer:playAnimHuanBao()
 		self.m_nodeHuanBaoAnim:setPosition(display.center)
 		self.m_actHuanBaoAnim = ExternalFun.loadTimeLine("animHuanBao.csb")
 		ExternalFun.SAFE_RETAIN(self.m_actHuanBaoAnim)
+        ExternalFun.SAFE_RETAIN(self.m_nodeHuanBaoAnim)
     end
-
     local function onFrameEvent(frame)
         print("animation play")
     end
     self.m_actHuanBaoAnim:setFrameEventCallFunc(onFrameEvent)
-    --self.m_nodeHuanBaoAnim:setVisible(true)
+    self.m_nodeHuanBaoAnim:setVisible(true)
 	--self.m_nodeHuanBaoAnim:setLocalZOrder(1)
 	self.m_nodeHuanBaoAnim:stopAllActions()
 	self.m_actHuanBaoAnim:gotoFrameAndPlay(0,false)
 	self.m_nodeHuanBaoAnim:runAction(self.m_actHuanBaoAnim)
 end
 
-function GameViewLayer:playAnimJinBao()
-    if self.m_nodeJinBaoAnim == nil then
-        self.m_nodeJinBaoAnim = ExternalFun.loadCSB("animJinBao.csb", self)
-		self.m_nodeJinBaoAnim:setPosition(display.center)
-		self.m_actJinBaoAnim = ExternalFun.loadTimeLine("animJinBao.csb")
-		ExternalFun.SAFE_RETAIN(self.m_actJinBaoAnim)
-    end
-
-    local function onFrameEvent(frame)
-        print("animation play")
-    end
-    self.m_actJinBaoAnim:setFrameEventCallFunc(onFrameEvent)
-    --self.m_nodeHuanBaoAnim:setVisible(true)
-	--self.m_nodeJinBaoAnim:setLocalZOrder(1)
-	self.m_nodeJinBaoAnim:stopAllActions()
-	self.m_actJinBaoAnim:gotoFrameAndPlay(0,false)
-	self.m_nodeJinBaoAnim:runAction(self.m_actJinBaoAnim)
-end
-
 function GameViewLayer:onResetData()
 	self._cardLayer:onResetData()
-
 	self.spListenBg:removeAllChildren()
 	self.spListenBg:setVisible(false)
 	self.cbOutCardTemp = 0
@@ -164,25 +142,21 @@ function GameViewLayer:onResetData()
 		self.nodePlayer[i]:getChildByTag(GameViewLayer.SP_BANKER):setVisible(false)
 	end
 	self:setRemainCardNum(cmd.MAX_REPERTORY)
-	self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS):setEnabled(true):setColor(cc.c3b(255, 255, 255))
+	self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS):setEnabled(true):setVisible(true)
     -- Ting state 
     self.listen_state = false
     self.listen_count = 0
 end
 
 function GameViewLayer:onExit()
-	print("GameViewLayer onExit")
 	self._scene:KillGameClock()
 	cc.SpriteFrameCache:getInstance():removeSpriteFramesFromFile("gameScene.plist")
 	cc.Director:getInstance():getTextureCache():removeTextureForKey("gameScene.png")
     cc.Director:getInstance():getTextureCache():removeUnusedTextures()
     cc.SpriteFrameCache:getInstance():removeUnusedSpriteFrames()
     AnimationMgr.removeCachedAnimation(cmd.VOICE_ANIMATION_KEY)
-
     ExternalFun.SAFE_RELEASE(self.m_actHuanBaoAnim)
 	self.m_actHuanBaoAnim = nil
-    ExternalFun.SAFE_RELEASE(self.m_actJinBaoAnim)
-	self.m_actJinBaoAnim = nil
 end
 
 local this
@@ -424,7 +398,7 @@ function GameViewLayer:initButtons()
 	btTrustee:addTouchEventListener(btnCallback)
 	if GlobalUserItem.bPrivateRoom then
 		btTrustee:setEnabled(false)
-		btTrustee:setColor(cc.c3b(158, 112, 8))
+		btTrustee:setVisible(false)
 	end
     ]]
     --[[
@@ -449,27 +423,27 @@ function GameViewLayer:initButtons()
 		:setVisible(false)
 	local btBump = self.spGameBtn:getChildByTag(GameViewLayer.BT_BUMP) 	--碰
 		:setEnabled(false)
-		:setColor(cc.c3b(158, 112, 8))
+		:setVisible(false)
 	btBump:addTouchEventListener(btnCallback)
 
     local btEat = self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT) 	-- CHI
 		:setEnabled(false)
-		:setColor(cc.c3b(158, 112, 8))
+		:setVisible(false)
 	btEat:addTouchEventListener(btnCallback)
 
 	local btBrigde = self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE) 		--杠
 		:setEnabled(false)
-		:setColor(cc.c3b(158, 112, 8))
+		:setVisible(false)
 	btBrigde:addTouchEventListener(btnCallback)
 
     local btListen = self.spGameBtn:getChildByTag(GameViewLayer.BT_LISTEN) 	-- TING
 		:setEnabled(false)
-		:setColor(cc.c3b(158, 112, 8))
+		:setVisible(false)
 	btListen:addTouchEventListener(btnCallback)
 
 	local btWin = self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)		--胡
 		:setEnabled(false)
-		:setColor(cc.c3b(158, 112, 8))
+		:setVisible(false)
 	btWin:addTouchEventListener(btnCallback)
 	local btPass = self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS)		--过
 	btPass:addTouchEventListener(btnCallback)
@@ -864,22 +838,22 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self:HideGameBtn()
     elseif tag == GameViewLayer.BT_EAT then
         print("吃！")
-        local len = #self.chi_data
+        local len = #self.ChiTable
         if len == 1 then
-            local cbOperateCard = {self.chi_data[1][1], self.chi_data[1][2], self.chi_data[1][3]}
-            self._scene:sendOperateCard(self.chi_data[1][4], cbOperateCard)
+            local cbOperateCard = {self.ChiTable[1][1], self.ChiTable[1][2], self.ChiTable[1][3]}
+            self._scene:sendOperateCard(self.ChiTable[1][4], cbOperateCard)
         else
             for i = 1, len do 
-                local direct = self.chi_data[i][4]
+                local direct = self.ChiTable[i][4]
                 local font_data = {0, 0, 0}
                 if direct == 1 then
-                    font_data = {self.chi_data[i][1], self.chi_data[i][2], self.chi_data[i][3]}
+                    font_data = {self.ChiTable[i][1], self.ChiTable[i][2], self.ChiTable[i][3]}
                 end
                 if direct == 2 then
-                    font_data = {self.chi_data[i][2], self.chi_data[i][1], self.chi_data[i][3]}
+                    font_data = {self.ChiTable[i][2], self.ChiTable[i][1], self.ChiTable[i][3]}
                 end 
                 if direct == 4 then
-                    font_data = {self.chi_data[i][2], self.chi_data[i][3], self.chi_data[i][1]}
+                    font_data = {self.ChiTable[i][2], self.ChiTable[i][3], self.ChiTable[i][1]}
                 end
                 for j = 1, 3 do
                     value = font_data[j]
@@ -912,16 +886,16 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self._scene:sendOperateCard(GameLogic.WIK_NULL, cbOperateCard)
 		self:HideGameBtn()
 	elseif tag > GameViewLayer.Chi_TAG and tag <= GameViewLayer.Chi_TAG + 3 then
-        local cbOperateCard = {self.chi_data[1][1], self.chi_data[1][2], self.chi_data[1][3]}
-        self._scene:sendOperateCard(self.chi_data[1][4], cbOperateCard)
+        local cbOperateCard = {self.ChiTable[1][1], self.ChiTable[1][2], self.ChiTable[1][3]}
+        self._scene:sendOperateCard(self.ChiTable[1][4], cbOperateCard)
         self:eatBtnHide()
     elseif tag > GameViewLayer.Chi_TAG + 3 and tag <= GameViewLayer.Chi_TAG + 6 then
-        local cbOperateCard = {self.chi_data[2][1], self.chi_data[2][2], self.chi_data[2][3]}
-        self._scene:sendOperateCard(self.chi_data[2][4], cbOperateCard)
+        local cbOperateCard = {self.ChiTable[2][1], self.ChiTable[2][2], self.ChiTable[2][3]}
+        self._scene:sendOperateCard(self.ChiTable[2][4], cbOperateCard)
         self:eatBtnHide()
     elseif tag > GameViewLayer.Chi_TAG + 6 and tag <= GameViewLayer.Chi_TAG + 9 then
-        local cbOperateCard = {self.chi_data[3][1], self.chi_data[3][2], self.chi_data[3][3]}
-        self._scene:sendOperateCard(self.chi_data[3][4], cbOperateCard)
+        local cbOperateCard = {self.ChiTable[3][1], self.ChiTable[3][2], self.ChiTable[3][3]}
+        self._scene:sendOperateCard(self.ChiTable[3][4], cbOperateCard)
         self:eatBtnHide()
     elseif tag > 100 and tag <= 104 then
         local cbOperateCard = {self.GangTable[1][1], self.GangTable[1][2], self.GangTable[1][3]}
@@ -1164,7 +1138,7 @@ function GameViewLayer:HideGameBtn()
             local bt = self.spGameBtn:getChildByTag(i)
 		    if bt then
 			    bt:setEnabled(false)
-			    bt:setColor(cc.c3b(158, 112, 8))
+			    bt:setVisible(false)
 		    end
         end
 	end
@@ -1184,20 +1158,20 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		--必须胡牌的情况
 		self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS)
 			:setEnabled(false)
-			:setColor(cc.c3b(158, 112, 8))
-		-- self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
-		-- 	:setEnabled(true)
-		-- 	:setColor(cc.c3b(255, 255, 255))
-		-- self.spGameBtn:setVisible(true)
-		-- self._scene:SetGameOperateClock()
-		-- return true
+			:setVisible(false)
+	    self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
+		 	:setEnabled(true)
+		 	:setVisible(true)
+		self.spGameBtn:setVisible(true)
+		self._scene:SetGameOperateClock()
+		return true
 	end
 
 	if cbCardData then
 		self.cbActionCard = cbCardData
     end
 
-    if cbActionMask >= 32768 then
+    if cbActionMask >= GameLogic.WIK_UPDATE_BAO then
         cbActionMask = cbActionMask - 32768
         self:playAnimHuanBao()
         return true
@@ -1207,96 +1181,90 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
         cbActionMask = cbActionMask - 2048
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
     end
 
     if cbActionMask >= 1024 then
         cbActionMask = cbActionMask - 1024
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
     end
     
     if cbActionMask >= 512 then
         cbActionMask = cbActionMask - 512
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
     end
 
     if cbActionMask >= 256 then
         cbActionMask = cbActionMask - 256
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
     end
 
 	if cbActionMask >= 128 then 				--放炮
 		cbActionMask = cbActionMask - 128
 		self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
 	end
 	if cbActionMask >= 64 then 					--胡
 		cbActionMask = cbActionMask - 64
 		self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
 	end
 	if cbActionMask >= 32 then 					--听
 		cbActionMask = cbActionMask - 32
         self.spGameBtn:getChildByTag(GameViewLayer.BT_LISTEN)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
 	end
 	if cbActionMask >= 16 then 					--杠
 		cbActionMask = cbActionMask - 16
 		self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
-			:setColor(cc.c3b(255, 255, 255))
+			:setVisible(true)
 	end
 	if cbActionMask >= 8 then 					--碰
 		cbActionMask = cbActionMask - 8
 		if self._cardLayer:isUserCanBump() then
 			self.spGameBtn:getChildByTag(GameViewLayer.BT_BUMP)
 				:setEnabled(true)
-				:setColor(cc.c3b(255, 255, 255))
+				:setVisible(true)
 		end
 	end
-
     if cbActionMask > 0 then     -- Chi
-        self:playAnimJinBao()
         self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT)
 				:setEnabled(true)
-				:setColor(cc.c3b(255, 255, 255))
-        self.chi_data = {}
+				:setVisible(true)
+        self.ChiTable = {}
         if math.mod(cbActionMask, 4*2) >= 4 then
-            table.insert(self.chi_data, {cbCardData, cbCardData - 2, cbCardData - 1, 4})
+            table.insert(self.ChiTable, {cbCardData, cbCardData - 2, cbCardData - 1, 4})
         end
         if math.mod(cbActionMask, 2*2) >= 2 then
-            table.insert(self.chi_data, {cbCardData, cbCardData - 1, cbCardData + 1, 2})
+            table.insert(self.ChiTable, {cbCardData, cbCardData - 1, cbCardData + 1, 2})
         end
         if math.mod(cbActionMask, 2*1) >= 1 then
-            table.insert(self.chi_data, {cbCardData, cbCardData + 1, cbCardData + 2, 1})
+            table.insert(self.ChiTable, {cbCardData, cbCardData + 1, cbCardData + 2, 1})
         end
     end
-
 	self.spGameBtn:setVisible(true)
 	self._scene:SetGameOperateClock()
-
 	return true
 end
 
 function GameViewLayer:getAnimate(name, bEndRemove)
 	local animation = cc.AnimationCache:getInstance():getAnimation(name)
 	local animate = cc.Animate:create(animation)
-
 	if bEndRemove then
 		animate = cc.Sequence:create(animate, cc.CallFunc:create(function(ref)
 			ref:removeFromParent()
 		end))
 	end
-
 	return animate
 end
 --设置听牌提示

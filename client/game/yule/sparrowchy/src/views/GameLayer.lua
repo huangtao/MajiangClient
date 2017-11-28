@@ -43,8 +43,38 @@ function GameLayer:OnInitGameEngine()
     -- HuiPai and BaoPai
     self.cbEnabledHuiPai = true
     self.cbEnabledBaoPai = true
+    -- ChangMaoGang data initialize
+    self.windGangData = {{},{},{},{}}
+    self.arrowGangData = {{},{},{},{}}
+    -- JinBao animation
+    self.m_nodeJinBaoAnim = nil
+    self.m_actJinBaoAnim = nil
 	--房卡需要
 	self.wRoomHostViewId = 0
+end
+
+function GameLayer:playAnimJinBao()
+    if self.m_nodeJinBaoAnim == nil then
+        self.m_nodeJinBaoAnim = ExternalFun.loadCSB("animJinBao.csb", self)
+		self.m_nodeJinBaoAnim:setPosition(display.center)
+		self.m_actJinBaoAnim = ExternalFun.loadTimeLine("animJinBao.csb")
+		ExternalFun.SAFE_RETAIN(self.m_actJinBaoAnim)
+        ExternalFun.SAFE_RETAIN(self.m_nodeJinBaoAnim)
+    end
+    local function onFrameEvent(frame)
+        print("animation play")
+    end
+    self.m_actJinBaoAnim:setFrameEventCallFunc(onFrameEvent)
+    self.m_nodeJinBaoAnim:setVisible(true)
+	--self.m_nodeJinBaoAnim:setLocalZOrder(1)
+	self.m_nodeJinBaoAnim:stopAllActions()
+	self.m_actJinBaoAnim:gotoFrameAndPlay(0,false)
+	self.m_nodeJinBaoAnim:runAction(self.m_actJinBaoAnim)
+end
+
+function GameLayer:onExit()
+    ExternalFun.SAFE_RELEASE(self.m_actJinBaoAnim)
+	self.m_actJinBaoAnim = nil
 end
 
 function GameLayer:OnResetGameEngine()
@@ -927,7 +957,16 @@ function GameLayer:onSubGameConclude(dataBuffer)
 	end
 	print("通过已显示牌统计，剩余多少张？", #cbRemainCard)
 	--显示结算框
-	self:runAction(cc.Sequence:create(cc.DelayTime:create(1), cc.CallFunc:create(function(ref)
+    --[[
+    local flag_JinBao = true
+    local nTime = 1
+    if flag_JinBao then
+        self._gameView:playAnimJinBao() 
+        nTime = 2
+    end 
+    ]]
+    self:playAnimJinBao()
+	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
 		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard)
 	end)))
 	--播放音效
