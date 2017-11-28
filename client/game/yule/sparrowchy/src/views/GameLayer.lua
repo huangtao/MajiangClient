@@ -38,14 +38,11 @@ function GameLayer:OnInitGameEngine()
 	self.lDetailScore = {}
 	self.m_userRecord = {}
 	self.cbMaCount = 0
-    print("GameLayer:OnInitGameEngine() -------------- for the test")
+
     self.cbMagicIndex = 0xff
     -- HuiPai and BaoPai
     self.cbEnabledHuiPai = true
     self.cbEnabledBaoPai = true
-    -- ChangMaoGang data initialize
-    self.windGangData = {{},{},{},{}}
-    self.arrowGangData = {{},{},{},{}}
 	--房卡需要
 	self.wRoomHostViewId = 0
 end
@@ -59,6 +56,9 @@ function GameLayer:OnResetGameEngine()
 	self.bMoPaiStatus = false
 	self.cbActionMask = nil
 	self.cbActionCard = nil
+    -- ChangMaoGang data initialize
+    self.windGangData = {{},{},{},{}}
+    self.arrowGangData = {{},{},{},{}}
 end
 
 --获取gamekind

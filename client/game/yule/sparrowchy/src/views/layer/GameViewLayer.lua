@@ -94,7 +94,6 @@ function GameViewLayer:exitTransitionStart()
 end
 
 function GameViewLayer:onInitData()
-    print("---------------------- GameViewLayer:onInitData() ----------------------------")
 	self.cbActionCard = 0
 	self.cbOutCardTemp = 0
 	self.chatDetails = {}
@@ -107,11 +106,6 @@ function GameViewLayer:onInitData()
     self.m_actHuanBaoAnim = nil
     self.m_nodeJinBaoAnim = nil
     self.m_actJinBaoAnim = nil
-    
-    self.listen_state = false
-    self.listen_count = 0
-    print(self.listen_state)
-    print(self.listen_count)
 end
 
 function GameViewLayer:playAnimHuanBao()
@@ -171,6 +165,9 @@ function GameViewLayer:onResetData()
 	end
 	self:setRemainCardNum(cmd.MAX_REPERTORY)
 	self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS):setEnabled(true):setColor(cc.c3b(255, 255, 255))
+    -- Ting state 
+    self.listen_state = false
+    self.listen_count = 0
 end
 
 function GameViewLayer:onExit()
@@ -250,13 +247,12 @@ function GameViewLayer:ctor(scene)
 			:setVisible(false)
 		local sp_roomHost = self.nodePlayer[i]:getChildByTag(GameViewLayer.SP_ROOMHOST)
 			:setVisible(false)
-        --[[
+
 		if i == 2 or i == cmd.MY_VIEWID then
-			sp_trustee:move(65, -41)
+			--sp_trustee:move(65, -41)
 			sp_banker:move(44, 55)
-			sp_roomHost:move(-79, -24)
+			sp_roomHost:move(-59, -24)
 		end
-        ]]
 	end
 
 	self.spListenBg = self:getChildByTag(GameViewLayer.SP_LISTEN)
