@@ -1147,16 +1147,6 @@ function GameViewLayer:HideGameBtn()
 	self.spGameBtn:setVisible(false)
 end
 
-function GameViewLayer:isGuanJianPai(card)
-    local list = self._scene.cbListenData
-    for  i = 1, #list do
-        if list[i] == card then
-            return true
-        end
-    end
-    return false
-end
-
 --识别动作掩码
 function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 	print("收到提示操作：", cbActionMask, cbCardData)
@@ -1181,23 +1171,6 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 
     if cbCardData then
 		self.cbActionCard = cbCardData
-        if self.listen_state then 
-            if self:isGuanJianPai(cbCardData) == true then
-                self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS)
-			        :setEnabled(false)
-			        :setVisible(false)
-	            self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
-		 	        :setEnabled(true)
-		 	        :setVisible(true)
-		        self.spGameBtn:setVisible(true)
-		        self._scene:SetGameOperateClock()
-                return true
-            else 
-		        self.spGameBtn:setVisible(true)
-		        self._scene:SetGameOperateClock()
-                return true
-            end
-        end
     end
 
     if cbActionMask >= GameLogic.WIK_UPDATE_BAO then

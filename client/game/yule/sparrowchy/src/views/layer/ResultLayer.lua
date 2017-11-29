@@ -297,9 +297,14 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
             local cardHuiPai=self:getChildByName("card_HuiPai")
             local nValue = math.mod(GameLogic.MAGIC_DATA, 16)
 		    local nColor = math.floor(GameLogic.MAGIC_DATA/16)
+            if cardHuiPai:getChildByTag(1) then
+                cardHuiPai:removeChildByTag(1)
+            end
             display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
 					    :move(m_width/2, m_height/2 + 8)
+                        :setTag(1)
 					    :addTo(cardHuiPai)
+                        
         else 
             self:getChildByName("card_HuiPai"):setVisible(false)
             self:getChildByName("sp_HuiPai_30"):setVisible(false)
@@ -307,12 +312,15 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 
         if self._scene._scene.cbEnabledBaoPai then
             local valueOfBaoPai = self._scene._scene.cbBaoPai
-            print(valueOfBaoPai)
             local cardBaoPai = self:getChildByName("card_BaoPai")
             local nValue = math.mod(valueOfBaoPai, 16)
 		    local nColor = math.floor(valueOfBaoPai/16)
+            if cardBaoPai:getChildByTag(1) then
+                cardBaoPai:removeChildByTag(1)
+            end
             display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")
 					    :move(m_width/2, m_height/2 + 8)
+                        :setTag(1)
 					    :addTo(cardBaoPai)
         else 
             self:getChildByName("card_BaoPai"):setVisible(false)
