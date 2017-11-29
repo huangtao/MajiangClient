@@ -104,7 +104,7 @@ function ResultLayer:onTouchBegan(touch, event)
 	return self.bShield
 end
 
-function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerChairId, cbHuCard)
+function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerChairId, cbHuCard, cbHuKindData)
 	assert(type(resultList) == "table" and type(cbAwardCard) == "table" and type(cbRemainCard) == "table")
 	local width = 44
 	local height = 67
@@ -277,21 +277,19 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 		else
 			self.nodeUser[order]:setVisible(false)
 		end
-        --[[
         -- HuKind 
-        if math.mod(cbHuKindData, 4*2) >= GameLogic.HK_QING_YI_SE then
+        if math.mod(cbHuKindData, GameLogic.CHR_QING_YI_SE*2) >= GameLogic.CHR_QING_YI_SE then
             self:getChildByName("sp_QingYiSe"):setVisible(true)
         end
-        if math.mod(cbHuKindData, 8*2) >= GameLogic.HK_PIAO_HU then
+        if math.mod(cbHuKindData, GameLogic.CHR_PIAO_HU*2) >= GameLogic.CHR_PIAO_HU then
             self:getChildByName("sp_PiaoHu"):setVisible(true)
         end
-        if math.mod(cbHuKindData, 16*2) >= GameLogic.HK_QIONG_HU then
+        if math.mod(cbHuKindData, GameLogic.CHR_QIONG_HU*2) >= GameLogic.CHR_QIONG_HU then
             self:getChildByName("sp_QiongHu"):setVisible(true)
         end
-        if math.mod(cbHuKindData, 32*2) >= GameLogic.HK_SHI_SAN_YAO then
+        if math.mod(cbHuKindData, GameLogic.CHR_SHI_SAN_YAO*2) >= GameLogic.CHR_SHI_SAN_YAO then
             self:getChildByName("sp_ShiSanYao"):setVisible(true)
         end
-        ]]
         -- show HuiPai and BaoPai
         local m_width=98
         local m_height=142

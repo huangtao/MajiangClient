@@ -942,6 +942,9 @@ function GameLayer:onSubGameConclude(dataBuffer)
 				cbRemainCard = GameLogic.RemoveCard(cbRemainCard, result.cbCardData)
 			end
 		end
+        if wViewChairId == cmd.MY_VIEWID then
+            self.HuPaiKindData = cmd_data.dwChiHuRight[i][1]
+        end
 	end
 	--全部奖码
 	local meIndex = self:GetMeChairID() + 1
@@ -965,16 +968,13 @@ function GameLayer:onSubGameConclude(dataBuffer)
 	end
 	print("通过已显示牌统计，剩余多少张？", #cbRemainCard)
     -- BaoPai
-    print(cmd_data.cbBaopaiCardData)
     self.cbBaoPai = cmd_data.cbBaopaiCardData
 	--显示结算框
-    --[[
-    if cmd_data.cbHuKindData > 4096 then
+    if math.mod(self.HuPaiKindData, 2048*2) >= 2048 then
         self:playAnimJinBao()
     end
-    ]]
 	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
-		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard)
+		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, self.HuPaiKindData)
 	end)))
 	--播放音效
 	if bMeWin then
