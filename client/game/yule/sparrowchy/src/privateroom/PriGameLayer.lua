@@ -244,6 +244,7 @@ function PriGameLayer:onPriGameEnd(cmd_table)
     local jsonStr = cjson.encode(scoreList)
     LogAsset:getInstance():logData(jsonStr, true)
     local tabUserRecord = self._gameLayer:getDetailScore()
+    print(tabUserRecord, "tabUserRecord")
     for i = 1, 4 do
         local userItem = self._gameLayer:getUserInfoByChairID(i - 1)
         local nodeUser = csbNode:getChildByName("FileNode_"..i)

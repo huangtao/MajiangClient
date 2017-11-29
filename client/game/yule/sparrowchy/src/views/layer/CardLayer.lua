@@ -912,7 +912,6 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
             end
         end
     end
-    dump(self.cbBpBgCardData[viewId], "cbBpBgCardData["..viewId.."]", 4)
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
 end
 

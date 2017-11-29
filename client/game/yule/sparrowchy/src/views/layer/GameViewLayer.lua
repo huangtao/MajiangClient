@@ -753,12 +753,14 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 	-- 	self._scene._scene:stopVoiceRecord()
 	elseif tag == GameViewLayer.BT_BUMP then
 		print("碰！")
+        
 		--发送碰牌
 		local cbOperateCard = {self.cbActionCard, self.cbActionCard, self.cbActionCard}
 		self._scene:sendOperateCard(GameLogic.WIK_PENG, cbOperateCard)
 		self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_BRIGDE then
 		print("杠！")
+        
         self.GangTable = {{0, 0, 0, 0, 16}, 
                           {0, 0, 0, 0, 16}, 
                           {0, 0, 0, 0, 16}, 
@@ -838,6 +840,7 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 		self:HideGameBtn()
     elseif tag == GameViewLayer.BT_EAT then
         print("吃！")
+
         local len = #self.ChiTable
         if len == 1 then
             local cbOperateCard = {self.ChiTable[1][1], self.ChiTable[1][2], self.ChiTable[1][3]}
@@ -878,7 +881,6 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
 
 		local cbOperateCard = {self.cbActionCard, 0, 0}
 		self._scene:sendOperateCard(GameLogic.WIK_CHI_HU, cbOperateCard)
-
 		self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_PASS then
 		print("过！")
@@ -1145,6 +1147,16 @@ function GameViewLayer:HideGameBtn()
 	self.spGameBtn:setVisible(false)
 end
 
+function GameViewLayer:isGuanJianPai(card)
+    local list = self._scene.cbListenData
+    for  i = 1, #list do
+        if list[i] == card then
+            return true
+        end
+    end
+    return false
+end
+
 --识别动作掩码
 function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 	print("收到提示操作：", cbActionMask, cbCardData)
@@ -1167,8 +1179,24 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		return true
 	end
 
-	if cbCardData then
+    if cbCardData then
 		self.cbActionCard = cbCardData
+        if self.listen_state then 
+            if self:isGuanJianPai(cbCardData) == true then
+                self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS)
+			        :setEnabled(false)
+			        :setVisible(false)
+	            self.spGameBtn:getChildByTag(GameViewLayer.BT_WIN)
+		 	        :setEnabled(true)
+		 	        :setVisible(true)
+		        self.spGameBtn:setVisible(true)
+		        self._scene:SetGameOperateClock()
+                return true
+            else 
+		        self.spGameBtn:setVisible(true)
+		        self._scene:SetGameOperateClock()
+            end
+        end
     end
 
     if cbActionMask >= GameLogic.WIK_UPDATE_BAO then

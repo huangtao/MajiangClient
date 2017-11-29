@@ -277,12 +277,25 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 		else
 			self.nodeUser[order]:setVisible(false)
 		end
-
+        --[[
+        -- HuKind 
+        if math.mod(cbHuKindData, 4*2) >= GameLogic.HK_QING_YI_SE then
+            self:getChildByName("sp_QingYiSe"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, 8*2) >= GameLogic.HK_PIAO_HU then
+            self:getChildByName("sp_PiaoHu"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, 16*2) >= GameLogic.HK_QIONG_HU then
+            self:getChildByName("sp_QiongHu"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, 32*2) >= GameLogic.HK_SHI_SAN_YAO then
+            self:getChildByName("sp_ShiSanYao"):setVisible(true)
+        end
+        ]]
         -- show HuiPai and BaoPai
         local m_width=98
         local m_height=142
         if self._scene._scene.cbEnabledHuiPai then
-            
             local cardHuiPai=self:getChildByName("card_HuiPai")
             local nValue = math.mod(GameLogic.MAGIC_DATA, 16)
 		    local nColor = math.floor(GameLogic.MAGIC_DATA/16)
@@ -295,8 +308,9 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
         end
 
         if self._scene._scene.cbEnabledBaoPai then
-            local valueOfBaoPai = 23
-            local cardBaoPai=self:getChildByName("card_BaoPai")
+            local valueOfBaoPai = self._scene._scene.cbBaoPai
+            print(valueOfBaoPai)
+            local cardBaoPai = self:getChildByName("card_BaoPai")
             local nValue = math.mod(valueOfBaoPai, 16)
 		    local nColor = math.floor(valueOfBaoPai/16)
             display.newSprite("game/font_middle/font_"..nColor.."_"..nValue..".png")

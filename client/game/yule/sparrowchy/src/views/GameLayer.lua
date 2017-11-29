@@ -46,6 +46,8 @@ function GameLayer:OnInitGameEngine()
     -- ChangMaoGang data initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
+    -- listen data
+    self.cbListenData = {}
     -- JinBao animation
     self.m_nodeJinBaoAnim = nil
     self.m_actJinBaoAnim = nil
@@ -89,6 +91,8 @@ function GameLayer:OnResetGameEngine()
     -- ChangMaoGang data initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
+    -- listen data
+    self.cbListenData = {}
 end
 
 --获取gamekind
@@ -336,6 +340,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		self.cbPlayerCount = cmd_data.cbPlayerCount or 4
 		self.cbMaCount = cmd_data.cbMaCount
 
+        --self.cbListenData = cmd_data.cbHuCardData[1]
 		--庄家
 		self._gameView:setBanker(self:SwitchViewChairID(self.wBankerUser))
 		--设置手牌
@@ -346,6 +351,9 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 			if viewCardCount[viewId] > 0 then
 				self.cbPlayStatus[viewId] = 1
 			end
+            if viewId == cmd.MY_VIEWID then
+                self._gameView.listen_state = cmd_data.bTing[1][i]
+            end
 		end
 		local cbHandCardData = {}
 		for i = 1, cmd.MAX_COUNT do
@@ -709,7 +717,7 @@ end
 function GameLayer:onSubOperateNotify(dataBuffer)
 	print("操作提示")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateNotify, dataBuffer)
-	dump(cmd_data, "CMD_S_OperateNotify")
+	--dump(cmd_data, "CMD_S_OperateNotify")
 
 	if self.bSendCardFinsh then 	--发牌完成
 		self._gameView:recognizecbActionMask(cmd_data.cbActionMask, cmd_data.cbActionCard)
@@ -725,7 +733,7 @@ end
 function GameLayer:onSubListenNotify(dataBuffer)
 	print("听牌提示")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_Hu_Data, dataBuffer)
-	dump(cmd_data, "CMD_S_Hu_Data")
+	--dump(cmd_data, "CMD_S_Hu_Data")
 
 	self.cbListenPromptOutCard = {}
 	self.cbListenCardList = {}
@@ -746,7 +754,7 @@ end
 function GameLayer:onSubOperateResult(dataBuffer)
 	print("操作结果")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateResult, dataBuffer)
-	dump(cmd_data, "CMD_S_OperateResult")
+	--dump(cmd_data, "CMD_S_OperateResult")
 	if cmd_data.cbOperateCode == GameLogic.WIK_NULL then
 		assert(false, "没有操作也会进来？")
 		return true
@@ -885,7 +893,7 @@ end
 function GameLayer:onSubGameConclude(dataBuffer)
 	print("游戏结束")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_GameConclude, dataBuffer)
-	--dump(cmd_data, "CMD_S_GameConclude")
+	dump(cmd_data, "CMD_S_GameConclude")
 
 	local bMeWin = nil  	--nil：没人赢，false：有人赢但我没赢，true：我赢
 	--剩余牌
@@ -956,16 +964,15 @@ function GameLayer:onSubGameConclude(dataBuffer)
 		table.insert(cbRemainCard, i, cbAwardCardTotal[i])
 	end
 	print("通过已显示牌统计，剩余多少张？", #cbRemainCard)
+    -- BaoPai
+    print(cmd_data.cbBaopaiCardData)
+    self.cbBaoPai = cmd_data.cbBaopaiCardData
 	--显示结算框
     --[[
-    local flag_JinBao = true
-    local nTime = 1
-    if flag_JinBao then
-        self._gameView:playAnimJinBao() 
-        nTime = 2
-    end 
+    if cmd_data.cbHuKindData > 4096 then
+        self:playAnimJinBao()
+    end
     ]]
-    self:playAnimJinBao()
 	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
 		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard)
 	end)))
@@ -1178,7 +1185,7 @@ function GameLayer:sendOutCard(card)
 	end
 
     print(self._gameView.listen_state)
-    dump(self.cbListenPromptOutCard)
+    dump(self.cbListenPromptOutCard, "cbListenPromptOutCard")
     -- if this player is on Ting state
     if self._gameView.listen_state then 
         if self._gameView.listen_count == 0 then
@@ -1204,6 +1211,8 @@ function GameLayer:isListenCard(card)
     for i =1, #self.cbListenPromptOutCard do
         if self.cbListenPromptOutCard[i] == card then
             n = n + 1
+            -- TingPai list at Ting state
+            self.cbListenData = self.cbListenCardList[i]  
         end
     end
     if n >= 1 then
