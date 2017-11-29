@@ -321,7 +321,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 	elseif cbGameStatus == cmd.GAME_SCENE_PLAY then
 		print("游戏状态", wMyChairId)
 		local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_StatusPlay, dataBuffer)
-        dump(cmd_data, "CMD_S_StatusPlay", 6)
+        --dump(cmd_data, "CMD_S_StatusPlay", 6)
 
         -- get HuiPai and BaoPai state -- 
         self.cbEnabledHuiPai = cmd_data.cbEnabled_HuiPai
@@ -340,7 +340,6 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		self.cbPlayerCount = cmd_data.cbPlayerCount or 4
 		self.cbMaCount = cmd_data.cbMaCount
 
-        --self.cbListenData = cmd_data.cbHuCardData[1]
 		--庄家
 		self._gameView:setBanker(self:SwitchViewChairID(self.wBankerUser))
 		--设置手牌
@@ -973,6 +972,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
     if math.mod(self.HuPaiKindData, 2048*2) >= 2048 then
         self:playAnimJinBao()
     end
+    self._gameView:HideGameBtn()
 	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
 		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, self.HuPaiKindData)
 	end)))
@@ -1184,8 +1184,6 @@ function GameLayer:sendOutCard(card)
 		return false
 	end
 
-    print(self._gameView.listen_state)
-    dump(self.cbListenPromptOutCard, "cbListenPromptOutCard")
     -- if this player is on Ting state
     if self._gameView.listen_state then 
         if self._gameView.listen_count == 0 then
@@ -1213,7 +1211,6 @@ function GameLayer:isListenCard(card)
             n = n + 1
             -- TingPai list at Ting state
             self.cbListenData = self.cbListenCardList[i] 
-            dump(self.cbListenData, "cbListenData") 
         end
     end
     if n >= 1 then
