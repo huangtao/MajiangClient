@@ -1212,7 +1212,8 @@ function GameLayer:isListenCard(card)
         if self.cbListenPromptOutCard[i] == card then
             n = n + 1
             -- TingPai list at Ting state
-            self.cbListenData = self.cbListenCardList[i]  
+            self.cbListenData = self.cbListenCardList[i] 
+            dump(self.cbListenData, "cbListenData") 
         end
     end
     if n >= 1 then

@@ -1195,6 +1195,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
             else 
 		        self.spGameBtn:setVisible(true)
 		        self._scene:SetGameOperateClock()
+                return true
             end
         end
     end
