@@ -1161,6 +1161,12 @@ function CardLayer:isUserMustWin()
 		end
 	end
 
+    if self._scene._scene.listen_state then
+        if self.cbCardData[1] == GameLogic.MAGIC_DATA then
+            return true
+        end
+    end
+
 	return false
 end
 --用户可以碰

@@ -46,8 +46,6 @@ function GameLayer:OnInitGameEngine()
     -- ChangMaoGang data initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
-    -- listen data
-    self.cbListenData = {}
     -- JinBao animation
     self.m_nodeJinBaoAnim = nil
     self.m_actJinBaoAnim = nil
@@ -91,8 +89,6 @@ function GameLayer:OnResetGameEngine()
     -- ChangMaoGang data initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
-    -- listen data
-    self.cbListenData = {}
 end
 
 --获取gamekind
@@ -1189,16 +1185,6 @@ function GameLayer:sendOutCard(card)
 		return false
 	end
 
-    -- if this player is on Ting state
-    if self._gameView.listen_state then 
-        if self._gameView.listen_count == 0 then
-            self._gameView.listen_count = 1
-        end 
-        if self:isListenCard(card) == false then
-            return false
-        end
-    end
-
 	self._gameView:HideGameBtn()
     self._gameView:eatBtnHide()
     self._gameView:gangBtnHide()
@@ -1209,21 +1195,6 @@ function GameLayer:sendOutCard(card)
 	return self:SendData(cmd.SUB_C_OUT_CARD, cmd_data)
 end
 
-function GameLayer:isListenCard(card)
-    local n = 0
-    for i =1, #self.cbListenPromptOutCard do
-        if self.cbListenPromptOutCard[i] == card then
-            n = n + 1
-            -- TingPai list at Ting state
-            self.cbListenData = self.cbListenCardList[i] 
-        end
-    end
-    if n >= 1 then
-        return true
-    else 
-        return false
-    end
-end
 --操作扑克
 function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
 	print("发送操作提示：", cbOperateCode, table.concat(cbOperateCard, ","))
