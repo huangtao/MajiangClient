@@ -85,12 +85,20 @@ function ResultLayer:ctor(scene)
 	--庄标志
 	self.spBanker = self:getChildByTag(6):setLocalZOrder(1)
     -- init flags --
+    self:getChildByName("sp_ZiMo_cy"):setVisible(false)
     self:getChildByName("sp_ZhuangJia"):setVisible(false)
     self:getChildByName("sp_ZiMo_cy"):setVisible(false)
     self:getChildByName("sp_QingYiSe"):setVisible(false)
     self:getChildByName("sp_PiaoHu"):setVisible(false)
     self:getChildByName("sp_QiongHu"):setVisible(false)
     self:getChildByName("sp_ShiSanYao"):setVisible(false)
+    self:getChildByName("txt_ShowBaYi"):setVisible(false)
+    self:getChildByName("txt_JiaHu"):setVisible(false)
+    self:getChildByName("txt_JinBao"):setVisible(false)
+    self:getChildByName("txt_HaiDiLaoYue"):setVisible(false)
+    self:getChildByName("txt_GangShangHua"):setVisible(false)
+    self:getChildByName("txt_GangShangPao"):setVisible(false)
+    self:getChildByName("txt_QiangGangHu"):setVisible(false)
 end
 
 function ResultLayer:onTouchBegan(touch, event)
@@ -106,6 +114,7 @@ end
 function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerChairId, cbHuCard, cbHuKindData)
 	assert(type(resultList) == "table" and type(cbAwardCard) == "table" and type(cbRemainCard) == "table")
     -- set false of HuKind visibility
+    self:getChildByName("sp_ZiMo_cy"):setVisible(false)
     self:getChildByName("sp_ZhuangJia"):setVisible(false)
     self:getChildByName("sp_ZiMo_cy"):setVisible(false)
     self:getChildByName("sp_QingYiSe"):setVisible(false)
@@ -253,8 +262,8 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 					:move(fX + 21, 0 + 32)
 					:addTo(nodeUserCard) 
                     ]]
-                self:getChildByName("sp_ZiMo_cy")
-                    :setVisible(true)
+                
+                    
 			end
 			--奖码
             --[[
@@ -294,6 +303,12 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 			self.nodeUser[order]:setVisible(false)
 		end
         -- set true of HuKind visibility
+        if math.mod(cbHuKindData, GameLogic.CHR_ZHUANG_JIA*2) >= GameLogic.CHR_ZHUANG_JIA then
+            self:getChildByName("sp_ZhuangJia"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_ZI_MO*2) >= GameLogic.CHR_ZI_MO then
+            self:getChildByName("sp_ZiMo_cy"):setVisible(true)
+        end
         if math.mod(cbHuKindData, GameLogic.CHR_QING_YI_SE*2) >= GameLogic.CHR_QING_YI_SE then
             self:getChildByName("sp_QingYiSe"):setVisible(true)
         end
