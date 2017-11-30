@@ -971,6 +971,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
     -- BaoPai
     self.cbBaoPai = cmd_data.cbBaopaiCardData
 	--显示结算框
+    print(self.HuPaiKindData, "HuPaiKindData")
     if math.mod(self.HuPaiKindData, GameLogic.CHR_JIN_BAO*2) >= GameLogic.CHR_JIN_BAO then
         self:playAnimJinBao()
     end

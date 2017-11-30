@@ -91,7 +91,6 @@ function ResultLayer:ctor(scene)
     self:getChildByName("sp_PiaoHu"):setVisible(false)
     self:getChildByName("sp_QiongHu"):setVisible(false)
     self:getChildByName("sp_ShiSanYao"):setVisible(false)
-    self:getChildByName("sp_QiDui"):setVisible(false)
 end
 
 function ResultLayer:onTouchBegan(touch, event)
