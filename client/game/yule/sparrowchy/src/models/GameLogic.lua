@@ -40,24 +40,24 @@ GameLogic.WIK_UPDATE_BAO			= 0x8000						-- UPDATED BAO PAI  --32768
 
 --CMD_S_GameConclude.wHuKindData 
 GameLogic.HU_KIND_MASK				= 0x0000FFFF
-GameLogic.CHR_PING_HU				= 0x00000001			--平胡
+GameLogic.CHR_PING_HU				= 0x00000001			-- 平胡
 GameLogic.CHR_ZHUANG_JIA			= 0x00000002			-- 庄家
 GameLogic.CHR_ZI_MO					= 0x00000004			-- 自摸
 GameLogic.CHR_QING_YI_SE			= 0x00000008			-- 清一色
-GameLogic.CHR_PIAO_HU				= 0x00000010			-- 飘胡     // =0
+GameLogic.CHR_PIAO_HU				= 0x00000010		    -- 飘胡     // =0
 GameLogic.CHR_QIONG_HU				= 0x00000020			-- 穷胡     // =0
 GameLogic.CHR_SHI_SAN_YAO			= 0x00000040			-- 十三幺
 GameLogic.CHR_QI_DUI				= 0x00000080			-- 七对		// =0
 GameLogic.CHR_SHOU_BA_YI			= 0x00000100			-- 手把一	
-GameLogic.CHR_JIA_HU				= 0x00000200			-- 夹胡
+GameLogic.CHR_JIA_HU				= 0x00000200			--	夹胡
 GameLogic.CHR_JIN_BAO				= 0x00000800			-- 进宝
-GameLogic.CHR_FEN_ZHANG				= 0x00008000			-- 分张	/ 海底捞月（haidilaoyue）
+GameLogic.CHR_FEN_ZHANG				= 0x00008000			-- 分张	// 海底捞月（haidilaoyue）
 
-GameLogic.GANG_KIND_MASK			= 0xFFFF0000
-GameLogic.CHR_GANG_SHANG_HUA        = 0x00010000                         -- 杠上花
-GameLogic.CHR_GANG_SHANG_PAO        = 0x00020000                         -- 杠上炮
-GameLogic.CHR_QIANG_GANG_HU         = 0x00040000                         -- 抢杠胡
-GameLogic.CHR_CHI_HU				= 0x00080000						 -- 放炮
+GameLogic.CHR_GANG_SHANG_HUA        = 0x00010000          -- 杠上花
+GameLogic.CHR_GANG_SHANG_PAO        = 0x00020000          -- 杠上炮
+GameLogic.CHR_QIANG_GANG_HU         = 0x00040000          -- 抢杠胡
+GameLogic.CHR_QI_YU					= 0x00080000			-- 其余三家闭门
+GameLogic.CHR_CHI_HU				= 0x00100000			-- 放炮
 
 --动作类型
 GameLogic.WIK_GANERAL				= 0x00						--普通操作

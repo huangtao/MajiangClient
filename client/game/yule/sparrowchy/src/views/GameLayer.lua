@@ -929,11 +929,13 @@ function GameLayer:onSubGameConclude(dataBuffer)
 			end
 			--碰杠牌
 			result.cbBpBgCardData = cbBpBgData[wViewChairId]
+            --[[
 			--奖码
 			result.cbAwardCard = {}
 			for j = 1, cmd_data.cbMaCount[1][i] do
 				result.cbAwardCard[j] = cmd_data.cbMaData[1][j]
 			end
+            ]]
 			--插入
 			table.insert(resultList, result)
 			--剩余牌里删掉对手的牌
@@ -969,7 +971,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
     -- BaoPai
     self.cbBaoPai = cmd_data.cbBaopaiCardData
 	--显示结算框
-    if math.mod(self.HuPaiKindData, 2048*2) >= 2048 then
+    if math.mod(self.HuPaiKindData, GameLogic.CHR_JIN_BAO*2) >= GameLogic.CHR_JIN_BAO then
         self:playAnimJinBao()
     end
     self._gameView:HideGameBtn()

@@ -245,13 +245,12 @@ cmd.CMD_S_GameConclude =
 	{k = "cbSendCardData", t = "byte"},							--最后发牌
 	{k = "cbChiHuKind", t = "dword", l = {cmd.GAME_PLAYER}},	--胡牌类型
 	{k = "dwChiHuRight", t = "dword", l = {1, 1, 1, 1}},		--胡牌类型
-	{k = "wLeftUser", t = "word"},								--玩家逃跑
-	{k = "wLianZhuang", t = "word"},							--连庄
+	--{k = "wLeftUser", t = "word"},								--玩家逃跑
+	--{k = "wLianZhuang", t = "word"},							--连庄
 	{k = "cbCardCount", t = "byte", l = {cmd.GAME_PLAYER}},		--扑克数目
 	{k = "cbHandCardData", t = "byte", l = {14, 14, 14, 14}},	--扑克列表
-	--{k = "cbMaCount", t = "byte"},							--码数
-	{k = "cbMaCount", t = "byte", l = {cmd.GAME_PLAYER}},		--码数
-	{k = "cbMaData", t = "byte", l = {7}},						--码数据
+	--{k = "cbMaCount", t = "byte", l = {cmd.GAME_PLAYER}},		--码数
+	--{k = "cbMaData", t = "byte", l = {7}},						--码数据
     {k = "cbBaopaiCardData", t = "byte"},
 }
 --用户托管
@@ -274,6 +273,9 @@ cmd.CMD_S_Record =
 	{k = "cbMaCount", t = "byte", l = {cmd.GAME_PLAYER}},		--
 	{k = "cbAnGang", t = "byte", l = {cmd.GAME_PLAYER}},		--
 	{k = "cbMingGang", t = "byte", l = {cmd.GAME_PLAYER}},		--
+    {k = "cbDianPaoCount", t = "byte", l = {cmd.GAME_PLAYER}},	    --  点炮次数
+    {k = "cbZiMoCount", t = "byte", l = {cmd.GAME_PLAYER}},		    --  自摸次数
+    {k = "cbZhuangJiaCount", t = "byte", l = {cmd.GAME_PLAYER}},	--  庄家次数
 	{k = "lAllScore", t = "score", l = {cmd.GAME_PLAYER}},		--
 	{k = "lDetailScore", t = "score", l = {32, 32, 32, 32}},	--
 }

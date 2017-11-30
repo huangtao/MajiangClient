@@ -106,6 +106,21 @@ end
 
 function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerChairId, cbHuCard, cbHuKindData)
 	assert(type(resultList) == "table" and type(cbAwardCard) == "table" and type(cbRemainCard) == "table")
+    -- set false of HuKind visibility
+    self:getChildByName("sp_ZhuangJia"):setVisible(false)
+    self:getChildByName("sp_ZiMo_cy"):setVisible(false)
+    self:getChildByName("sp_QingYiSe"):setVisible(false)
+    self:getChildByName("sp_PiaoHu"):setVisible(false)
+    self:getChildByName("sp_QiongHu"):setVisible(false)
+    self:getChildByName("sp_ShiSanYao"):setVisible(false)
+    self:getChildByName("txt_ShowBaYi"):setVisible(false)
+    self:getChildByName("txt_JiaHu"):setVisible(false)
+    self:getChildByName("txt_JinBao"):setVisible(false)
+    self:getChildByName("txt_HaiDiLaoYue"):setVisible(false)
+    self:getChildByName("txt_GangShangHua"):setVisible(false)
+    self:getChildByName("txt_GangShangPao"):setVisible(false)
+    self:getChildByName("txt_QiangGangHu"):setVisible(false)
+
 	local width = 44
 	local height = 67
 	for i = 1, #resultList do
@@ -243,6 +258,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
                     :setVisible(true)
 			end
 			--奖码
+            --[[
 			fX = fX + 110
 			for j = 1, #resultList[i].cbAwardCard do
 				--local rectX = CardLayer:switchToCardRectX(resultList[i].cbAwardCard[j])
@@ -270,6 +286,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 				end
 				fX = fX + 52
 			end
+            ]]
 			--庄家
 			if wBankerChairId == resultList[i].userItem.wChairID then
 				nBankerOrder = order
@@ -277,7 +294,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 		else
 			self.nodeUser[order]:setVisible(false)
 		end
-        -- HuKind 
+        -- set true of HuKind visibility
         if math.mod(cbHuKindData, GameLogic.CHR_QING_YI_SE*2) >= GameLogic.CHR_QING_YI_SE then
             self:getChildByName("sp_QingYiSe"):setVisible(true)
         end
@@ -290,6 +307,28 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
         if math.mod(cbHuKindData, GameLogic.CHR_SHI_SAN_YAO*2) >= GameLogic.CHR_SHI_SAN_YAO then
             self:getChildByName("sp_ShiSanYao"):setVisible(true)
         end
+        if math.mod(cbHuKindData, GameLogic.CHR_SHOU_BA_YI*2) >= GameLogic.CHR_SHOU_BA_YI then
+            self:getChildByName("txt_ShowBaYi"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_JIA_HU*2) >= GameLogic.CHR_JIA_HU then
+            self:getChildByName("txt_JiaHu"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_JIN_BAO*2) >= GameLogic.CHR_JIN_BAO then
+            self:getChildByName("txt_JinBao"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_FEN_ZHANG*2) >= GameLogic.CHR_FEN_ZHANG then
+            self:getChildByName("txt_HaiDiLaoYue"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_GANG_SHANG_HUA*2) >= GameLogic.CHR_GANG_SHANG_HUA then
+            self:getChildByName("txt_GangShangHua"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_GANG_SHANG_PAO*2) >= GameLogic.CHR_GANG_SHANG_PAO then
+            self:getChildByName("txt_GangShangPao"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_QIANG_GANG_HU*2) >= GameLogic.CHR_QIANG_GANG_HU then
+            self:getChildByName("txt_QiangGangHu"):setVisible(true)
+        end
+
         -- show HuiPai and BaoPai
         local m_width=98
         local m_height=142
