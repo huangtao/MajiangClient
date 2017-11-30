@@ -950,12 +950,14 @@ function GameLayer:onSubGameConclude(dataBuffer)
 	--全部奖码
 	local meIndex = self:GetMeChairID() + 1
 	local cbAwardCardTotal = {}
+    --[[
 	for i = 1, 7 do
 		local value = cmd_data.cbMaData[1][i]
 		if value and value > 0 then
 			table.insert(cbAwardCardTotal, value)
 		end
 	end
+    ]]
 	--删掉奖码
 	cbRemainCard = GameLogic.RemoveCard(cbRemainCard, cbAwardCardTotal)
 	if bMeWin == false then 			--有人赢但赢的人不是我
