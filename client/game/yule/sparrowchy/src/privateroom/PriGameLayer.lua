@@ -275,6 +275,14 @@ function PriGameLayer:onPriGameEnd(cmd_table)
             local textAnGangNum = nodeUser:getChildByName("Atlas_AnGang")
             textAnGangNum:setString(tabUserRecord[i].cbAnGang)
 
+            local textDianPao = nodeUser:getChildByName("Atlas_DianPao")
+            textDianPao:setString(tabUserRecord[i].cbDianPaoCount)
+
+            local textZiMo = nodeUser:getChildByName("Atlas_ZiMo")
+            textZiMo:setString(tabUserRecord[i].cbZiMoCount)
+
+            local textZhuangZuo = nodeUser:getChildByName("Atlas_ZhuangZuo")
+            textZhuangZuo:setString(tabUserRecord[i].cbZhuangJiaCount)
             --[[
             --中码个数
             local textMaNum = nodeUser:getChildByName("Text_maNum")

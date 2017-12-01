@@ -559,8 +559,6 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 		cardFont:setTexture(strFile)
 		--假如可以听牌
 		local cbPromptCardData = self._scene._scene:getListenPromptOutCard()
-        dump(self.cbCardData)
-        dump(cbPromptCardData, "cbPromptCardData")
 		if #cbPromptCardData > 0 then
 			self:promptListenOutCard(cbPromptCardData)
 		end
@@ -1106,7 +1104,6 @@ function CardLayer:getGangCard(data)
 			data = dataTemp
 		end
 	end
-    dump(data,"result data",3)
 	return data
 end
 
@@ -1161,8 +1158,9 @@ function CardLayer:isUserMustWin()
 		end
 	end
 
-    if self._scene._scene.listen_state then
-        if self.cbCardData[1] == GameLogic.MAGIC_DATA then
+    local count = #self.cbCardData
+    if self._scene.listen_state and math.mod(count, 3) == 2 then
+        if self.cbCardData[count] == GameLogic.MAGIC_DATA then
             return true
         end
     end

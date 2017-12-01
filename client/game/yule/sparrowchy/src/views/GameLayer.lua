@@ -899,6 +899,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
 	local cbTotalCardData = clone(GameLogic.TotalCardData)
 	local cbRemainCard = GameLogic.RemoveCard(cbTotalCardData, self.cbAppearCardData)
 	--提示胡牌标记
+    self.HuPaiKindData = 0
 	for i = 1, cmd.GAME_PLAYER do
 		local wViewChairId = self:SwitchViewChairID(i - 1)
 		if cmd_data.cbChiHuKind[1][i] >= GameLogic.WIK_CHI_HU then
@@ -972,7 +973,6 @@ function GameLayer:onSubGameConclude(dataBuffer)
     -- BaoPai
     self.cbBaoPai = cmd_data.cbBaopaiCardData
 	--显示结算框
-    print(self.HuPaiKindData, "HuPaiKindData")
     if math.mod(self.HuPaiKindData, GameLogic.CHR_JIN_BAO*2) >= GameLogic.CHR_JIN_BAO then
         self:playAnimJinBao()
     end
@@ -1017,6 +1017,9 @@ function GameLayer:onSubGameRecord(dataBuffer)
 		self.m_userRecord[i].cbMingGang = cmd_data.cbMingGang[1][i]
 		self.m_userRecord[i].cbAnGang = cmd_data.cbAnGang[1][i]
 		self.m_userRecord[i].cbMaCount = cmd_data.cbMaCount[1][i]
+        self.m_userRecord[i].cbDianPaoCount = cmd_data.cbDianPaoCount[1][i]
+        self.m_userRecord[i].cbZiMoCount = cmd_data.cbZiMoCount[1][i]
+        self.m_userRecord[i].cbZhuangJiaCount = cmd_data.cbZhuangJiaCount[1][i]
 		self.m_userRecord[i].lDetailScore = {}
 		for j = 1, nInningsCount do
 			self.m_userRecord[i].lDetailScore[j] = cmd_data.lDetailScore[i][j]
@@ -1227,10 +1230,12 @@ function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
 	assert(type(cbOperateCard) == "table")
 
 	--听牌数据置空
-	self.cbListenPromptOutCard = {}
-	self.cbListenCardList = {}
-	self._gameView:setListeningCard(nil)
-	self._gameView._cardLayer:promptListenOutCard(nil)
+    if cbOperateCode ~= 0 then
+	    self.cbListenPromptOutCard = {}
+	    self.cbListenCardList = {}
+	    self._gameView:setListeningCard(nil)
+	    self._gameView._cardLayer:promptListenOutCard(nil)
+    end
 
 	--发送操作
 	--local cmd_data = ExternalFun.create_netdata(cmd.CMD_C_OperateCard)
