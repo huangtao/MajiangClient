@@ -46,6 +46,8 @@ function GameLayer:OnInitGameEngine()
     -- ChangMaoGang data initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
+    -- listen data
+    self.cbListenData = {}
     -- JinBao animation
     self.m_nodeJinBaoAnim = nil
     self.m_actJinBaoAnim = nil
@@ -89,6 +91,8 @@ function GameLayer:OnResetGameEngine()
     -- ChangMaoGang data initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
+    -- listen data
+    self.cbListenData = {}
 end
 
 --获取gamekind
@@ -904,6 +908,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
 			if wViewChairId == cmd.MY_VIEWID then
 				bMeWin = true
 			end
+            self.HuPaiKindData = cmd_data.dwChiHuRight[i][1]
 		end
 	end
 	--显示结算图层
@@ -939,10 +944,8 @@ function GameLayer:onSubGameConclude(dataBuffer)
 				cbRemainCard = GameLogic.RemoveCard(cbRemainCard, result.cbCardData)
 			end
 		end
-        if wViewChairId == cmd.MY_VIEWID then
-            self.HuPaiKindData = cmd_data.dwChiHuRight[i][1]
-        end
 	end
+    
 	--全部奖码
 	local meIndex = self:GetMeChairID() + 1
 	local cbAwardCardTotal = {}
@@ -1185,6 +1188,13 @@ function GameLayer:sendOutCard(card)
 		return false
 	end
 
+    -- if this player is on Ting state
+    if self._gameView.listen_state then 
+        if self:isListenCard(card) == false then
+            return false
+        end
+    end
+
 	self._gameView:HideGameBtn()
     self._gameView:eatBtnHide()
     self._gameView:gangBtnHide()
@@ -1193,6 +1203,22 @@ function GameLayer:sendOutCard(card)
 	local cmd_data = ExternalFun.create_netdata(cmd.CMD_C_OutCard)
 	cmd_data:pushbyte(card)
 	return self:SendData(cmd.SUB_C_OUT_CARD, cmd_data)
+end
+
+function GameLayer:isListenCard(card)
+    local n = 0
+    for i =1, #self.cbListenPromptOutCard do
+        if self.cbListenPromptOutCard[i] == card then
+            n = n + 1
+            -- TingPai list at Ting state
+            self.cbListenData = self.cbListenCardList[i] 
+        end
+    end
+    if n >= 1 then
+        return true
+    else 
+        return false
+    end
 end
 
 --操作扑克
