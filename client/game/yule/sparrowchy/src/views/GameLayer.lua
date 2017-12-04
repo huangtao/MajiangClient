@@ -859,11 +859,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
     end
 
     if wOperateViewId == cmd.MY_VIEWID then
-        if cmd_data.cbActionMask == GameLogic.WIK_LISTEN then
-            self._gameView:recognizecbActionMask(GameLogic.WIK_LISTEN, 0)
-        elseif cmd_data.cbActionMask == GameLogic.WIK_CHI_HU then
-            self._gameView:recognizecbActionMask(GameLogic.WIK_CHI_HU, data1)
-        end
+        self._gameView:recognizecbActionMask(cmd_data.cbActionMask, data1)
     end
 	return true
 end
