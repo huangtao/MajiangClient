@@ -845,7 +845,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
 			end
 		end
 		--提示听牌
-		if wOperateViewId == cmd.MY_VIEWID and cmd_data.cbOperateCode == GameLogic.WIK_PENG then
+		if wOperateViewId == cmd.MY_VIEWID and cmd_data.cbOperateCode <= 8 then
 			self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
 		end
 	--end
