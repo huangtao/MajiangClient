@@ -145,7 +145,6 @@ function GameViewLayer:onResetData()
 	self.spGameBtn:getChildByTag(GameViewLayer.BT_PASS):setEnabled(true):setVisible(true)
     -- Ting state 
     self.listen_state = false
-    self.listen_count = 0
 end
 
 function GameViewLayer:onExit()
@@ -878,7 +877,6 @@ function GameViewLayer:onButtonClickedEvent(tag, ref)
         self:HideGameBtn()
 	elseif tag == GameViewLayer.BT_WIN then
 		print("胡！")
-
 		local cbOperateCard = {self.cbActionCard, 0, 0}
 		self._scene:sendOperateCard(GameLogic.WIK_CHI_HU, cbOperateCard)
 		self:HideGameBtn()

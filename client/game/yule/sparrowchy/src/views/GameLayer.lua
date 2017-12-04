@@ -493,6 +493,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 
     -- 刷新房卡
     if PriRoom and GlobalUserItem.bPrivateRoom then
+        print("PriGameLayer:onRefresh() -- for the TEST")
         if nil ~= self._gameView._priView and nil ~= self._gameView._priView.onRefreshInfo then
             self._gameView._priView:onRefreshInfo()
         end
@@ -753,7 +754,7 @@ end
 function GameLayer:onSubOperateResult(dataBuffer)
 	print("操作结果")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateResult, dataBuffer)
-	--dump(cmd_data, "CMD_S_OperateResult")
+	dump(cmd_data, "CMD_S_OperateResult")
 	if cmd_data.cbOperateCode == GameLogic.WIK_NULL then
 		assert(false, "没有操作也会进来？")
 		return true
@@ -855,6 +856,14 @@ function GameLayer:onSubOperateResult(dataBuffer)
 
     if self._gameView.spGameBtn:isVisible() then
         self._gameView:HideGameBtn()
+    end
+
+    if wOperateViewId == cmd.MY_VIEWID then
+        if cmd_data.cbActionMask == GameLogic.WIK_LISTEN then
+            self._gameView:recognizecbActionMask(GameLogic.WIK_LISTEN, 0)
+        elseif cmd_data.cbActionMask == GameLogic.WIK_CHI_HU then
+            self._gameView:recognizecbActionMask(GameLogic.WIK_CHI_HU, data1)
+        end
     end
 	return true
 end
@@ -1086,7 +1095,6 @@ end
 --播放麻将操作音效
 function GameLayer:playCardOperateSound(viewId, bTail, operateCode)
 	assert(operateCode ~= GameLogic.WIK_NULL)
-
 	local strGender = ""
 	if self.cbGender[viewId] == 1 then
 		strGender = "BOY"
@@ -1097,12 +1105,14 @@ function GameLayer:playCardOperateSound(viewId, bTail, operateCode)
 	if bTail then
 		strName = "REPLACE.wav"
 	else
-		if operateCode >= GameLogic.WIK_CHI_HU then
+		if operateCode == GameLogic.WIK_CHI_HU or operateCode == GameLogic.WIK_FANG_PAO then
 			strName = "CHI_HU.wav"
 		elseif operateCode == GameLogic.WIK_LISTEN then
 			strName = "TING.wav"
 		elseif operateCode == GameLogic.WIK_GANG then
-			strName = "GANG.wav"
+            strName = "GANG.wav"
+        elseif operateCode == GameLogic.WIK_ARROW or operateCode == GameLogic.WIK_WIND or operateCode == GameLogic.WIK_CHASEARROW or operateCode == GameLogic.WIK_CHASEWIND then
+            strName = "GANG.wav"
 		elseif operateCode == GameLogic.WIK_PENG then
 			strName = "PENG.wav"
 		elseif operateCode <= GameLogic.WIK_RIGHT then
@@ -1112,6 +1122,8 @@ function GameLayer:playCardOperateSound(viewId, bTail, operateCode)
 	local strFile = cmd.RES_PATH.."sound/"..strGender.."/"..strName
 	self:PlaySound(strFile)
 end
+
+--or operateCode == GameLogic.WIK_WIND or operateCode == GameLogic.WIK_CHASEARROW or operateCode == GameLogic.WIK_CHASEWIND
 --播放随机聊天音效
 function GameLayer:playRandomSound(viewId)
 	local strGender = ""
@@ -1233,9 +1245,10 @@ function GameLayer:sendOperateCard(cbOperateCode, cbOperateCard)
     if cbOperateCode ~= 0 then
 	    self.cbListenPromptOutCard = {}
 	    self.cbListenCardList = {}
-	    self._gameView:setListeningCard(nil)
-	    self._gameView._cardLayer:promptListenOutCard(nil)
     end
+
+    self._gameView:setListeningCard(nil)
+	self._gameView._cardLayer:promptListenOutCard(nil)
 
 	--发送操作
 	--local cmd_data = ExternalFun.create_netdata(cmd.CMD_C_OperateCard)

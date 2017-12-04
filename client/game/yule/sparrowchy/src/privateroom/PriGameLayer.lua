@@ -175,16 +175,14 @@ function PriGameLayer:onRefreshInfo()
     else
         strMa = cbMaCount.."个扎码"
     end
-    --self.m_textRoomName:setString(strMa)
     -- 局数
     local dwPlayCount = PriRoom:getInstance().m_tabPriData.dwPlayCount
     print("局数：", dwPlayCount)
     local dwDrawCountLimit = PriRoom:getInstance().m_tabPriData.dwDrawCountLimit
+
+    print("dwDrawCountLimit:", dwDrawCountLimit)
     local strcount = dwPlayCount .. " / " .. dwDrawCountLimit.." 圈"
     self.m_leftCount:setString(strcount)
-    --self.m_atlasCount:setString(strcount)
-    --剩余
-    --self.m_textRemain:setString("剩 "..(dwDrawCountLimit - dwPlayCount).." 局")
     self:onRefreshInviteBtn()
     --房主
     self._gameLayer:updateRoomHost()

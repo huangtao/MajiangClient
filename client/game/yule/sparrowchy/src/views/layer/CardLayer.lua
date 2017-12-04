@@ -186,7 +186,6 @@ function CardLayer:createHandCard()
 					:move(width/2, height/2 - 15)
 					:setTag(1)
 					:addTo(card)
-
 				--card:setTextureRect(cc.rect(0, 0, 69, 136))
 				if j == 1 then
 					local x, y = card:getPosition()
@@ -576,6 +575,7 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
 	for j = 1, cmd.MAX_COUNT do
 		self.nodeHandCard[viewId]:getChildByTag(j):setVisible(false)
 		self.nodeHandDownCard[viewId]:getChildByTag(j):setVisible(false)
+        -- remove Green round of HuiPai
         if self.nodeHandCard[viewId]:getChildByTag(j) then
             if self.nodeHandCard[viewId]:getChildByTag(j):getChildByTag(CardLayer.GREEN_ROUND) then
                 self.nodeHandCard[viewId]:getChildByTag(j):removeChildByTag(CardLayer.GREEN_ROUND)
@@ -600,8 +600,6 @@ function CardLayer:setHandCard(viewId, cardCount, meData)
 				--local rectX = self:switchToCardRectX(self.cbCardData[j])
                 -- set green round at HuiPai --
                 if self.cbCardData[j] == GameLogic.MAGIC_DATA then
-                    print(j)
-                    print(self.cbCardData[j])
                     local strFile = cmd.RES_PATH.."game/sp_round_big.png"
 				    local font = display.newSprite(strFile)
                         :move(44,72)
@@ -1004,10 +1002,10 @@ end
 function CardLayer:promptListenOutCard(cbPromptOutData)
 	--还原
 	local cbCardCount = #self.cbCardData
-    print(cbCardCount)
 	for i = 1, cmd.MAX_COUNT do
 		local card = self.nodeHandCard[cmd.MY_VIEWID]:getChildByTag(i)
 		card:getChildByTag(CardLayer.TAG_LISTEN_FLAG):setVisible(false)
+        card:setColor(cc.c3b(255, 255, 255))
 	end
 	if cbPromptOutData == nil then
 		return 
@@ -1015,17 +1013,31 @@ function CardLayer:promptListenOutCard(cbPromptOutData)
 	--校验
 	assert(type(cbPromptOutData) == "table")
 	assert(math.mod(cbCardCount - 2, 3) == 0, "You can't out card now!")
+    local flag = {}
+    for i = 1, cbCardCount do
+		table.insert(flag, 0)
+	end
 	for i = 1, #cbPromptOutData do
 		if cbPromptOutData[i] ~= GameLogic.MAGIC_DATA then
 			for j = 1, cbCardCount do
+                local nTag = cbCardCount - j + 1
+				local card = self.nodeHandCard[cmd.MY_VIEWID]:getChildByTag(nTag)
 				if cbPromptOutData[i] == self.cbCardData[j] then
-					local nTag = cbCardCount - j + 1
-					local card = self.nodeHandCard[cmd.MY_VIEWID]:getChildByTag(nTag)
-					card:getChildByTag(CardLayer.TAG_LISTEN_FLAG):setVisible(true)
+					--card:getChildByTag(CardLayer.TAG_LISTEN_FLAG):setVisible(true)
+                    flag[j] = 1
 				end
 			end
 		end
 	end
+    if #cbPromptOutData >= 1 then
+        for j = 1, cbCardCount do
+            if flag[j] == 0 then
+                local nTag = cbCardCount - j + 1
+				local card = self.nodeHandCard[cmd.MY_VIEWID]:getChildByTag(nTag)
+		        card:setColor(cc.c3b(150, 150, 150))
+            end
+	    end
+    end
 end
 
 function CardLayer:setTableCardByHeapInfo(viewId, cbHeapCardInfo, wViewHead, wViewTail)
@@ -1157,14 +1169,14 @@ function CardLayer:isUserMustWin()
 			return true
 		end
 	end
-
+    --[[
     local count = #self.cbCardData
     if self._scene.listen_state and math.mod(count, 3) == 2 then
         if self.cbCardData[count] == GameLogic.MAGIC_DATA then
             return true
         end
     end
-
+    ]] 
 	return false
 end
 --用户可以碰
