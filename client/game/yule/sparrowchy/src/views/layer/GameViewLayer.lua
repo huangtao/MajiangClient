@@ -213,8 +213,6 @@ function GameViewLayer:ctor(scene)
 		self.nodePlayer[i]:getChildByTag(GameViewLayer.TEXT_NICKNAME):setLocalZOrder(1)
 		self.nodePlayer[i]:getChildByTag(GameViewLayer.SP_READY):move(posReady[i]):setLocalZOrder(1)
 
-		--local sp_trustee = self.nodePlayer[i]:getChildByTag(GameViewLayer.SP_TRUSTEE)
-		--	:setVisible(false)
 		local sp_banker = self.nodePlayer[i]:getChildByTag(GameViewLayer.SP_BANKER)
 			:setLocalZOrder(1)
 			:setVisible(false)
@@ -232,37 +230,10 @@ function GameViewLayer:ctor(scene)
 		:setLocalZOrder(3)
 		:setVisible(false)
 		:setScale(0.7)
-	--庄家
-	--self:getChildByTag(GameViewLayer.SP_ANNOUNCEMENT):setLocalZOrder(2):setVisible(false)
-
     
 	--托管覆盖层
 	self.spTrusteeCover = cc.Layer:create():setVisible(false):addTo(self, 4)
-    --[[
-	--阴影层
-	display.newSprite(cmd.RES_PATH.."game/sp_trusteeCover.png")
-		:move(667, 112)
-		:setScaleY(1.6)
-		:setTag(GameViewLayer.SP_TRUSTEEBG)
-		:addTo(self.spTrusteeCover)
-	--取消托管按钮
-	self.btTrusteeCancel = ccui.Button:create("bt_trusteeCancel_1.png","bt_trusteeCancel_2.png","bt_trusteeCancel_1.png",ccui.TextureResType.plistType)
-		:move(667, 108)
-		:setTag(GameViewLayer.BT_TRUSTEECANCEL)
-		:addTo(self.spTrusteeCover, 1)
-	self.btTrusteeCancel:addTouchEventListener(function(ref, eventType)
-		if eventType == ccui.TouchEventType.ended then
-			self:onButtonClickedEvent(ref:getTag(), ref)
-		end
-	end)
-	display.newSprite(cmd.RES_PATH.."game/sp_trusteeMan.png")
-		:move(1067, 108)
-		:addTo(self.spTrusteeCover)
-	self.spTrusteeCover:setTouchEnabled(true)
-	self.spTrusteeCover:registerScriptTouchHandler(function(eventType, x, y)
-		return self:onTrusteeTouchCallback(eventType, x, y)
-	end)
-    ]]
+    
 	--牌盘
 	self.spCardPlate = self:getChildByTag(GameViewLayer.SP_PLATE):setLocalZOrder(3):setVisible(false)
 	display.newSprite("game/font_middle/card_down.png")
@@ -361,55 +332,13 @@ function GameViewLayer:initButtons()
 		end
 	end
 
-    --[[
-	--桌子操作按钮屏蔽层
-	local callbackShield = function(ref)
-		local pos = ref:getTouchEndPosition()
-        local rectBg = self.spTableBtBg:getBoundingBox()
-        if not cc.rectContainsPoint(rectBg, pos)then
-        	self:showTableBt(false)
-        end
-	end
-	self.layoutShield = ccui.Layout:create()
-		:setContentSize(cc.size(display.width, display.height))
-		:setTouchEnabled(false)
-		:addTo(self, 5)
-	self.layoutShield:addClickEventListener(callbackShield)
-    
-	--桌子操作按钮
-	self.spTableBtBg = self:getChildByTag(GameViewLayer.SP_TABLE_BT_BG)
-        :setLocalZOrder(5)
-		:move(1486, 706)
-		:setVisible(false)
-        ]]
 	self.btSet = self:getChildByTag(GameViewLayer.BT_SET)
 	--btSet:setSelected(not bAble)
 	self.btSet:addTouchEventListener(btnCallback)
 
 	self.btChat = self:getChildByTag(GameViewLayer.BT_CHAT)	--聊天
 	self.btChat:addTouchEventListener(btnCallback)
-    --[[
-	local btExit = self.spTableBtBg:getChildByTag(GameViewLayer.BT_EXIT)	--退出
-	btExit:addTouchEventListener(btnCallback)
-    ]]
-    --[[
-	local btTrustee = self.spTableBtBg:getChildByTag(GameViewLayer.BT_TRUSTEE)	--托管
-	btTrustee:addTouchEventListener(btnCallback)
-	if GlobalUserItem.bPrivateRoom then
-		btTrustee:setEnabled(false)
-		btTrustee:setVisible(false)
-	end
-    ]]
-    --[[
-	local btHowPlay = self.spTableBtBg:getChildByTag(GameViewLayer.BT_HOWPLAY)	--玩法
-	btHowPlay:addTouchEventListener(btnCallback)
-    ]]
-    --[[
-	--桌子按钮开关
-	self.btSwitch = self:getChildByTag(GameViewLayer.BT_SWITCH)
-		:setLocalZOrder(2)
-	self.btSwitch:addTouchEventListener(btnCallback)
-    --]]
+    
 	--开始
 	self.btStart = self:getChildByTag(GameViewLayer.BT_START)
 		:setLocalZOrder(2)
@@ -502,27 +431,6 @@ function GameViewLayer:initButtons()
 end
 
 function GameViewLayer:showTableBt(bVisible)
-    --[[
-	if self.spTableBtBg:isVisible() == bVisible then
-		return false
-	end
-
-	local fSpacing = 334
-	if bVisible == true then
-        self.layoutShield:setTouchEnabled(true)
-		self.btSwitch:setVisible(false)
-		self.spTableBtBg:setVisible(true)
-		self.spTableBtBg:runAction(cc.MoveBy:create(0.3, cc.p(-fSpacing, 0)))
-	else
-        self.layoutShield:setTouchEnabled(false)
-		self.spTableBtBg:runAction(cc.Sequence:create(
-			cc.MoveBy:create(0.5, cc.p(fSpacing, 0)),
-			cc.CallFunc:create(function(ref)
-				self.btSwitch:setVisible(true)
-				self.spTableBtBg:setVisible(false)
-			end)))
-	end
-    --]]
 	return true
 end
 
@@ -1038,9 +946,6 @@ function GameViewLayer:gameStart(startViewId, wHeapHead, cbCardData, cbCardCount
     else 
         self._cardLayer:sendCard(cbCardData, cbCardCount)
     end
-	--self:runSiceAnimate(cbSiceCount1, cbSiceCount2, function()
-		--self._cardLayer:sendCard(cbCardData, cbCardCount)
-	--end)
 end
 --用户出牌
 function GameViewLayer:gameOutCard(viewId, card)
@@ -1171,34 +1076,34 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		self.cbActionCard = cbCardData
     end
 
-    if cbActionMask >= GameLogic.WIK_UPDATE_BAO then
+    if cbActionMask >= GameLogic.WIK_UPDATE_BAO then   -- 换宝
         cbActionMask = cbActionMask - 32768
         self:playAnimHuanBao()
         return true
     end
 
-    if cbActionMask >= 2048 then
+    if cbActionMask >= 2048 then        -- 【东南西北】的杠追加风牌后的杠
         cbActionMask = cbActionMask - 2048
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
 			:setVisible(true)
     end
 
-    if cbActionMask >= 1024 then
+    if cbActionMask >= 1024 then       -- 【中发白】的杠追加【中发白】牌后的杠
         cbActionMask = cbActionMask - 1024
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
 			:setVisible(true)
     end
     
-    if cbActionMask >= 512 then
+    if cbActionMask >= 512 then         -- 【东南西北】四张【风牌】
         cbActionMask = cbActionMask - 512
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
 			:setVisible(true)
     end
 
-    if cbActionMask >= 256 then
+    if cbActionMask >= 256 then         -- 【中发白】三张【箭牌】
         cbActionMask = cbActionMask - 256
         self.spGameBtn:getChildByTag(GameViewLayer.BT_BRIGDE)
 			:setEnabled(true)
@@ -1237,7 +1142,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 				:setVisible(true)
 		end
 	end
-    if cbActionMask > 0 then     -- Chi
+    if cbActionMask > 0 then     -- 吃
         self.spGameBtn:getChildByTag(GameViewLayer.BT_EAT)
 				:setEnabled(true)
 				:setVisible(true)
@@ -1425,14 +1330,7 @@ function GameViewLayer:onTrusteeTouchCallback(event, x, y)
 end
 --设置剩余牌
 function GameViewLayer:setRemainCardNum(num)
-	--local strRemianNum = string.format("剩%d张", num)
-	
 	self.textNum:setString(num)
-	-- if num == 112 then
-	-- 	text:setVisible(false)
-	-- else
-	-- 	text:setVisible(true)
-	-- end
 end
 --牌托
 function GameViewLayer:showCardPlate(viewId, cbCardData)

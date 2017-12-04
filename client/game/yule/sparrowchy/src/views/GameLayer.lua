@@ -184,11 +184,6 @@ function GameLayer:onGetSitUserNum()
     return num
 end
 
--- function GameLayer:onEnterTransitionFinish()
---     self._scene:createVoiceBtn(cc.p(1250, 300))
---     GameLayer.super.onEnterTransitionFinish(self)
--- end
-
 -- 计时器响应
 function GameLayer:OnEventGameClockInfo(chair,time,clockId)
     -- body
@@ -199,12 +194,7 @@ function GameLayer:OnEventGameClockInfo(chair,time,clockId)
     if clockId == cmd.IDI_START_GAME then
     	--托管
     	if self.bTrustee and self._gameView.btStart:isVisible() then
-   --  		print("进去")
-   --  		self._gameView:onButtonClickedEvent(GameViewLayer.BT_START)
-   --  		--托管在上个函数被复原了，在下面重开
-			-- self.bTrustee = true
-			-- self._gameView.nodePlayer[cmd.MY_VIEWID]:getChildByTag(GameViewLayer.SP_TRUSTEE):setVisible(true)
-			-- self._gameView.spTrusteeCover:setVisible(true)
+   
     	end
     	--超时
 		if time <= 0 then
@@ -230,11 +220,7 @@ function GameLayer:OnEventGameClockInfo(chair,time,clockId)
     	if chair == meChairId then
     		--托管
     		if self.bTrustee then
-    -- 			if self._gameView._cardLayer:isUserMustWin() then
-				-- 	self._gameView:onButtonClickedEvent(GameViewLayer.BT_WIN)
-    -- 			end
-				-- self._gameView:onButtonClickedEvent(GameViewLayer.BT_PASS)
-				-- self._gameView._cardLayer:outCardAuto()
+    
     		end
     		--超时
     		if time <= 0 then
@@ -307,16 +293,10 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		self.cbTimeStartGame = cmd_data.cbTimeStartGame
 		self.cbPlayerCount = cmd_data.cbPlayerCount or 4
 		self.cbMaCount = cmd_data.cbMaCount
-		print("设置码数", self.cbMaCount)
 		
 		self._gameView.btStart:setVisible(true)
 
-		-- if GlobalUserItem.bPrivateRoom then
-		-- 	--self._gameView.spClock:setVisible(false)
-		-- 	self._gameView.asLabTime:setString("0")
-		-- else
-			self:SetGameClock(wMyChairId, cmd.IDI_START_GAME, self.cbTimeStartGame)
-		--end
+		self:SetGameClock(wMyChairId, cmd.IDI_START_GAME, self.cbTimeStartGame)
 
 	elseif cbGameStatus == cmd.GAME_SCENE_PLAY then
 		print("游戏状态", wMyChairId)
@@ -473,7 +453,11 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 		local cbPromptHuCard = self:getListenPromptHuCard(cmd_data.cbOutCardData)
 		self._gameView:setListeningCard(cbPromptHuCard)
 		--提示操作
-		self._gameView:recognizecbActionMask(cmd_data.cbActionMask, cmd_data.cbActionCard)
+        local ActionMask = cmd_data.cbActionMask
+        if self._gameView.listen_state and math.mod(ActionMask, 32*2) >= 32 then
+            ActionMask = ActionMask - 32
+        end
+		self._gameView:recognizecbActionMask(ActionMask, cmd_data.cbActionCard)
 		if self.wCurrentUser == wMyChairId then
 			self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
 		end
@@ -493,7 +477,6 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
 
     -- 刷新房卡
     if PriRoom and GlobalUserItem.bPrivateRoom then
-        print("PriGameLayer:onRefresh() -- for the TEST")
         if nil ~= self._gameView._priView and nil ~= self._gameView._priView.onRefreshInfo then
             self._gameView._priView:onRefreshInfo()
         end
@@ -542,7 +525,7 @@ function GameLayer:onSubGameStart(dataBuffer)
 	print("游戏开始")
     self.m_cbGameStatus = cmd.GAME_SCENE_PLAY
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_GameStart, dataBuffer)
-	dump(cmd_data, "CMD_S_GameStart",6)
+	--dump(cmd_data, "CMD_S_GameStart",6)
 
 	for i = 1, cmd.GAME_PLAYER do
 		local viewId = self:SwitchViewChairID(i - 1)
@@ -936,13 +919,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
 			end
 			--碰杠牌
 			result.cbBpBgCardData = cbBpBgData[wViewChairId]
-            --[[
-			--奖码
-			result.cbAwardCard = {}
-			for j = 1, cmd_data.cbMaCount[1][i] do
-				result.cbAwardCard[j] = cmd_data.cbMaData[1][j]
-			end
-            ]]
+            
 			--插入
 			table.insert(resultList, result)
 			--剩余牌里删掉对手的牌
@@ -955,14 +932,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
 	--全部奖码
 	local meIndex = self:GetMeChairID() + 1
 	local cbAwardCardTotal = {}
-    --[[
-	for i = 1, 7 do
-		local value = cmd_data.cbMaData[1][i]
-		if value and value > 0 then
-			table.insert(cbAwardCardTotal, value)
-		end
-	end
-    ]]
+    
 	--删掉奖码
 	cbRemainCard = GameLogic.RemoveCard(cbRemainCard, cbAwardCardTotal)
 	if bMeWin == false then 			--有人赢但赢的人不是我
@@ -1119,7 +1089,6 @@ function GameLayer:playCardOperateSound(viewId, bTail, operateCode)
 	self:PlaySound(strFile)
 end
 
---or operateCode == GameLogic.WIK_WIND or operateCode == GameLogic.WIK_CHASEARROW or operateCode == GameLogic.WIK_CHASEWIND
 --播放随机聊天音效
 function GameLayer:playRandomSound(viewId)
 	local strGender = ""
@@ -1188,7 +1157,6 @@ function GameLayer:sendGameStart()
 		--约战房结束
 		return
 	end
-
 	self:SendUserReady()
 	self:OnResetGameEngine()
 end

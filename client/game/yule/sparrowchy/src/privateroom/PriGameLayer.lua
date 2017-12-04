@@ -33,20 +33,9 @@ function PriGameLayer:ctor( gameLayer )
     self.m_csbNode = csbNode
 
     self.m_atlasRoomID=csbNode:getChildByName("Text_room_id")
-    --local image_bg = csbNode:getChildByName("sp_roomInfoBg")
-    --[[
-    -- 房间ID
-    self.m_atlasRoomID = image_bg:getChildByName("Text_roomNum")
-    self.m_atlasRoomID:setString("房号：1008611")
-    ]]
+   
     --名称(改作扎码数量了)
     local cbMaCount = self._gameLayer:getMaCount()
-    --self.m_textRoomName = image_bg:getChildByName("Text_roomName"):setString("0个扎码")
-    -- 局数
-    --self.m_atlasCount = image_bg:getChildByName("Text_index")
-    --self.m_atlasCount:setString("1 / 5 局")
-    --剩余
-    --self.m_textRemain = image_bg:getChildByName("Text_innings"):setString("剩 4 局")
     
     self.m_leftCount=csbNode:getChildByName("Text_index")
     self.m_leftCount:setString("1/5圈")
@@ -61,20 +50,11 @@ function PriGameLayer:ctor( gameLayer )
     self.btnDismiss:setTag(BTN_DISMISS)
     self.btnDismiss:addTouchEventListener(btncallback)
 
-    --[[
-    -- 暂离按钮
-    local btn = csbNode:getChildByName("bt_zanli")
-    btn:setTag(BTN_ZANLI)
-    btn:addTouchEventListener(btncallback)
-    ]]
-
     -- 邀请按钮
     self.m_btnInvite = csbNode:getChildByName("bt_invite")
     self.m_btnInvite:setTag(BTN_INVITE)
-    --self.m_btnInvite:setVisible(false)
     self.m_btnInvite:addTouchEventListener(btncallback)
 
-    --self.sp_roomHost = csbNode:getChildByName("sp_roomHost"):setVisible(false)
 end
 
 function PriGameLayer:onButtonClickedEvent( tag, sender )
@@ -149,7 +129,6 @@ function PriGameLayer:onButtonClickedEvent( tag, sender )
             end)
         end)
     elseif BTN_QUIT == tag then
-        --self.layoutShield:removeFromParent()
         self.m_rootLayer:removeAllChildren()
         GlobalUserItem.bWaitQuit = false
         self._gameLayer:onExitRoom()
@@ -186,9 +165,6 @@ function PriGameLayer:onRefreshInfo()
     self:onRefreshInviteBtn()
     --房主
     self._gameLayer:updateRoomHost()
-    --if wRoomHostViewId ~= 0 then
-        --self.sp_roomHost:move(posRoomHost[wRoomHostViewId]):setVisible(true)
-    --end
 end
 
 function PriGameLayer:onRefreshInviteBtn()
@@ -213,7 +189,6 @@ end
 -- 私人房游戏结束
 function PriGameLayer:onPriGameEnd(cmd_table)
     self:removeChildByName("private_end_layer")
-
     --房卡结算屏蔽层
     self.layoutShield = ccui.Layout:create()
         :setContentSize(cc.size(display.width, display.height))
@@ -243,6 +218,10 @@ function PriGameLayer:onPriGameEnd(cmd_table)
     LogAsset:getInstance():logData(jsonStr, true)
     local tabUserRecord = self._gameLayer:getDetailScore()
     dump(tabUserRecord, "tabUserRecord")
+    --最挂炮手
+    local nHuCount = {tabUserRecord[1].cbHuCount, tabUserRecord[2].cbHuCount, tabUserRecord[3].cbHuCount, tabUserRecord[4].cbHuCount}
+    table.sort(nHuCount)
+    local nHuMax = nHuCount[#nHuCount]
     for i = 1, 4 do
         local userItem = self._gameLayer:getUserInfoByChairID(i - 1)
         local nodeUser = csbNode:getChildByName("FileNode_"..i)
@@ -281,11 +260,7 @@ function PriGameLayer:onPriGameEnd(cmd_table)
 
             local textZhuangZuo = nodeUser:getChildByName("Atlas_ZhuangZuo")
             textZhuangZuo:setString(tabUserRecord[i].cbZhuangJiaCount)
-            --[[
-            --中码个数
-            local textMaNum = nodeUser:getChildByName("Text_maNum")
-            textMaNum:setString(tabUserRecord[i].cbMaCount)
-            ]]
+           
             --总成绩
             local textGradeTotalNum = nodeUser:getChildByTag(1220)
             textGradeTotalNum:setString(scoreList[i])
@@ -295,8 +270,6 @@ function PriGameLayer:onPriGameEnd(cmd_table)
                 local spRoomHost = display.newSprite("#sp_roomHost_cy.png")
                     :move(-113, 230)
                     :addTo(nodeUser)
-                -- local x = textNickname:getContentSize().width/2 + spRoomHost:getContentSize().width/2
-                -- spRoomHost:setPositionX(x)
             end
             
             --大赢家标志
@@ -307,10 +280,12 @@ function PriGameLayer:onPriGameEnd(cmd_table)
             end
 
             --最挂炮手标志
-            display.newSprite("#sp_sign_ZuiGuaPaoShou.png")
-                    :move(10, 205)
-                    :addTo(nodeUser)
-            
+            if tabUserRecord[i].cbHuCount == nHuMax and tabUserRecord[i].cbHuCount > 0 then
+                display.newSprite("#sp_sign_ZuiGuaPaoShou.png")
+                        :move(10, 205)
+                        :addTo(nodeUser)
+            end
+
             nodeUser:setVisible(true)
         else
             nodeUser:setVisible(false)
@@ -339,7 +314,6 @@ end
 
 function PriGameLayer:setButtonEnabled(bEnabled)
     self.m_csbNode:getChildByTag(BTN_DISMISS):setEnabled(bEnabled)
-    --self.m_csbNode:getChildByTag(BTN_ZANLI):setEnabled(bEnabled)
     self.m_csbNode:getChildByTag(BTN_INVITE):setEnabled(bEnabled)
 end
 

@@ -103,7 +103,6 @@ end
 
 function ResultLayer:onTouchBegan(touch, event)
 	local pos = touch:getLocation()
-	--print(pos.x, pos.y)
 	local rect = cc.rect(17, 25, 1330, 750)
 	if not cc.rectContainsPoint(rect, pos) then
 		self:hideLayer()
@@ -179,9 +178,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
                 if #resultList[i].cbBpBgCardData[j] >= 0 then 
                      for k = 1, #resultList[i].cbBpBgCardData[j] do 
                         --牌底
-				        --local rectX = CardLayer:switchToCardRectX(resultList[i].cbBpBgCardData[j])
 				        local card = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
-					        --:setTextureRect(cc.rect(width*rectX, 0, width, height))
 					        :move(fX, 0)
 					        :addTo(nodeUserCard)
                         --字体
@@ -199,37 +196,10 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 				     end
                 end
             end
-            --[[
-			for j = 1, #resultList[i].cbBpBgCardData do 											--碰杠牌
-				--牌底
-				--local rectX = CardLayer:switchToCardRectX(resultList[i].cbBpBgCardData[j])
-				local card = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
-					--:setTextureRect(cc.rect(width*rectX, 0, width, height))
-					:move(fX, 0)
-					:addTo(nodeUserCard)
-				--字体
-				local nValue = math.mod(resultList[i].cbBpBgCardData[j], 16)
-				local nColor = math.floor(resultList[i].cbBpBgCardData[j]/16)
-				display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
-					:move(width/2, height/2 + 8)
-					:addTo(card)
-
-				if resultList[i].cbBpBgCardData[j] == resultList[i].cbBpBgCardData[j + 1] then
-					fX = fX + width
-				else
-					fX = fX + 52
-				end
-				--末尾
-				if j == #resultList[i].cbBpBgCardData then
-					fX = fX + 20
-				end
-			end
-            ]]
+           
 			for j = 1, #resultList[i].cbCardData do  											 	--剩余手牌
 				--牌底
-				--local rectX = CardLayer:switchToCardRectX(resultList[i].cbCardData[j])
 				local card = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
-					--:setTextureRect(cc.rect(width*rectX, 0, width, height))
 					:move(fX, 0)
 					:addTo(nodeUserCard)
 				--字体
@@ -242,59 +212,21 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 				fX = fX + width
 			end
 			--胡的那张牌
-			if resultList[i].cbChHuKind >= GameLogic.WIK_CHI_HU then
-				fX = fX + 20
-				--牌底
-				--local rectX = CardLayer:switchToCardRectX(cbHuCard)
-				local huCard = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
-					--:setTextureRect(cc.rect(width*rectX, 0, width, height))
-					:move(fX, 0)
-					:addTo(nodeUserCard)
-				--字体
-				local nValue = math.mod(cbHuCard, 16)
-				local nColor = math.floor(cbHuCard/16)
-				display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
-					:move(width/2, height/2 + 8)
-					:addTo(huCard)
-				--自摸或放炮标记
-                --[[
-				display.newSprite("#sp_ziMo.png")
-					:move(fX + 21, 0 + 32)
-					:addTo(nodeUserCard) 
-                    ]]
-                
-                    
-			end
-			--奖码
-            --[[
-			fX = fX + 110
-			for j = 1, #resultList[i].cbAwardCard do
-				--local rectX = CardLayer:switchToCardRectX(resultList[i].cbAwardCard[j])
-				--local x = 788 + 52*j
-				local y = 0
-				--牌底
-				local card = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
-					--:setTextureRect(cc.rect(width*rectX, 0, width, height))
-					:move(fX, y)
-					:addTo(nodeUserCard)
-				--字体
-				local nValue = math.mod(resultList[i].cbAwardCard[j], 16)
-				local nColor = math.floor(resultList[i].cbAwardCard[j]/16)
-				display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
-					:move(width/2, height/2 + 8)
-					:addTo(card)
-				if nil ~= self.winnerIndex and 
-					(nValue == 1 or
-					nValue == 5 or
-					nValue == 9 or
-					resultList[i].cbAwardCard[j] == GameLogic.MAGIC_DATA) then
-					display.newSprite("#sp_chooseFlag.png")
-						:move(fX + 5, y - 30)
-						:addTo(nodeUserCard)
-				end
-				fX = fX + 52
-			end
-            ]]
+            if math.mod(#resultList[i].cbCardData, 3) < 2 then
+			    if resultList[i].cbChHuKind >= GameLogic.WIK_CHI_HU then
+				    fX = fX + 20
+				    --牌底
+				    local huCard = display.newSprite(cmd.RES_PATH.."game/font_small/card_down.png")
+					    :move(fX, 0)
+					    :addTo(nodeUserCard)
+				    --字体
+				    local nValue = math.mod(cbHuCard, 16)
+				    local nColor = math.floor(cbHuCard/16)
+				    display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
+					    :move(width/2, height/2 + 8)
+					    :addTo(huCard)
+			    end
+            end
 			--庄家
 			if wBankerChairId == resultList[i].userItem.wChairID then
 				nBankerOrder = order
@@ -381,33 +313,6 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
         end
 	end
 
-    --[[
-	--剩余麻将
-	local nLimlt = 29
-	for i = 1, #cbRemainCard do
-		local pos = cc.p(0, 0)
-		if i <= nLimlt then 	--一行
-			pos = cc.p(5 + width*i, 700)
-		elseif i > nLimlt*2 then 	--三行
-			pos = cc.p(25 + width*(i - nLimlt*2), 610)
-		else 						--两行
-			pos = cc.p(15 + width*(i - nLimlt), 655)
-		end
-		--牌底
-		--local rectX = CardLayer:switchToCardRectX(cbRemainCard[i])
-		local card = display.newSprite(cmd.RES_PATH.."game/font_small/card_up.png")
-			--:setTextureRect(cc.rect(width*rectX, 0, width, height))
-			:move(pos)
-			:addTo(self.nodeRemainCard)
-		--字体
-		local nValue = math.mod(cbRemainCard[i], 16)
-		local nColor = math.floor(cbRemainCard[i]/16)
-		display.newSprite("game/font_small/font_"..nColor.."_"..nValue..".png")
-			:move(width/2, height/2 - 8)
-			:addTo(card)
-	end
-    ]]
-
 	--庄家
 	self:setBanker(nBankerOrder)
 
@@ -448,14 +353,12 @@ function ResultLayer:recodeShow()
 		return
 	end
 
-    --GlobalUserItem.bAutoConnect = false
     PriRoom:getInstance():getPlazaScene():popTargetShare(function(target, bMyFriend)
         bMyFriend = bMyFriend or false
         local function sharecall( isok )
             if type(isok) == "string" and isok == "true" then
                 showToast(self, "战绩炫耀成功", 2)
             end
-            --GlobalUserItem.bAutoConnect = true
         end
         local url = GlobalUserItem.szWXSpreaderURL or yl.HTTP_URL
         -- 截图分享
