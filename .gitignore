@@ -8,9 +8,14 @@
 /run/
 /cocostudio/
 /frameworks/
+/client/ciphercode/
+/client_publish/
+/simulator/
 
 client.config
 client.luaproj
+/.cocos-project.json
+/.project
 
 /log/
 /saverec/
