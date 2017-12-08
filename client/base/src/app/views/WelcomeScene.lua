@@ -330,13 +330,13 @@ function WelcomeScene:httpNewVersion()
  				    	if not version or gameInfo._ServerResVersion > version then
  				    		local updateConfig2 = {}
 					 		updateConfig2.isClient = false
-					 		updateConfig2.newfileurl = this:getApp()._updateUrl.."/game/"..gameInfo._Module.."/res/filemd5List.json"
+					 		updateConfig2.newfileurl = this:getApp()._updateUrl.."game/"..gameInfo._Module.."res/filemd5List.json"
 							updateConfig2.downurl = this:getApp()._updateUrl .. "/game/" .. gameInfo._Type .. "/"
 							updateConfig2.dst = device.writablePath .. "game/" .. gameInfo._Type .. "/"
 							if cc.PLATFORM_OS_WINDOWS == targetPlatform then
 								updateConfig2.dst = device.writablePath .. "download/game/" .. gameInfo._Type .. "/"
 							end						
-							updateConfig2.src = device.writablePath.."game/"..gameInfo._Module.."/res/filemd5List.json"
+							updateConfig2.src = device.writablePath.."game/"..gameInfo._Module.."res/filemd5List.json"
 					 		updateConfig2._ServerResVersion = gameInfo._ServerResVersion
 					 		updateConfig2._KindID = gameInfo._KindID
 					 		table.insert(self.m_tabUpdateQueue, updateConfig2)

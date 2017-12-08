@@ -11,6 +11,7 @@
 /client/ciphercode/
 /client_publish/
 /simulator/
+/publish_bash/
 
 client.config
 client.luaproj
@@ -22,6 +23,8 @@ client.luaproj
 /friend/
 /downrec/
 
+/client/face/
+/client/friend/
 /client/version.plist
 /client/UserDefault.xml
 /client/user_gameconfig.plist
