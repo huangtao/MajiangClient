@@ -160,6 +160,10 @@ function GameListLayer.tableCellTouched(view, cell)
 	--下载/更新资源 clientscene:getApp
 	local app = gamelistLayer:getParent():getParent():getApp()
 	local version = tonumber(app:getVersionMgr():getResVersion(gameinfo._KindID))
+    local versionMgr = app:getVersionMgr()
+	dump(versionMgr._versionInfo, "app:getVersionMgr()._versionInfo", 1)
+	dump(version, "_versionInfo.getResVersion(gameinfo._KindID)", 1)
+	print("gameinfo._ServerResVersion:"..gameinfo._ServerResVersion)
 	if not version or gameinfo._ServerResVersion > version then
 		gamelistLayer:updateGame(gameinfo, index)
 	else
@@ -413,14 +417,14 @@ function GameListLayer:onGameUpdate(gameinfo)
 	end
 
 	--更新参数
-	local newfileurl = self:getParent():getParent():getApp()._updateUrl.."/game/"..self._downgameinfo._Module.."/res/filemd5List.json"
+	local newfileurl = self:getParent():getParent():getApp()._updateUrl.."game/"..self._downgameinfo._Module.."res/filemd5List.json"
 	local dst = device.writablePath .. "game/" .. self._downgameinfo._Type .. "/"
 	local targetPlatform = cc.Application:getInstance():getTargetPlatform()
 	if cc.PLATFORM_OS_WINDOWS == targetPlatform then
 		dst = device.writablePath .. "download/game/" .. self._downgameinfo._Type .. "/"
 	end
 	
-	local src = device.writablePath.."game/"..self._downgameinfo._Module.."/res/filemd5List.json"
+	local src = device.writablePath.."game/"..self._downgameinfo._Module.."res/filemd5List.json"
 	local downurl = self:getParent():getParent():getApp()._updateUrl .. "/game/" .. self._downgameinfo._Type .. "/"
 
 	--创建更新

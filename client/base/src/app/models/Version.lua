@@ -12,8 +12,10 @@ function Version:ctor()
 	local fileUitls=cc.FileUtils:getInstance()
 	--保存路径
 	self._path = device.writablePath..sp.."version.plist"
+	print("Version File Path:"..self._path)
 	--保存信息
 	self._versionInfo  = fileUitls:getValueMapFromFile(self._path)
+	dump(self._versionInfo, "self._versionInfo", 3)
 	self._downUrl = nil
 end
 
