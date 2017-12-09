@@ -853,9 +853,12 @@ end
 
 --用户听牌
 function GameLayer:onSubListenCard(dataBuffer)
-	--print("用户听牌")
-	--local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_ListenCard, dataBuffer)
-	--dump(cmd_data, "CMD_S_ListenCard")
+	print("用户听牌")
+	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_ListenCard, dataBuffer)
+	dump(cmd_data, "CMD_S_ListenCard")
+    local wOperateViewId = self:SwitchViewChairID(cmd_data.wListenUser)
+    self:playCardOperateSound(wOperateViewId, false, GameLogic.WIK_LISTEN)
+    self._gameView:showOperateFlag(wOperateViewId, GameLogic.WIK_LISTEN)
 	return true
 end
 
