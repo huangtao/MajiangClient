@@ -441,7 +441,7 @@ function GameViewLayer:OnUpdateUser(viewId, userItem)
 		print("OnUpdateUser viewId is nil")
 		return
 	end
-    dump(userItem, "viewId:"..viewId)  --  for the TEST
+    --dump(userItem, "viewId:"..viewId)  --  for the TEST
 	self.m_sparrowUserItem[viewId] = userItem
 	--头像
 	local head = self.nodePlayer[viewId]:getChildByTag(GameViewLayer.SP_HEAD)
@@ -1374,7 +1374,6 @@ function GameViewLayer:showOperateFlag(viewId, operateCode)
 		:setTag(GameViewLayer.SP_OPERATFLAG)
 		:move(posPlate[viewId])
 		:addTo(self, 2)
-
 	return true
 end
 

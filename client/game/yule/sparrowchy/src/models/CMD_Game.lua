@@ -252,7 +252,7 @@ cmd.CMD_S_GameConclude =
 	--{k = "cbMaCount", t = "byte", l = {cmd.GAME_PLAYER}},		--码数
 	--{k = "cbMaData", t = "byte", l = {7}},						--码数据
     {k = "cbBaopaiCardData", t = "byte"},
-    {k = "cbKaiMenStatus" , t = "byte"},	                  -- Kaimen or Bimen status, for example : 0x01 -> first user is Kaimen and others Bimen
+    {k = "cbBiMenStatus" , t = "byte"},	                  -- Kaimen or Bimen status, for example : 0x01 -> first user is Kaimen and others Bimen
 }
 --用户托管
 cmd.CMD_S_Trustee = 

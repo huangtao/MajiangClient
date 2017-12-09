@@ -833,7 +833,7 @@ function GameLayer:onSubOperateResult(dataBuffer)
 		end
 		--提示听牌
 		if wOperateViewId == cmd.MY_VIEWID and cmd_data.cbOperateCode <= 8 then
-			self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
+			--self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
 		end
 	--end
 	self._gameView:showOperateFlag(wOperateViewId, cmd_data.cbOperateCode)
@@ -855,10 +855,13 @@ end
 function GameLayer:onSubListenCard(dataBuffer)
 	print("用户听牌")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_ListenCard, dataBuffer)
-	dump(cmd_data, "CMD_S_ListenCard")
+	--dump(cmd_data, "CMD_S_ListenCard")
     local wOperateViewId = self:SwitchViewChairID(cmd_data.wListenUser)
     self:playCardOperateSound(wOperateViewId, false, GameLogic.WIK_LISTEN)
     self._gameView:showOperateFlag(wOperateViewId, GameLogic.WIK_LISTEN)
+    if wOperateViewId == cmd.MY_VIEWID then
+        self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
+    end
 	return true
 end
 
@@ -879,7 +882,6 @@ function GameLayer:onSubTrustee(dataBuffer)
 	else
 		self:PlaySound(cmd.RES_PATH.."sound/UNTRUSTEE.wav")
 	end
-
 	return true
 end
 
@@ -960,7 +962,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
     end
     self._gameView:HideGameBtn()
 	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
-		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, cmd_data.wProvideUser, cmd_data.cbKaiMenStatus, self.HuPaiKindData)
+		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, cmd_data.wProvideUser, cmd_data.cbBiMenStatus, self.HuPaiKindData)
 	end)))
 	--播放音效
 	if bMeWin then
@@ -1024,7 +1026,7 @@ function GameLayer:sendCardFinish()
 
 	--提示听牌
 	if self.wBankerUser == self:GetMeChairID() then
-		self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
+		--self._gameView._cardLayer:promptListenOutCard(self.cbListenPromptOutCard)
 	else
 		--非庄家
 		local cbHuCardData = self.cbListenCardList[1]

@@ -558,7 +558,7 @@ function CardLayer:catchCard(viewId, cardData, bTail)
 		cardFont:setTexture(strFile)
 		--假如可以听牌
 		local cbPromptCardData = self._scene._scene:getListenPromptOutCard()
-		if #cbPromptCardData > 0 then
+		if #cbPromptCardData > 0 and self._scene.listen_state == true then
 			self:promptListenOutCard(cbPromptCardData)
 		end
 	end
