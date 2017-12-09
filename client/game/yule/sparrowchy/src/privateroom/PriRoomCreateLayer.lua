@@ -21,6 +21,7 @@ local Shop = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.ShopLayer")
 local BT_CREATE = 1
 local BT_HELP = 2
 local BT_PAY = 3
+local BT_CANCEL = 96
 
 local CBX_MACOUNT_1 = 4
 local CBX_MACOUNT_2 = 5
@@ -84,8 +85,7 @@ function PriRoomCreateLayer:ctor( scene )
     self:onInitData()
     PriRoomCreateLayer.super.ctor(self, scene)
 
-    -- 加载csb资源
-    --cc.FileUtils:getInstance():addSearchPath(device.writablePath..RES_PATH)
+   
     local rootLayer
     rootLayer, self.m_csbNode = ExternalFun.loadRootCSB("privateRoom/RoomCardLayer_cy.csb", self)
 
@@ -100,51 +100,20 @@ function PriRoomCreateLayer:ctor( scene )
         :setTag(BT_CREATE)
         :addTouchEventListener(btncallback)
 
-    --[[
-    -- 帮助按钮
-    self.m_csbNode:getChildByName("bt_help")
-        :setTag(BT_HELP)
-        :addTouchEventListener(btncallback)
-    -- 充值按钮
-    self.m_csbNode:getChildByName("bt_pay")
-        :setTag(BT_PAY)
-        :addTouchEventListener(btncallback)
-     ]]  
-    
     --我的房间
     self.m_csbNode:getChildByName("bt_myRoom")
         :setTag(BT_MYROOM)
-        :addTouchEventListener(btncallback)   
+        :addTouchEventListener(btncallback)
     
+    -- Exit button
+    self.m_csbNode:getChildByName("bt_cancel")
+        :setTag(BT_CANCEL)
+        :addTouchEventListener(btncallback)
             
     --复选按钮
     local cbtlistener = function (sender,eventType)
         self:onSelectedEvent(sender:getTag(), sender)
     end
-
-    --[[
-    --扎码数量
-    self.cbMaCount = 2
-    self.m_csbNode:getChildByName("cbx_maCount_1")
-        :setTag(CBX_MACOUNT_1)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_maCount_2")
-        :setTag(CBX_MACOUNT_2)
-        :setSelected(true)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_maCount_3")
-        :setTag(CBX_MACOUNT_3)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_maCount_4")
-        :setTag(CBX_MACOUNT_4)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_maCount_5")
-        :setTag(CBX_MACOUNT_5)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_maCount_6")
-        :setTag(CBX_MACOUNT_6)
-        :addEventListener(cbtlistener)
-    ]]
 
     self.m_csbNode:getChildByName("cbx_roundCount1")
         :setTag(CBX_COUNT1)
@@ -382,6 +351,8 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
     elseif BT_MYROOM == tag then
         print("我的房间")
         self._scene:onChangeShowMode(PriRoom.LAYTAG.LAYER_MYROOMRECORD)
+    elseif BT_CANCEL == tag then
+        self._scene:onKeyBack()
     end
 end
 

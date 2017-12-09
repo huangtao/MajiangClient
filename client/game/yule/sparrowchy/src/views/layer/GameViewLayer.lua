@@ -441,7 +441,7 @@ function GameViewLayer:OnUpdateUser(viewId, userItem)
 		print("OnUpdateUser viewId is nil")
 		return
 	end
-
+    dump(userItem, "viewId:"..viewId)  --  for the TEST
 	self.m_sparrowUserItem[viewId] = userItem
 	--头像
 	local head = self.nodePlayer[viewId]:getChildByTag(GameViewLayer.SP_HEAD)
@@ -481,14 +481,16 @@ function GameViewLayer:OnUpdateUser(viewId, userItem)
 		head:setVisible(true)
 		--金币
 		local score = userItem.lScore
+        dump(userItem.lScore, "userItem.lScore")  -- for the TEST
 		if userItem.lScore < 0 then
 			score = -score
 		end
 		local strScore = self:numInsertPoint(score)
+        dump(strScore, "strScore")  -- for the TEST 
 		if userItem.lScore < 0 then
 			strScore = "."..strScore
 		end
-		self.nodePlayer[viewId]:getChildByTag(GameViewLayer.ASLAB_SCORE):setString(strScore)
+		self.nodePlayer[viewId]:getChildByTag(GameViewLayer.ASLAB_SCORE):setString(strScore):setLocalZOrder(1)
 		--昵称
 		local strNickname = string.EllipsisByConfig(userItem.szNickName, 90, string.getConfig("fonts/round_body.ttf", 14))
 		self.nodePlayer[viewId]:getChildByTag(GameViewLayer.TEXT_NICKNAME):setString(strNickname)
@@ -1153,7 +1155,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
         if math.mod(cbActionMask, 2*2) >= 2 then
             table.insert(self.ChiTable, {cbCardData, cbCardData - 1, cbCardData + 1, 2})
         end
-        if math.mod(cbActionMask, 2*1) >= 1 then
+        if math.mod(cbActionMask, 1*2) >= 1 then
             table.insert(self.ChiTable, {cbCardData, cbCardData + 1, cbCardData + 2, 1})
         end
     end

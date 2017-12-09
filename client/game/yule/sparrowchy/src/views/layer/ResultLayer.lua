@@ -110,7 +110,7 @@ function ResultLayer:onTouchBegan(touch, event)
 	return self.bShield
 end
 
-function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerChairId, cbHuCard, cbHuKindData)
+function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerChairId, cbHuCard, wProvideUser, cbKaiMenStatus, cbHuKindData)
 	assert(type(resultList) == "table" and type(cbAwardCard) == "table" and type(cbRemainCard) == "table")
     -- set false of HuKind visibility
     self:getChildByName("sp_ZiMo_cy"):setVisible(false)
@@ -227,6 +227,27 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
 					    :addTo(huCard)
 			    end
             end
+
+            --闭门
+            if math.mod(cbKaiMenStatus, 2^i) >= 2^(i-1) then
+                fX = fX + 30
+                cc.Label:createWithTTF("闭门", "fonts/round_body.ttf", 22)
+		            :setTextColor(cc.c4b(192,18,194,255))
+		            :setAnchorPoint(cc.p(0.5,0.5))
+		            :move(fX, 0)
+		            :addTo(nodeUserCard)
+            end
+
+            -- 点炮包三家
+            if self._scene._scene.cbEnabled_DianPao and self._scene._scene:SwitchViewChairID(i-1) == wProvideUser then
+               fX = fX + 30
+               cc.Label:createWithTTF("点炮", "fonts/round_body.ttf", 22)
+		            :setTextColor(cc.c4b(90,18,194,255))
+		            :setAnchorPoint(cc.p(0.5,0.5))
+		            :move(fX, 0)
+		            :addTo(nodeUserCard)
+            end
+
 			--庄家
 			if wBankerChairId == resultList[i].userItem.wChairID then
 				nBankerOrder = order

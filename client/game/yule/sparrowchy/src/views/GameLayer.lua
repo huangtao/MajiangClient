@@ -48,6 +48,8 @@ function GameLayer:OnInitGameEngine()
     self.arrowGangData = {{},{},{},{}}
     -- listen data
     self.cbListenData = {}
+    -- DianPaoSanJia
+    self.cbEnabled_DianPao = true
     -- JinBao animation
     self.m_nodeJinBaoAnim = nil
     self.m_actJinBaoAnim = nil
@@ -310,6 +312,7 @@ function GameLayer:onEventGameScene(cbGameStatus, dataBuffer)
             GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
         end
         self.cbEnabledBaoPai = cmd_data.cbEnabled_BaoPai
+        self.cbEnabled_DianPao = cmd_data.cbEnabled_DianPao
 
 		self.lCellScore = cmd_data.lCellScore
 		self.cbTimeOutCard = cmd_data.cbTimeOutCard
@@ -560,6 +563,7 @@ function GameLayer:onSubGameStart(dataBuffer)
         GameLogic.MAGIC_DATA = GameLogic.SwitchToCardData(self.cbMagicIndex)
     end
     self.cbEnabledBaoPai = cmd_data.cbEnabled_BaoPai
+    self.cbEnabled_DianPao = cmd_data.cbEnabled_DianPao
     -- get Ting state
     self._gameView.listen_state = false
 	--筛子
@@ -953,7 +957,7 @@ function GameLayer:onSubGameConclude(dataBuffer)
     end
     self._gameView:HideGameBtn()
 	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
-		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, self.HuPaiKindData)
+		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, cmd_data.wProvideUser, cmd_data.cbKaiMenStatus, self.HuPaiKindData)
 	end)))
 	--播放音效
 	if bMeWin then
@@ -982,7 +986,7 @@ end
 function GameLayer:onSubGameRecord(dataBuffer)
 	print("游戏记录")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_Record, dataBuffer)
-	dump(cmd_data, "CMD_S_Record")
+	dump(cmd_data, "CMD_S_Record", 4)
 
 	self.m_userRecord = {}
 	local nInningsCount = cmd_data.nCount
