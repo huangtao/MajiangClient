@@ -2,7 +2,7 @@
 -- Author: Tang
 -- Date: 2017-01-08 16:27:52
 --
--- 红中麻将私人房创建界面
+-- 麻将私人房创建界面
 --local PriRoom = appdf.req("client.src.privatemode.plaza.src.models.PriRoom")
 require("client.src.plaza.models.yl")
 local CreateLayerModel = appdf.req(PriRoom.MODULE.PLAZAMODULE .."models.CreateLayerModel")
@@ -201,9 +201,9 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
 end
 
 function PriRoomCreateLayer:getInviteShareMsg( roomDetailInfo )
-    local shareTxt = "红中麻将约战 房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
-    local friendC = "红中麻将房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
-    return {title = "红中麻将约战", content = shareTxt .. " 红中麻将游戏精彩刺激, 一起来玩吧! ", friendContent = friendC}
+    local shareTxt = "麻将约战 房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
+    local friendC = "麻将房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
+    return {title = "麻将约战", content = shareTxt .. " 麻将游戏精彩刺激, 一起来玩吧! ", friendContent = friendC}
 end
 
 ------
@@ -273,11 +273,16 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
         if nil == self.m_tabSelectConfig or
             table.nums(self.m_tabSelectConfig) == 0 or
             self.cbMaCount == 0 or
-            self.cbUserNum == 0 or
-            self.m_tabSelectConfig.dwDrawCountLimit ~=16 or
-            self.m_tabSelectConfig.dwDrawCountLimit ~=24 then
+            self.cbUserNum == 0 then
             showToast(self, "未选择玩法配置!", 2)
             return
+        end
+
+        if self.m_tabSelectConfig.dwDrawCountLimit ~=16 then
+            if self.m_tabSelectConfig.dwDrawCountLimit ~=24 then
+                showToast(self, "未选择玩法配置!", 2)
+                return
+            end
         end
 
         PriRoom:getInstance():showPopWait()

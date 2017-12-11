@@ -80,8 +80,8 @@ function PriGameLayer:onButtonClickedEvent( tag, sender )
             local shareTxt = "房号" .. PriRoom:getInstance().m_tabPriData.szServerID .. 
                             "，局数" .. PriRoom:getInstance().m_tabPriData.dwDrawCountLimit .. 
                             "，人数" .. PriRoom:getInstance():getChairCount() .. "，" .. strMa .. 
-                            "。红中麻将游戏精彩刺激, 一起来玩吧！"
-            local friendC = "红中麻将房号" .. PriRoom:getInstance().m_tabPriData.szServerID .. 
+                            "。麻将游戏精彩刺激, 一起来玩吧！"
+            local friendC = "麻将房号" .. PriRoom:getInstance().m_tabPriData.szServerID .. 
                             "，局数" .. PriRoom:getInstance().m_tabPriData.dwDrawCountLimit .. 
                             "，人数" .. PriRoom:getInstance():getChairCount() .. "，" .. strMa
             local url = GlobalUserItem.szWXSpreaderURL or yl.HTTP_URL
@@ -92,7 +92,7 @@ function PriGameLayer:onButtonClickedEvent( tag, sender )
                 end)
             elseif nil ~= target then
                 GlobalUserItem.bAutoConnect = false
-                MultiPlatform:getInstance():shareToTarget(target, sharecall, "红中麻将约战", shareTxt, url, "")
+                MultiPlatform:getInstance():shareToTarget(target, sharecall, "麻将约战", shareTxt, url, "")
             end
         end)
     elseif BTN_SHARE == tag then
@@ -156,6 +156,8 @@ function PriGameLayer:onRefreshInfo()
     end
     -- 局数
     local dwPlayCount = PriRoom:getInstance().m_tabPriData.dwPlayCount
+    dump(PriRoom:getInstance().m_tabPriData, "PriRoom:getInstance().m_tabPriData", 3)
+
     print("局数：", dwPlayCount)
     local dwDrawCountLimit = PriRoom:getInstance().m_tabPriData.dwDrawCountLimit
 
