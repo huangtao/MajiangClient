@@ -131,58 +131,8 @@ function PriRoomCreateLayer:ctor( scene )
     local roomConfigList = PriRoom:getInstance().m_tabFeeConfigList
     self.m_tabSelectConfig = PriRoom:getInstance().m_tabFeeConfigList[1]
 
-    --[[
-    for i = 1, 6 do
-        local textInnings = self.m_csbNode:getChildByName("Text_innings_"..i)
-        local cbxInnings = self.m_csbNode:getChildByName("cbx_innings_"..i)
-        if i <= #roomConfigList then
-            self.cbInningsCount = self.m_tabSelectConfig.dwDrawCountLimit
-            textInnings:setString(roomConfigList[i].dwDrawCountLimit)
-            textInnings:setVisible(true)
-            cbxInnings:setVisible(true)
-        else
-            textInnings:setVisible(false)
-            cbxInnings:setVisible(false)
-        end
-    end
-    self.m_csbNode:getChildByName("cbx_innings_1")
-        :setTag(CBX_INNINGS_1)
-        :setSelected(true)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_innings_2")
-        :setTag(CBX_INNINGS_2)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_innings_3")
-        :setTag(CBX_INNINGS_3)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_innings_4")
-        :setTag(CBX_INNINGS_4)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_innings_5")
-        :setTag(CBX_INNINGS_5)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_innings_6")
-        :setTag(CBX_INNINGS_6)
-        :addEventListener(cbtlistener)
-    --房间人数
-    self.cbUserNum = 2
-    self.m_csbNode:getChildByName("cbx_userNum_2")
-        :setTag(CBX_USERNUM_2)
-        :setSelected(true)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_userNum_3")
-        :setTag(CBX_USERNUM_3)
-        :addEventListener(cbtlistener)
-    self.m_csbNode:getChildByName("cbx_userNum_4")
-        :setTag(CBX_USERNUM_4)
-        :addEventListener(cbtlistener)
-    --自己房卡数目
-    self.textCardNum = self.m_csbNode:getChildByName("Text_myRoomCardNum"):setString(GlobalUserItem.lRoomCard .. "")
-
     --创建房卡花费花费
     self.m_bLow = false
-    self.textCreateCost = self.m_csbNode:getChildByName("Text_costNum")
-    self.textCreateCost:setString("")
     local feeType = "房卡"
     local strLockPrompt = "sp_lackRoomCard.png"
     local lMyTreasure = GlobalUserItem.lRoomCard
@@ -196,14 +146,7 @@ function PriRoomCreateLayer:ctor( scene )
         if lMyTreasure < dwCost or lMyTreasure == 0 then
             self.m_bLow = true
         end
-        self.textCreateCost:setString(dwCost..feeType)
     end
-
-    --房卡或游戏豆不足提示
-    self.sp_roomCardLack = self.m_csbNode:getChildByName("sp_roomCardLack")
-    self.sp_roomCardLack:setVisible(self.m_bLow)
-    self.sp_roomCardLack:setSpriteFrame(strLockPrompt)
-    ]]
 end
 
 ------
@@ -228,7 +171,7 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
             local buffer = CCmd_Data:create(188)
             buffer:setcmdinfo(self._cmd_pri_game.MDM_GR_PERSONAL_TABLE,self._cmd_pri_game.SUB_GR_CREATE_TABLE)
             buffer:pushscore(1)
-            buffer:pushdword(self.m_tabSelectConfig.dwDrawCountLimit)  --self.m_tabSelectConfig.dwDrawCountLimit
+            buffer:pushdword(self.m_tabSelectConfig.dwDrawCountLimit)  
             buffer:pushdword(self.m_tabSelectConfig.dwDrawTimeLimit)
             buffer:pushword(0)
             buffer:pushdword(0)
@@ -246,7 +189,7 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
             buffer:pushbool(self.cbEnabled_ZhanLiHu)
             buffer:pushbool(self.cbEnabled_JiaHu)
             buffer:pushbool(self.cbEnabled_ChangMaoGang)
-            print(self.cbUserNum,self.cbInningsCount_cy,self.cbEnabled_DianPao,self.cbEnabled_FengGang,self.cbEnabled_HuiPai,self.cbEnabled_BaoPai,self.cbEnabled_ZhanLiHu,self.cbEnabled_JiaHu,self.cbEnabled_ChangMaoGang)
+            print(self.cbUserNum,self.m_tabSelectConfig.dwDrawCountLimit,self.cbEnabled_DianPao,self.cbEnabled_FengGang,self.cbEnabled_HuiPai,self.cbEnabled_BaoPai,self.cbEnabled_ZhanLiHu,self.cbEnabled_JiaHu,self.cbEnabled_ChangMaoGang)
             for i = 1, 100 - 11 do
                 buffer:pushbyte(0)
             end
@@ -278,7 +221,6 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
         self.cbUserNum=4
         print("创建房间_tom")
 
-
         if self.m_bLow then
             local feeType = "房卡"
             if PriRoom:getInstance().m_tabRoomOption.cbCardOrBean == 0 then
@@ -298,20 +240,13 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
                 :addTo(self._scene)
             return
         end
-        if nil == self.m_tabSelectConfig or
-            table.nums(self.m_tabSelectConfig) == 0 or
-            self.cbMaCount == 0 or
-            self.cbUserNum == 0 then
-            showToast(self, "未选择玩法配置!", 2)
-            return
-        end
 
         -- insert in ChoaYang
         if self.m_csbNode:getChildByTag(CBX_COUNT1):isSelected() then
             self.cbInningsCount_cy = 16
         end
         if self.m_csbNode:getChildByTag(CBX_COUNT2):isSelected() then
-            self.cbInningsCount_cy = 32
+            self.cbInningsCount_cy = 24
         end
         if self.m_csbNode:getChildByName("cbx_DianPao"):isSelected() == false then
             self.cbEnabled_DianPao = false
@@ -333,6 +268,16 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
         end
         if self.m_csbNode:getChildByName("cbx_ChangMaoGang"):isSelected() == false then
             self.cbEnabled_ChangMaoGang = false
+        end
+
+        if nil == self.m_tabSelectConfig or
+            table.nums(self.m_tabSelectConfig) == 0 or
+            self.cbMaCount == 0 or
+            self.cbUserNum == 0 or
+            self.m_tabSelectConfig.dwDrawCountLimit ~=16 or
+            self.m_tabSelectConfig.dwDrawCountLimit ~=24 then
+            showToast(self, "未选择玩法配置!", 2)
+            return
         end
 
         PriRoom:getInstance():showPopWait()
@@ -369,38 +314,6 @@ function PriRoomCreateLayer:onSelectedEvent(tag, sender)
                 checkBox:setSelected(false)
             end
         end
-    elseif CBX_INNINGS_1 <= tag and tag <= CBX_INNINGS_6 then
-        for i = CBX_INNINGS_1, CBX_INNINGS_6 do
-            local checkBox = self.m_csbNode:getChildByTag(i)
-            if i == tag then
-                local feeType = "房卡"
-                local lMyTreasure = GlobalUserItem.lRoomCard
-                if PriRoom:getInstance().m_tabRoomOption.cbCardOrBean == 0 then
-                    feeType = "游戏豆"
-                    lMyTreasure = GlobalUserItem.dUserBeans
-                end
-                if checkBox:isSelected() then
-                    local index = i - CBX_INNINGS_1 + 1
-                    self.cbInningsCount = index
-                    self.m_tabSelectConfig = PriRoom:getInstance().m_tabFeeConfigList[index]
-                    self.textCreateCost:setString(self.m_tabSelectConfig.lFeeScore..feeType)
-                    if lMyTreasure < self.m_tabSelectConfig.lFeeScore or lMyTreasure == 0 then --房卡或游戏豆不足
-                        self.sp_roomCardLack:setVisible(true)
-                        self.m_bLow = true
-                    else
-                        self.sp_roomCardLack:setVisible(false)
-                        self.m_bLow = false
-                    end
-                else
-                    self.cbInningsCount = 0
-                    self.m_tabSelectConfig = nil
-                    self.textCreateCost:setString("0"..feeType)
-                    self.sp_roomCardLack:setVisible(lMyTreasure == 0)
-                end
-            else
-                checkBox:setSelected(false)
-            end
-        end
     elseif CBX_USERNUM_2 <= tag and tag <= CBX_USERNUM_4 then
         for i = CBX_USERNUM_2, CBX_USERNUM_4 do
             local checkBox = self.m_csbNode:getChildByTag(i)
@@ -414,9 +327,11 @@ function PriRoomCreateLayer:onSelectedEvent(tag, sender)
     elseif CBX_COUNT1 == tag then
         self.m_csbNode:getChildByTag(CBX_COUNT2)
             :setSelected(false)
+        self.m_tabSelectConfig = PriRoom:getInstance().m_tabFeeConfigList[1]
     elseif CBX_COUNT2 == tag then
         self.m_csbNode:getChildByTag(CBX_COUNT1)
             :setSelected(false)
+        self.m_tabSelectConfig = PriRoom:getInstance().m_tabFeeConfigList[2]
     elseif CBX_ChangMaoGang == tag then
         if checkBox:isSelected() then 
             self.m_csbNode:getChildByName("cbx_FengGang")
@@ -429,8 +344,6 @@ function PriRoomCreateLayer:onSelectedEvent(tag, sender)
     else
         assert(false)
     end
-    
-    --print(self.cbMaCount, self.cbInningsCount, self.cbUserNum)
     
 end
 
