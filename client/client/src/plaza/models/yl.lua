@@ -9,12 +9,12 @@ yl.STATION_ID							= 1
 
 --测试
 --yl.LOGONSERVER							= " " --@login_ip
-yl.LOGONSERVER							= "192.168.2.120" --@login_ip
+yl.LOGONSERVER							= "47.94.252.125" --@login_ip
 -- 登陆地址列表
 yl.SERVER_LIST = 
 {
     --" ", --@login_ip
-    "192.168.2.120", --@login_ip
+    "47.94.252.125", --@login_ip
 }
 -- 当前地址索引
 yl.CURRENT_INDEX = 1
