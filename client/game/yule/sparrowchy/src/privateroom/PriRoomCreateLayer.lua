@@ -2,7 +2,7 @@
 -- Author: Tang
 -- Date: 2017-01-08 16:27:52
 --
--- 麻将私人房创建界面
+-- 朝阳麻将私人房创建界面
 --local PriRoom = appdf.req("client.src.privatemode.plaza.src.models.PriRoom")
 require("client.src.plaza.models.yl")
 local CreateLayerModel = appdf.req(PriRoom.MODULE.PLAZAMODULE .."models.CreateLayerModel")
@@ -201,9 +201,9 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
 end
 
 function PriRoomCreateLayer:getInviteShareMsg( roomDetailInfo )
-    local shareTxt = "麻将约战 房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
-    local friendC = "麻将房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
-    return {title = "麻将约战", content = shareTxt .. " 麻将游戏精彩刺激, 一起来玩吧! ", friendContent = friendC}
+    local shareTxt = "朝阳麻将约战 房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
+    local friendC = "朝阳麻将房间ID:" .. roomDetailInfo.szRoomID .. " 局数:" .. roomDetailInfo.dwPlayTurnCount
+    return {title = "朝阳麻将约战", content = shareTxt .. " 朝阳麻将游戏精彩刺激, 一起来玩吧! ", friendContent = friendC}
 end
 
 ------

@@ -603,7 +603,7 @@ end
 
 function GameViewLayer:onButtonClickedEvent(tag, ref)
 	if tag == GameViewLayer.BT_START then
-		print("麻将开始！")
+		print("朝阳麻将开始！")
 		self.btStart:setVisible(false)
 		self:showTableBt(false)
          -- hide components 

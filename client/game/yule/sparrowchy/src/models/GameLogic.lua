@@ -246,10 +246,10 @@ function GameLogic.AnalyseListenCard(cbCardData)
 	return cbListenList, bWin
 end
 
---分析是否胡牌(带)
+--分析是否胡牌(带朝阳)
 function GameLogic.AnalyseChiHuCard(cbCardData, bNoneThePair)
 	local cbCardCount = #cbCardData
-	--统计
+	--朝阳统计
 	local cbCardIndex = GameLogic.DataToCardIndex(cbCardData)
 	local cbMagicCardCount = cbCardIndex[GameLogic.MAGIC_INDEX]
 	--成功，全部合格
@@ -285,9 +285,9 @@ function GameLogic.AnalyseChiHuCard(cbCardData, bNoneThePair)
 			return true
 		end
 	end
-	--两张相同组成一对将
+	--两张相同组成一对将（不使用朝阳代替）
 	if cbCardData[1] == cbCardData[2] and bNoneThePair then
-		--print("两张相同组成一对将")
+		--print("两张相同组成一对将（不使用朝阳代替）")
 		bNoneThePair = false
 		cbRemoveData[1] = cbCardData[1]
 		cbRemoveData[2] = cbCardData[2]
@@ -297,7 +297,7 @@ function GameLogic.AnalyseChiHuCard(cbCardData, bNoneThePair)
 			return true
 		end
 	end
-	
+	--有朝阳时使用朝阳代替
 	if cbMagicCardCount > 0 then
 		--两张相同
 		if cbCardData[1] == cbCardData[2] then
@@ -350,7 +350,7 @@ function GameLogic.AnalyseChiHuCard(cbCardData, bNoneThePair)
 	return false
 end
 
---胡牌分析
+--胡牌分析(在不考虑红中的情况下)
 function GameLogic.AnalyseHuPai(cbCardData)
 	--校验
 	assert(type(cbCardData) == "table")
