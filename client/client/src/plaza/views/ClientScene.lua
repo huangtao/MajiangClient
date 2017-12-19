@@ -1767,6 +1767,9 @@ function ClientScene:updateGame(dwKindID)
 	--获取更新
 	local app = self:getApp()
 	local version = app:getVersionMgr():getResVersion(gameinfo._KindID)
+     if type(version) == "string" then
+        version = tonumber(version)
+    end
 	if not version or gameinfo._ServerResVersion > version then
 		gamelist:updateGame(gameinfo, gameinfo.gameIndex)
 		return true

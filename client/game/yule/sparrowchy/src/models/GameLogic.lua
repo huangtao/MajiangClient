@@ -36,7 +36,8 @@ GameLogic.WIK_ARROW					= 0x0100						--【中发白】三张【箭牌】在一�
 GameLogic.WIK_WIND					= 0x0200						--【东南西北】四张【风牌】在一起组成的杠 --512
 GameLogic.WIK_CHASEARROW			= 0x0400						--【中发白】的杠追加【中发白】牌后的杠 --1024
 GameLogic.WIK_CHASEWIND				= 0x0800						--【东南西北】的杠追加风牌后的杠 --2048
-GameLogic.WIK_UPDATE_BAO			= 0x8000						-- UPDATED BAO PAI  --32768
+GameLogic.WIK_FEN_ZHANG				= 0x4000                        -- 分张 -- 16384
+GameLogic.WIK_UPDATE_BAO			= 0x8000						-- 换宝  --32768
 
 --CMD_S_GameConclude.wHuKindData 
 GameLogic.HU_KIND_MASK				= 0x0000FFFF

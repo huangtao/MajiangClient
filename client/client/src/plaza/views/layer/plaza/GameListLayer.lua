@@ -161,9 +161,6 @@ function GameListLayer.tableCellTouched(view, cell)
 	local app = gamelistLayer:getParent():getParent():getApp()
 	local version = tonumber(app:getVersionMgr():getResVersion(gameinfo._KindID))
     local versionMgr = app:getVersionMgr()
-	dump(versionMgr._versionInfo, "app:getVersionMgr()._versionInfo", 1)
-	dump(version, "_versionInfo.getResVersion(gameinfo._KindID)", 1)
-	print("gameinfo._ServerResVersion:"..gameinfo._ServerResVersion)
 	if not version or gameinfo._ServerResVersion > version then
 		gamelistLayer:updateGame(gameinfo, index)
 	else

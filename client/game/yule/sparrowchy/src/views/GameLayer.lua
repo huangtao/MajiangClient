@@ -40,19 +40,21 @@ function GameLayer:OnInitGameEngine()
 	self.cbMaCount = 0
 
     self.cbMagicIndex = 0xff
-    -- HuiPai and BaoPai
+    -- 会牌标志， 宝牌标志
     self.cbEnabledHuiPai = true
     self.cbEnabledBaoPai = true
-    -- ChangMaoGang data initialize
+    -- 长毛杠数据 initialize
     self.windGangData = {{},{},{},{}}
     self.arrowGangData = {{},{},{},{}}
-    -- listen data
+    -- 听状态
     self.cbListenData = {}
-    -- DianPaoSanJia
+    -- 点炮包三家
     self.cbEnabled_DianPao = true
-    -- JinBao animation
+    -- 进宝动画
     self.m_nodeJinBaoAnim = nil
     self.m_actJinBaoAnim = nil
+    -- 分张状态标志
+    self.bFenZhang = false
 	--房卡需要
 	self.wRoomHostViewId = 0
 end
@@ -95,6 +97,8 @@ function GameLayer:OnResetGameEngine()
     self.arrowGangData = {{},{},{},{}}
     -- listen data
     self.cbListenData = {}
+    -- 分张状态标志
+    self.bFenZhang = false
 end
 
 --获取gamekind
@@ -597,6 +601,7 @@ function GameLayer:onSubGameStart(dataBuffer)
 	return true
 end
 
+-- get Showing card from MagiCard
 function GameLayer:getShowingData(magicData)
     local data = 0xff
     if magicData == 0x01 then
@@ -741,7 +746,7 @@ end
 function GameLayer:onSubOperateResult(dataBuffer)
 	print("操作结果")
 	local cmd_data = ExternalFun.read_netdata(cmd.CMD_S_OperateResult, dataBuffer)
-	dump(cmd_data, "CMD_S_OperateResult")
+	--dump(cmd_data, "CMD_S_OperateResult")
 	if cmd_data.cbOperateCode == GameLogic.WIK_NULL then
 		assert(false, "没有操作也会进来？")
 		return true
@@ -956,11 +961,14 @@ function GameLayer:onSubGameConclude(dataBuffer)
 	print("通过已显示牌统计，剩余多少张？", #cbRemainCard)
     -- BaoPai
     self.cbBaoPai = cmd_data.cbBaopaiCardData
-	--显示结算框
-    if math.mod(self.HuPaiKindData, GameLogic.CHR_JIN_BAO*2) >= GameLogic.CHR_JIN_BAO then
-        self:playAnimJinBao()
-    end
+	-- Show JinBao animation
+    if self.cbEnabledBaoPai and cmd_data.wProvideUser > 3 then 
+        if math.mod(self.HuPaiKindData, GameLogic.CHR_JIN_BAO*2) >= GameLogic.CHR_JIN_BAO then
+            self:playAnimJinBao()
+        end
+    end 
     self._gameView:HideGameBtn()
+    --显示结算框
 	self:runAction(cc.Sequence:create(cc.DelayTime:create(2), cc.CallFunc:create(function(ref)
 		self._gameView._resultLayer:showLayer(resultList, cbAwardCardTotal, cbRemainCard, self.wBankerUser, cmd_data.cbProvideCard, cmd_data.wProvideUser, cmd_data.cbBiMenStatus, self.HuPaiKindData)
 	end)))
@@ -1175,6 +1183,11 @@ function GameLayer:sendOutCard(card)
 	if card == GameLogic.MAGIC_DATA then
 		return false
 	end
+
+    -- if FengZhang status
+    if self.bFenZhang then
+        return false
+    end
 
     -- if this player is on Ting state
     if self._gameView.listen_state then 
