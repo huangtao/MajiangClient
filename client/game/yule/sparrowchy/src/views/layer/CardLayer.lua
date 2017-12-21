@@ -911,6 +911,81 @@ function CardLayer:bumpOrBridgeCard(viewId, cbCardData, nShowStatus)
 	self.nBpBgCount[viewId] = self.nBpBgCount[viewId] + 1
 end
 
+-- Gang Card Layer 
+function CardLayer:showGangCardGroup(cardData)
+
+     if self.cbGangParentTxt ~= nil then 
+          self.cbGangParentTxt:removeAllChildren()
+     end 
+    local btnGangback = function(ref, eventType)               
+		   if eventType == ccui.TouchEventType.ended then
+		   	   self:btnGangCardback(ref:getTag(), ref)
+		   end        
+	end
+    local nValue = 0
+	local nColor = 0
+    local fParentSpacing = 250
+    local fSpacing = 0
+    local strFile2 = "" 
+    local strFile  = "" 
+    local width = 80
+  
+    self.cbGangParentTxt = cc.Node:create()
+             :addTo(self)
+             :setLocalZOrder(10)
+    local cbGangbg = display.newSprite("game/playRule/sp_gangBg.png")
+                 :move(1334/2,350)
+                 :addTo(self.cbGangParentTxt)
+    local cbGangbg = display.newSprite("game/playRule/sp_gang.png")
+                 :move(100,350)
+                 :addTo(self.cbGangParentTxt)
+    for  i = 1,#cardData do 
+          for t = 1,#cardData[i] do 
+                 if t <= 4 and cardData[i][t] ~= 0 then
+                     strFile2 = cmd.RES_PATH.."game/font_middle/card_up.png" 
+                     local btn =ccui.Button:create(strFile2,strFile2)
+	  	   	                    :move((width * t) + fParentSpacing , 350)
+	  	   	                    :setTag(i)
+	  	   	                    :addTo(self.cbGangParentTxt)
+	  	   	                    :addTouchEventListener(btnGangback)   
+          
+                     nValue = math.mod(cardData[i][t], 16)
+	                 nColor = math.floor(cardData[i][t]/16)
+                     strFile = cmd.RES_PATH.."game/font_middle/font_"..nColor.."_"..nValue..".png"  
+                     local card = display.newSprite(strFile)
+                              :move((width * t) + fParentSpacing , 350)
+                              :addTo(self.cbGangParentTxt)  
+                     fSpacing = fSpacing + width               
+                  end 
+          end
+          if cardData[i][1] ~= 0 then        
+              fParentSpacing =  fParentSpacing + fSpacing + 30
+          end
+          fSpacing = 0
+    end    
+end
+
+function CardLayer:btnGangCardback(tag, ref)
+    print(tag)
+    if tag ~= 0 then 
+        self._scene:sendGangCard(tag)
+    end 
+    self.cbGangParentTxt:removeAllChildren()
+end
+
+function CardLayer:isBuGang(card)
+    local cbBpBgCard = self.cbBpBgCardData[cmd.MY_VIEWID]
+    for i = 1, #cbBpBgCard do 
+        if card == cbBpBgCard[i][1] then 
+            if cbBpBgCard[i][1] == cbBpBgCard[i][2] and cbBpBgCard[i][1] == cbBpBgCard[i][3] then
+                return true 
+            end 
+        end
+    end
+    return false
+end
+
+
 --检查碰、杠牌里是否有这张牌
 function CardLayer:checkBumpOrBridgeCard(viewId, cbCardData)
 	local card = self.nodeBpBgCard[viewId]:getChildByTag(cbCardData)
