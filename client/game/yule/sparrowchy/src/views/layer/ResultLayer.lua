@@ -122,6 +122,7 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
     self:getChildByName("sp_ShiSanYao"):setVisible(false)
     self:getChildByName("txt_ShowBaYi"):setVisible(false)
     self:getChildByName("txt_JiaHu"):setVisible(false)
+    self:getChildByName("txt_SanJiaBiMen"):setVisible(false)
     self:getChildByName("txt_JinBao"):setVisible(false)
     self:getChildByName("txt_HaiDiLaoYue"):setVisible(false)
     self:getChildByName("txt_GangShangHua"):setVisible(false)
@@ -294,6 +295,9 @@ function ResultLayer:showLayer(resultList, cbAwardCard, cbRemainCard, wBankerCha
         end
         if math.mod(cbHuKindData, GameLogic.CHR_QIANG_GANG_HU*2) >= GameLogic.CHR_QIANG_GANG_HU then
             self:getChildByName("txt_QiangGangHu"):setVisible(true)
+        end
+        if math.mod(cbHuKindData, GameLogic.CHR_QI_YU*2) >= GameLogic.CHR_QI_YU then
+            self:getChildByName("txt_SanJiaBiMen"):setVisible(true)
         end
 
         -- show HuiPai and BaoPai

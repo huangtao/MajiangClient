@@ -101,9 +101,7 @@ function PriRoomCreateLayer:ctor( scene )
         :addTouchEventListener(btncallback)
 
     --我的房间
-    self.m_csbNode:getChildByName("bt_myRoom")
-        :setTag(BT_MYROOM)
-        :addTouchEventListener(btncallback)
+    self.m_csbNode:getChildByName("bt_myRoom"):setVisible(false)
     
     -- Exit button
     self.m_csbNode:getChildByName("bt_cancel")
@@ -130,6 +128,29 @@ function PriRoomCreateLayer:ctor( scene )
     --房间限制
     local roomConfigList = PriRoom:getInstance().m_tabFeeConfigList
     self.m_tabSelectConfig = PriRoom:getInstance().m_tabFeeConfigList[1]
+    -- round setting
+    self.m_csbNode:getChildByName("AtlasLabel_1_0"):setVisible(false)
+    self.m_csbNode:getChildByName("cbx_roundCount2"):setVisible(false)
+    self.m_csbNode:getChildByName("sp_cell_Ju_14"):setVisible(false)
+    self.m_csbNode:getChildByName("sp_cell_FangKa_13"):setVisible(false)
+    self.m_csbNode:getChildByName("AtlasLabel_2_0"):setVisible(false)
+
+    self.m_csbNode:getChildByName("AtlasLabel_1")
+                  :setString(self.m_tabSelectConfig.dwDrawCountLimit)
+    self.m_csbNode:getChildByName("AtlasLabel_2")
+                  :setString(self.m_tabSelectConfig.lFeeScore)
+    if #roomConfigList > 1 then
+        self.m_csbNode:getChildByName("AtlasLabel_1_0"):setVisible(true)
+        self.m_csbNode:getChildByName("cbx_roundCount2"):setVisible(true)
+        self.m_csbNode:getChildByName("sp_cell_Ju_14"):setVisible(true)
+        self.m_csbNode:getChildByName("sp_cell_FangKa_13"):setVisible(true)
+        self.m_csbNode:getChildByName("AtlasLabel_2_0"):setVisible(true)
+
+        self.m_csbNode:getChildByName("AtlasLabel_1_0")
+                  :setString(roomConfigList[2].dwDrawCountLimit)
+        self.m_csbNode:getChildByName("AtlasLabel_2_0")
+                  :setString(roomConfigList[2].lFeeScore)
+    end
 
     --创建房卡花费花费
     self.m_bLow = false
@@ -246,7 +267,7 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
             self.cbInningsCount_cy = 16
         end
         if self.m_csbNode:getChildByTag(CBX_COUNT2):isSelected() then
-            self.cbInningsCount_cy = 24
+            self.cbInningsCount_cy = 32
         end
         if self.m_csbNode:getChildByName("cbx_DianPao"):isSelected() == false then
             self.cbEnabled_DianPao = false
@@ -279,8 +300,8 @@ function PriRoomCreateLayer:onButtonClickedEvent(tag, sender)
         end
 
         if self.m_tabSelectConfig.dwDrawCountLimit ~=16 then
-            if self.m_tabSelectConfig.dwDrawCountLimit ~=24 then
-                showToast(self, "未选择玩法配置!", 2)
+            if self.m_tabSelectConfig.dwDrawCountLimit ~=32 then
+                showToast(self, "非法玩法配置! 16圈 或者 32圈！", 2)
                 return
             end
         end

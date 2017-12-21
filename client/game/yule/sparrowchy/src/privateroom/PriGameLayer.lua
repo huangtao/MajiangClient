@@ -38,7 +38,7 @@ function PriGameLayer:ctor( gameLayer )
     local cbMaCount = self._gameLayer:getMaCount()
     
     self.m_leftCount=csbNode:getChildByName("Text_index")
-    self.m_leftCount:setString("1/5圈")
+    self.m_leftCount:setString("1/5")
 
     local function btncallback(ref, tType)
         if tType == ccui.TouchEventType.ended then
@@ -162,7 +162,7 @@ function PriGameLayer:onRefreshInfo()
     local dwDrawCountLimit = PriRoom:getInstance().m_tabPriData.dwDrawCountLimit
 
     print("dwDrawCountLimit:", dwDrawCountLimit)
-    local strcount = dwPlayCount .. " / " .. dwDrawCountLimit.." 圈"
+    local strcount = dwPlayCount .. " / " .. dwDrawCountLimit
     self.m_leftCount:setString(strcount)
     self:onRefreshInviteBtn()
     --房主
