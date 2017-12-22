@@ -29,8 +29,8 @@ appdf.BASE_C_VERSION = 0 --@app_version
 appdf.BASE_C_RESVERSION = 0 --@client_version
 appdf.BASE_GAME = 
 {
-    {kind = 393,version = "0"}
-	--{kind = 6,version = "0"}
+    {kind = 393,version = 0}
+	--{kind = 6,version = 0}
 }
 
 function appdf.req(path)
