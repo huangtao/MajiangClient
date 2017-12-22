@@ -15,8 +15,11 @@ local SetLayer = appdf.req(appdf.GAME_SRC.."yule.sparrowchy.src.views.layer.SetL
 local GameChatLayer = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.game.GameChatLayer")
 local AnimationMgr = appdf.req(appdf.EXTERNAL_SRC .. "AnimationMgr")
 
-local anchorPointHead = {cc.p(0, 1), cc.p(0, 0.5), cc.p(0, 0), cc.p(1, 0.5)}
-local posHead = {cc.p(400, 260), cc.p(165, 300), cc.p(166, 230), cc.p(750, 273)}
+local anchorPointHead1 = {cc.p(0, 1), cc.p(0, 0.5), cc.p(0, 0), cc.p(1, 0.5)}
+local posHead1 = {cc.p(400, 260), cc.p(165, 300), cc.p(166, 230), cc.p(750, 273)}
+
+local anchorPointHead = {cc.p(0.5, 0.5), cc.p(0.5, 0.5), cc.p(0.5, 0.5), cc.p(0.5, 0.5)}
+local posHead = {cc.p(480, 200), cc.p(480, 200), cc.p(480, 200), cc.p(480, 200)}
 local posReady = {cc.p(150, 0), cc.p(135, 0), cc.p(516, -140), cc.p(-134, 0)}
 local posPlate = {cc.p(667, 589), cc.p(237, 464), cc.p(667, 174), cc.p(1093, 455)}
 local posChat = {cc.p(873, 660), cc.p(229, 558), cc.p(270, 285), cc.p(1095, 528)}
