@@ -965,6 +965,18 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		return false
 	end
 
+    if cbActionMask >= GameLogic.WIK_UPDATE_BAO then   -- 换宝
+        cbActionMask = cbActionMask - 32768
+        self:playAnimHuanBao()
+        return true
+    end
+
+    if cbActionMask >= GameLogic.WIK_FEN_ZHANG then   -- 分张
+        cbActionMask = cbActionMask - 16384
+        self._scene.bFenZhang = true
+        return true
+    end
+
     self.actionMask = cbActionMask
 	if self._cardLayer:isUserMustWin() then
 		--必须胡牌的情况
@@ -983,17 +995,7 @@ function GameViewLayer:recognizecbActionMask(cbActionMask, cbCardData)
 		self.cbActionCard = cbCardData
     end
 
-    if cbActionMask >= GameLogic.WIK_UPDATE_BAO then   -- 换宝
-        cbActionMask = cbActionMask - 32768
-        self:playAnimHuanBao()
-        return true
-    end
-
-    if cbActionMask >= GameLogic.WIK_FEN_ZHANG then   -- 分张
-        cbActionMask = cbActionMask - 16384
-        self._scene.bFenZhang = true
-        return true
-    end
+    
 
     if cbActionMask >= 2048 then        -- 【东南西北】的杠追加风牌后的杠
         cbActionMask = cbActionMask - 2048
