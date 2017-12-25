@@ -97,6 +97,10 @@ function GameLayer:OnResetGameEngine()
     self.arrowGangData = {{},{},{},{}}
     -- listen data
     self.cbListenData = {}
+    -- 会牌标志， 宝牌标志
+    self.cbEnabledHuiPai = true
+    self.cbEnabledBaoPai = true
+    GameLogic.MAGIC_DATA = 0xff
     -- 分张状态标志
     self.bFenZhang = false
 end
