@@ -11,14 +11,14 @@ yl.PORT_OBJECTID						= 0
 
 --测试
 --yl.LOGONSERVER							= " " --@login_ip
-yl.LOGONSERVER                            = "47.94.252.125" --@login_ip
---yl.LOGONSERVER							= "59.110.240.93"
+--yl.LOGONSERVER                            = "47.94.252.125" --@login_ip
+yl.LOGONSERVER							= "59.110.240.93"
 
 -- 登陆地址列表
 yl.SERVER_LIST = 
 {
-    "47.94.252.125", --@login_ip
---    "59.110.240.93"
+--    "47.94.252.125", --@login_ip
+    "59.110.240.93"
 }
 -- 当前地址索引
 yl.CURRENT_INDEX = 1
@@ -36,8 +36,8 @@ yl.VALIDATE 							= "D7253720-D69F-41C1-892B-6F56E8C35DDE" --@compilation
 
 --http请求链接地址
 --yl.HTTP_URL								= " " --@http_url
-yl.HTTP_URL								= "http://47.94.252.125:8081" --@http_url
---yl.HTTP_URL								    = "http://59.110.240.93:8081" --@http_url
+--yl.HTTP_URL								= "http://47.94.252.125:8081" --@http_url
+yl.HTTP_URL								    = "http://59.110.240.93:8081" --@http_url
 
 -- http请求支持(loginScene)
 yl.HTTP_SUPPORT							= true
