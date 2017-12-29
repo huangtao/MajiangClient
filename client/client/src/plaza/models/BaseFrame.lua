@@ -69,7 +69,7 @@ function BaseFrame:onSocketError(pData)
 					yl.CURRENT_INDEX = 1
 				end
 			else
-				self._callBack(-1,"网络错误，code："..errorcode)			
+				self._callBack(-1,"网络中断，请检查您的网络是否通畅！   "..errorcode)			
 			end
 		end
 	end
@@ -156,7 +156,7 @@ function BaseFrame:sendSocketData(pData)
 	end
 	local tabCache = {}
 	tabCache["main"] = pData:getmain()
-	tabCache["sub"] = pData:getsub()
+	tabCache["sub"] = pData:getsub()   
 	tabCache["len"] = pData:getlen()
 	tabCache["kindid"] = GlobalUserItem.nCurGameKind
 	table.insert( self.m_tabCacheMsg, tabCache )

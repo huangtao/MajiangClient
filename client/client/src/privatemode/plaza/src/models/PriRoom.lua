@@ -8,6 +8,8 @@ PriRoom = PriRoom or class("PriRoom")
 local private_define = appdf.req(appdf.CLIENT_SRC .. "privatemode.header.Define_Private")
 local cmd_private = appdf.req(appdf.CLIENT_SRC .. "privatemode.header.CMD_Private")
 local QueryDialog = appdf.req("app.views.layer.other.QueryDialog")
+--local ExitQueryDialog = appdf.req("app.views.layer.other.ExitQueryDialog")
+local ExitQueryDialog = appdf.req(appdf.CLIENT_SRC .. "plaza.models.ExitQueryDialog")
 
 -- 私人房模块
 local MODULE = private_define.tabModule
@@ -333,19 +335,24 @@ function PriRoom:onPrivateGameServerMessage(result, message, dataBuffer, notShow
             curTag = self._scene._sceneRecord[#self._scene._sceneRecord]
         end
         if curTag == yl.SCENE_GAME and not self.m_bRoomEnd then
-            local query = QueryDialog:create(message.szDescribeString, function(ok)
-                    GlobalUserItem.bWaitQuit = false
-                    if nil ~= self._viewFrame and nil ~= self._viewFrame.onExitRoom then
-                        self._viewFrame:onExitRoom()
-                    end
-                end)
-                :setCanTouchOutside(false)
-                :addTo(self._viewFrame)
-            local zorder = 0
-            if nil ~= self._viewFrame.priGameLayerZorder then
-                zorder = self._viewFrame:priGameLayerZorder() - 1
+--            local query = QueryDialog:create(message.szDescribeString, function(ok)
+--                    GlobalUserItem.bWaitQuit = false
+--                    if nil ~= self._viewFrame and nil ~= self._viewFrame.onExitRoom then
+--                        self._viewFrame:onExitRoom()
+--                    end
+--                end)
+--                :setCanTouchOutside(false)
+--                :addTo(self._viewFrame)
+--            local zorder = 0
+--            if nil ~= self._viewFrame.priGameLayerZorder then
+--                zorder = self._viewFrame:priGameLayerZorder() - 1
+--            end
+--            query:setLocalZOrder(zorder)
+            --提示框中内容，由于提示框不显示了所以直接提取出值
+            GlobalUserItem.bWaitQuit = false
+            if nil ~= self._viewFrame and nil ~= self._viewFrame.onExitRoom then
+                self._viewFrame:onExitRoom()
             end
-            query:setLocalZOrder(zorder)
         else
             showToast(self._viewFrame, message.szDescribeString, 2)
         end
@@ -357,22 +364,35 @@ function PriRoom:onPrivateGameServerMessage(result, message, dataBuffer, notShow
         if nil == useritem then
             return
         end
+        if self.m_gameLayer ~= nil then
+            local tabData = self.m_gameLayer:getUserInfo() 
+        end 
         local curTag = nil
         if nil ~= self._scene and nil ~= self._scene._sceneRecord then
             curTag = self._scene._sceneRecord[#self._scene._sceneRecord]
+        end       
+        if nil ~= self.m_queryQuitExit and nil ~= self.m_queryQuitExit:getParent() then
+            self.m_queryQuitExit:removeFromParent()
+            self.m_queryQuitExit = nil
         end
-        if nil ~= self.m_queryQuit and nil ~= self.m_queryQuit:getParent() then
-            self.m_queryQuit:removeFromParent()
-        end
+        
         if curTag == yl.SCENE_GAME then
-            self.m_queryQuit = QueryDialog:create(useritem.szNickName .. "请求解散房间, 是否同意?", function(ok)
+            --self.m_queryQuit = ExitQueryDialog:create(useritem.szNickName .. "请求解散房间, 是否同意?", function(ok)
+            self.m_queryQuitExit = ExitQueryDialog:create(useritem.szNickName, function(ok)
                     if ok then
                         self:getNetFrame():sendRequestReply(1)
+                        self.m_queryQuitExit:UpdateUserState(GlobalUserItem.dwUserID,1)
                     else
                         self:getNetFrame():sendRequestReply(0)
+                        self.m_queryQuitExit:UpdateUserState(GlobalUserItem.dwUserID,0)
                     end
-                    self.m_queryQuit = nil
-                end)
+                    --self.m_queryQuitExit = nil
+                    if self.m_queryQuit ~= nil then
+                         self.m_queryQuit:dismiss2()
+                         self.m_queryQuit = nil
+                    end 
+                    
+                end,nil,nil,yl.SCENE_GAME,tabData)
             :setCanTouchOutside(false)
             :addTo(self._viewFrame)
         else
@@ -389,6 +409,9 @@ function PriRoom:onPrivateGameServerMessage(result, message, dataBuffer, notShow
         if nil ~= self._viewFrame and nil ~= self._viewFrame.onCancellApply then
             bHandled = self._viewFrame:onCancellApply(useritem, message)
         end
+        if self.m_queryQuitExit ~= nil then 
+            self.m_queryQuitExit:UpdateUserState(message.dwUserID,message.cbAgree)
+        end 
         if not bHandled then
             local tips = "同意解散"
             if 0 == message.cbAgree then
@@ -399,12 +422,16 @@ function PriRoom:onPrivateGameServerMessage(result, message, dataBuffer, notShow
                 curTag = self._scene._sceneRecord[#self._scene._sceneRecord]
             end
             if curTag == yl.SCENE_GAME then
-                showToast(self._viewFrame, useritem.szNickName .. tips, 2)
+                --showToast(self._viewFrame, useritem.szNickName .. tips, 2)
             end            
         end
     elseif cmd_pri_game.SUB_GR_REQUEST_RESULT == result then
         -- 请求结果
         -- message = game.CMD_GR_RequestResult
+        if self.m_queryQuitExit ~= nil then 
+            self.m_queryQuitExit:dismiss2()
+            self.m_queryQuitExit = nil
+        end 
         if 0 == message.cbResult then
             local curTag = nil
             if nil ~= self._scene and nil ~= self._scene._sceneRecord then
@@ -430,6 +457,8 @@ function PriRoom:onPrivateGameServerMessage(result, message, dataBuffer, notShow
         if nil == useritem then
             return
         end
+--        self.m_queryQuitExit:dismiss2()
+--        self.m_queryQuitExit = nil
         local curTag = nil
         if nil ~= self._scene and nil ~= self._scene._sceneRecord then
             curTag = self._scene._sceneRecord[#self._scene._sceneRecord]
@@ -464,7 +493,11 @@ function PriRoom:onPrivateGameServerMessage(result, message, dataBuffer, notShow
         self.m_bRoomEnd = true
     elseif cmd_pri_game.SUB_GR_CANCEL_TABLE_RESULT == result then        
         -- 解散结果
-        -- message = game.CMD_GR_DissumeTable
+        -- message = game.CMD_GR_DissumeTable 
+        if self.m_queryQuitExit ~= nil then 
+            self.m_queryQuitExit:dismiss2()
+            self.m_queryQuitExit = nil
+        end      
         if 1 == message.cbIsDissumSuccess then
             showToast(self._viewFrame, "解散成功", 2)
         end
@@ -563,6 +596,7 @@ function PriRoom:getTagLayer(tag, param, scene)
                 local lay = appdf.req(roomCreateFile):create( scene )
                 -- 绑定回调
                 self:setViewFrame(lay)
+                lay:setLocalZOrder(5)
                 return lay
             end
         end
@@ -583,6 +617,7 @@ function PriRoom:getTagLayer(tag, param, scene)
                 runScene:addChild(roomidLayer)
             end
             roomidLayer:showLayer(true)
+            roomidLayer:setLocalZOrder(5)
         end
     elseif LAYTAG.LAYER_CREATERESULT == tag then
         -- 创建结果
@@ -615,6 +650,12 @@ function PriRoom:getTagLayer(tag, param, scene)
             local friendshare = appdf.req(appdf.CLIENT_SRC .. "plaza.views.layer.friend.FriendShareListLayer"):create(param)
             runScene:addChild(friendshare,yl.MAX_INT - 2)
         end
+    elseif LAYTAG.LAYER_ZHANJI == tag then
+        -- 记录界面
+        local lay = appdf.req(MODULE.PLAZAMODULE .. "views.RoomRecordLayer_2"):create( scene )
+        -- 绑定回调
+        self:setViewFrame(lay)
+        return lay
     end
 end
 
@@ -687,6 +728,7 @@ function PriRoom:enterGame( gameLayer, scene )
         end
     end
     self.m_bRoomEnd = false
+    self.m_gameLayer = gameLayer
 end
 
 -- 退出游戏界面
@@ -725,17 +767,40 @@ function PriRoom:queryQuitGame( cbGameStatus )
     -- 未玩且free
     if 0 == PriRoom:getInstance().m_tabPriData.dwPlayCount 
         and 0 == cbGameStatus then
-        self._scene:onKeyBack()
+        --self._scene:onKeyBack()
         return
     end
 
-    local tip = "约战房在游戏中退出需其他玩家同意, 是否申请解散房间?"
-    QueryDialog:create(tip, function(ok)
+    --local tip = "约战房在游戏中退出需其他玩家同意, 是否申请解散房间?"
+    
+    if self.m_queryQuit ~= nil then return end 
+
+    local tip = "你确定要解散房间吗?"
+    self.m_queryQuit = QueryDialog:create(tip, function(ok)
             if ok == true then    
                 --self:showPopWait()
                 self:getNetFrame():sendRequestDissumeGame()
+                if self.m_gameLayer ~= nil then
+                    local tabData = self.m_gameLayer:getUserInfo() 
+                end 
+                self.m_queryQuitExit = ExitQueryDialog:create(GlobalUserItem.szNickName, function(ok)
+                    if ok then
+                        self:getNetFrame():sendRequestReply(1)
+                    else
+                        self:getNetFrame():sendRequestReply(0)
+                    end
+                    self.m_queryQuitExit = nil
+                    self.m_queryQuit = nil
+                end,nil,1,yl.SCENE_GAME,tabData)
+            :setCanTouchOutside(false)
+            :addTo(self._viewFrame)
+            self.m_queryQuitExit:setSelf()
             end
-        end)
+            if self.m_queryQuit ~= nil then 
+                self.m_queryQuit:dismiss2() 
+            end 
+            self.m_queryQuit = nil
+        end,nil,nil,yl.SCENE_GAME)
     :setCanTouchOutside(false)
     :addTo(self._viewFrame)
 end
@@ -746,13 +811,20 @@ function PriRoom:queryDismissRoom()
         print("PriRoom:queryQuitGame 已经取消!")
         return
     end
-    local tip = "约战房在游戏中退出需其他玩家同意, 是否申请解散房间?"
-    QueryDialog:create(tip, function(ok)
+--    local tip = "你确定要解散房间吗?"
+    --local tip = "约战房在游戏中退出需其他玩家同意, 是否申请解散房间?"
+    local tip = ""
+    if self.m_queryQuit ~= nil then return end 
+    self.m_queryQuit = QueryDialog:create(tip, function(ok)
             if ok == true then 
                 --self:showPopWait()   
                 self:getNetFrame():sendRequestDissumeGame()
             end
-        end)
+            if self.m_queryQuit ~= nil then 
+                self.m_queryQuit:dismiss2() 
+            end
+            self.m_queryQuit = nil
+        end,nil,nil,yl.SCENE_GAME)
     :setCanTouchOutside(false)
     :addTo(self._viewFrame)
 end

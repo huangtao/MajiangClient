@@ -4,478 +4,673 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>pri_btn_back.png</key>
+            <key>btn_close.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,754},{311,367}}</string>
+                <string>{{3771,776},{52,52}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{311,367}}</string>
+                <string>{{0,0},{52,52}}</string>
                 <key>sourceSize</key>
-                <string>{311,367}</string>
+                <string>{52,52}</string>
+            </dict>
+            <key>btn_join_close.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1082,904},{107,108}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{107,108}}</string>
+                <key>sourceSize</key>
+                <string>{107,108}</string>
+            </dict>
+            <key>btn_return_record_0.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{936,904},{144,54}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{144,54}}</string>
+                <key>sourceSize</key>
+                <string>{144,54}</string>
+            </dict>
+            <key>btn_return_record_1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1205,698},{144,54}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{144,54}}</string>
+                <key>sourceSize</key>
+                <string>{144,54}</string>
+            </dict>
+            <key>friend_bg.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3429,935},{93,31}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{93,31}}</string>
+                <key>sourceSize</key>
+                <string>{93,31}</string>
+            </dict>
+            <key>friend_bg1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3817,280},{111,28}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{111,28}}</string>
+                <key>sourceSize</key>
+                <string>{111,28}</string>
+            </dict>
+            <key>friend_bg2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3825,687},{82,21}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,21}}</string>
+                <key>sourceSize</key>
+                <string>{82,21}</string>
+            </dict>
+            <key>friend_bg3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3825,603},{82,21}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,21}}</string>
+                <key>sourceSize</key>
+                <string>{82,21}</string>
+            </dict>
+            <key>friend_bg4.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2502,525},{125,31}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{125,31}}</string>
+                <key>sourceSize</key>
+                <string>{125,31}</string>
+            </dict>
+            <key>pri_btn_0.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{856,860},{78,78}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{78,78}}</string>
+                <key>sourceSize</key>
+                <string>{78,78}</string>
+            </dict>
+            <key>pri_btn_1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{856,780},{78,78}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{78,78}}</string>
+                <key>sourceSize</key>
+                <string>{78,78}</string>
+            </dict>
+            <key>pri_btn_back.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{734,920},{82,68}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,68}}</string>
+                <key>sourceSize</key>
+                <string>{82,68}</string>
+            </dict>
+            <key>pri_btn_box_0.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1140,834},{41,43}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{41,43}}</string>
+                <key>sourceSize</key>
+                <string>{41,43}</string>
+            </dict>
+            <key>pri_btn_box_1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2552,444},{41,43}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{41,43}}</string>
+                <key>sourceSize</key>
+                <string>{41,43}</string>
             </dict>
             <key>pri_btn_clear_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{581,1160},{143,64}}</string>
+                <string>{{3539,786},{103,36}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{101,28},{103,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_clear_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{515,1450},{143,64}}</string>
+                <string>{{3539,786},{103,36}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{101,28},{103,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_createroom.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{804,378},{311,367}}</string>
+                <string>{{2979,444},{326,422}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,-3}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{311,367}}</string>
+                <string>{{0,6},{326,422}}</string>
                 <key>sourceSize</key>
-                <string>{311,367}</string>
+                <string>{328,428}</string>
             </dict>
             <key>pri_btn_del_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{515,1305},{143,64}}</string>
+                <string>{{3395,984},{103,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,-1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{101,28},{103,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_del_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{515,1160},{143,64}}</string>
+                <string>{{3395,984},{103,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,-1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{101,28},{103,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_invite_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,640},{190,64}}</string>
+                <string>{{3307,867},{192,66}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{192,66}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{192,66}</string>
             </dict>
             <key>pri_btn_invite_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{381,448},{190,64}}</string>
+                <string>{{2320,444},{230,79}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{230,79}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{230,79}</string>
             </dict>
             <key>pri_btn_jiesan_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{315,448},{190,64}}</string>
+                <string>{{936,834},{202,68}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{202,68}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{202,68}</string>
             </dict>
             <key>pri_btn_jiesan_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,820},{190,64}}</string>
+                <string>{{2298,525},{202,68}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{202,68}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{202,68}</string>
             </dict>
             <key>pri_btn_joingame_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,754},{190,64}}</string>
+                <string>{{3577,776},{192,66}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{192,66}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{192,66}</string>
             </dict>
             <key>pri_btn_joingame_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,688},{190,64}}</string>
+                <string>{{3307,786},{230,79}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{230,79}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{230,79}</string>
             </dict>
             <key>pri_btn_joinroom.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{371,1697},{311,367}}</string>
+                <string>{{2,698},{324,420}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,-4}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{311,367}}</string>
+                <string>{{2,8},{324,420}}</string>
                 <key>sourceSize</key>
-                <string>{311,367}</string>
+                <string>{328,428}</string>
             </dict>
             <key>pri_btn_num_0_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,1595},{143,64}}</string>
+                <string>{{3564,984},{29,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{138,26},{29,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_0_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,1450},{143,64}}</string>
+                <string>{{3564,984},{29,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{138,26},{29,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_1_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,1305},{143,64}}</string>
+                <string>{{3825,771},{17,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-3,1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{141,26},{17,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_1_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,1160},{143,64}}</string>
+                <string>{{3825,771},{17,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-3,1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{141,26},{17,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_2_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{579,886},{143,64}}</string>
+                <string>{{2552,489},{31,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,1}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{137,26},{31,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_2_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{513,886},{143,64}}</string>
+                <string>{{2552,489},{31,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,1}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{137,26},{31,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_3_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{447,1031},{143,64}}</string>
+                <string>{{3539,891},{31,36}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{136,28},{31,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_3_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{447,886},{143,64}}</string>
+                <string>{{3539,891},{31,36}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{136,28},{31,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_4_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{381,996},{143,64}}</string>
+                <string>{{3501,867},{31,36}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{137,28},{31,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_4_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{315,996},{143,64}}</string>
+                <string>{{3501,867},{31,36}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{137,28},{31,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_5_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{381,851},{143,64}}</string>
+                <string>{{3533,984},{29,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{137,26},{29,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_5_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{315,851},{143,64}}</string>
+                <string>{{3533,984},{29,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{137,26},{29,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_6_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{381,706},{143,64}}</string>
+                <string>{{3539,924},{29,36}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{138,28},{29,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_6_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{315,706},{143,64}}</string>
+                <string>{{3539,924},{29,36}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{138,28},{29,36}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_7_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{260,640},{143,64}}</string>
+                <string>{{3500,984},{31,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{136,26},{31,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_7_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{194,580},{143,64}}</string>
+                <string>{{3500,984},{31,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-1,1}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{136,26},{31,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_8_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{134,514},{143,64}}</string>
+                <string>{{2595,444},{29,38}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{0,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{138,26},{29,38}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{305,92}</string>
             </dict>
             <key>pri_btn_num_8_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{134,448},{143,64}}</string>
+                <string>{{2595,444},{29,38}}</string>
+                <key>offset</key>
+                <string>{0,1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{138,26},{29,38}}</string>
+                <key>sourceSize</key>
+                <string>{305,92}</string>
+            </dict>
+            <key>pri_btn_num_9_0.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3501,900},{29,36}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{138,28},{29,36}}</string>
+                <key>sourceSize</key>
+                <string>{305,92}</string>
+            </dict>
+            <key>pri_btn_num_9_1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3501,900},{29,36}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{138,28},{29,36}}</string>
+                <key>sourceSize</key>
+                <string>{305,92}</string>
+            </dict>
+            <key>pri_btn_return_0.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3717,844},{129,138}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{0,0},{129,138}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{129,138}</string>
             </dict>
-            <key>pri_btn_num_9_0.png</key>
+            <key>pri_btn_return_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{68,448},{143,64}}</string>
+                <string>{{3577,844},{129,138}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
+                <string>{{0,0},{129,138}}</string>
                 <key>sourceSize</key>
-                <string>{143,64}</string>
-            </dict>
-            <key>pri_btn_num_9_1.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,448},{143,64}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{143,64}}</string>
-                <key>sourceSize</key>
-                <string>{143,64}</string>
+                <string>{129,138}</string>
             </dict>
             <key>pri_btn_roomlist.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,1697},{311,367}}</string>
+                <string>{{2186,610},{370,441}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-3,-13}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{311,367}}</string>
+                <string>{{22,27},{370,441}}</string>
                 <key>sourceSize</key>
-                <string>{311,367}</string>
+                <string>{420,469}</string>
             </dict>
             <key>pri_btn_sharegrade_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{697,660},{190,64}}</string>
+                <string>{{936,698},{267,134}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{267,134}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{267,134}</string>
             </dict>
             <key>pri_btn_sharegrade_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{719,408},{190,64}}</string>
+                <string>{{936,698},{267,134}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{190,64}}</string>
+                <string>{{0,0},{267,134}}</string>
                 <key>sourceSize</key>
-                <string>{190,64}</string>
+                <string>{267,134}</string>
             </dict>
             <key>pri_btn_switchrecord_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,378},{430,68}}</string>
+                <string>{{424,850},{430,68}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -488,20 +683,33 @@
             <key>pri_btn_switchrecord_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1955,32},{430,68}}</string>
+                <string>{{424,780},{430,68}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{430,68}}</string>
                 <key>sourceSize</key>
                 <string>{430,68}</string>
             </dict>
+            <key>pri_room_ID.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2502,558},{104,30}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{17,0},{104,30}}</string>
+                <key>sourceSize</key>
+                <string>{138,30}</string>
+            </dict>
             <key>pri_sp_award.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{740,378},{51,28}}</string>
+                <string>{{2924,982},{51,28}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -511,14 +719,27 @@
                 <key>sourceSize</key>
                 <string>{51,28}</string>
             </dict>
-            <key>pri_sp_createcost.png</key>
+            <key>pri_sp_creat.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{595,2010},{103,28}}</string>
+                <string>{{3817,141},{137,29}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{137,29}}</string>
+                <key>sourceSize</key>
+                <string>{137,29}</string>
+            </dict>
+            <key>pri_sp_createcost.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3817,498},{103,28}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{103,28}}</string>
                 <key>sourceSize</key>
@@ -527,46 +748,46 @@
             <key>pri_sp_createtime.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{697,630},{101,28}}</string>
+                <string>{{3289,935},{138,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{101,28}}</string>
+                <string>{{0,0},{138,30}}</string>
                 <key>sourceSize</key>
-                <string>{101,28}</string>
+                <string>{138,30}</string>
             </dict>
             <key>pri_sp_createuser.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{490,2010},{103,28}}</string>
+                <string>{{2784,982},{138,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{103,28}}</string>
+                <string>{{0,0},{138,30}}</string>
                 <key>sourceSize</key>
-                <string>{103,28}</string>
+                <string>{138,30}</string>
             </dict>
             <key>pri_sp_dissolvetime.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{697,600},{101,28}}</string>
+                <string>{{2644,982},{138,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{101,28}}</string>
+                <string>{{0,0},{138,30}}</string>
                 <key>sourceSize</key>
-                <string>{101,28}</string>
+                <string>{138,30}</string>
             </dict>
             <key>pri_sp_friend_cellbg.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,538},{148,246}}</string>
+                <string>{{3577,626},{148,246}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -579,7 +800,7 @@
             <key>pri_sp_friend_cellbg2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{449,378},{158,268}}</string>
+                <string>{{3307,626},{158,268}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -592,59 +813,85 @@
             <key>pri_sp_ideditbg.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,1160},{535,445}}</string>
+                <string>{{3352,2},{622,463}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{535,445}}</string>
+                <string>{{0,0},{622,463}}</string>
                 <key>sourceSize</key>
-                <string>{535,445}</string>
+                <string>{622,463}</string>
             </dict>
             <key>pri_sp_listbg.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{1192,374}}</string>
+                <string>{{2,2},{1260,694}}</string>
+                <key>offset</key>
+                <string>{0,-3}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,6},{1260,694}}</string>
+                <key>sourceSize</key>
+                <string>{1260,700}</string>
+            </dict>
+            <key>pri_sp_listline.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1264,518},{1032,86}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{1192,374}}</string>
+                <string>{{0,0},{1032,86}}</string>
                 <key>sourceSize</key>
-                <string>{1192,374}</string>
+                <string>{1032,86}</string>
             </dict>
-            <key>pri_sp_listline.png</key>
+            <key>pri_sp_listline1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2034,2},{1156,2}}</string>
+                <string>{{1264,606},{1156,2}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{1156,2}}</string>
                 <key>sourceSize</key>
                 <string>{1156,2}</string>
             </dict>
-            <key>pri_sp_roomid.png</key>
+            <key>pri_sp_listline2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1955,2},{77,28}}</string>
+                <string>{{424,698},{510,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{77,28}}</string>
+                <string>{{0,0},{510,80}}</string>
                 <key>sourceSize</key>
-                <string>{77,28}</string>
+                <string>{510,80}</string>
+            </dict>
+            <key>pri_sp_roomid.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3257,967},{136,34}}</string>
+                <key>offset</key>
+                <string>{20,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{41,0},{136,34}}</string>
+                <key>sourceSize</key>
+                <string>{178,34}</string>
             </dict>
             <key>pri_sp_roominfotitle.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2010},{138,35}}</string>
+                <string>{{2979,960},{138,35}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -657,33 +904,59 @@
             <key>pri_sp_roomlimit.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{700,2010},{102,28}}</string>
+                <string>{{818,920},{102,28}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{102,28}}</string>
                 <key>sourceSize</key>
                 <string>{102,28}</string>
             </dict>
-            <key>pri_sp_roomstatus.png</key>
+            <key>pri_sp_roomscore.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{385,2010},{103,28}}</string>
+                <string>{{3307,444},{178,34}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{178,34}}</string>
+                <key>sourceSize</key>
+                <string>{178,34}</string>
+            </dict>
+            <key>pri_sp_roomstatus.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3817,393},{103,28}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{103,28}}</string>
                 <key>sourceSize</key>
                 <string>{103,28}</string>
             </dict>
+            <key>pri_sp_setting.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{3817,2},{137,29}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{137,29}}</string>
+                <key>sourceSize</key>
+                <string>{137,29}</string>
+            </dict>
             <key>pri_sp_systemtip.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{142,2010},{136,35}}</string>
+                <string>{{3119,960},{136,35}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -696,28 +969,119 @@
             <key>pri_sp_tipsbg.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1196,2},{757,449}}</string>
+                <string>{{1264,2},{1054,514}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{757,449}}</string>
+                <string>{{0,0},{1054,514}}</string>
                 <key>sourceSize</key>
-                <string>{757,449}</string>
+                <string>{1054,514}</string>
             </dict>
             <key>pri_sp_uinfo.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{280,2010},{103,29}}</string>
+                <string>{{2504,982},{138,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{103,29}}</string>
+                <string>{{0,0},{138,30}}</string>
                 <key>sourceSize</key>
-                <string>{103,29}</string>
+                <string>{138,30}</string>
+            </dict>
+            <key>sp_joinroom_title.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{424,920},{308,90}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{308,90}}</string>
+                <key>sourceSize</key>
+                <string>{308,90}</string>
+            </dict>
+            <key>sp_line.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2298,595},{36,3}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{36,3}}</string>
+                <key>sourceSize</key>
+                <string>{36,3}</string>
+            </dict>
+            <key>sp_notice.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2629,444},{348,536}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{348,536}}</string>
+                <key>sourceSize</key>
+                <string>{348,536}</string>
+            </dict>
+            <key>sp_please_input.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2186,982},{316,30}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{316,30}}</string>
+                <key>sourceSize</key>
+                <string>{316,30}</string>
+            </dict>
+            <key>sp_record_background.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2320,2},{1030,440}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{1030,440}}</string>
+                <key>sourceSize</key>
+                <string>{1030,440}</string>
+            </dict>
+            <key>sp_record_title.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2979,868},{308,90}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{308,90}}</string>
+                <key>sourceSize</key>
+                <string>{308,90}</string>
+            </dict>
+            <key>sp_shuzi_dikuang.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1264,610},{920,394}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{920,394}}</string>
+                <key>sourceSize</key>
+                <string>{920,394}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -727,9 +1091,9 @@
             <key>realTextureFileName</key>
             <string>room.png</string>
             <key>size</key>
-            <string>{2048,2048}</string>
+            <string>{3848,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:e8c23b1f3ef51046a4d21485f6fbce31$</string>
+            <string>$TexturePacker:SmartUpdate:ac9172839f1bf8a7afc4e609c264c146$</string>
             <key>textureFileName</key>
             <string>room.png</string>
         </dict>

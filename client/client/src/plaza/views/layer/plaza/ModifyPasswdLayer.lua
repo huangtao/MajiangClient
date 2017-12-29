@@ -103,7 +103,7 @@ function ModifyPasswdLayer:ctor( scene )
 		:setMaxLength(26)
 		:setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD)
 		:setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE)
-		:setPlaceHolder("请再次输入您的新登录密码")
+		:setPlaceHolder("确认密码")
 	csbNode:addChild(editbox)
 	self.m_editConfirmPass = editbox
 
@@ -172,14 +172,14 @@ function ModifyPasswdLayer:onCheckBoxClickEvent(sender, eventType)
 		newstr = "sp_new_lgpass.png"			
 		oldTips = "输入您的旧登录密码"
 		newTips = "输入您的新登录密码"
-		confirmTips = "请再次输入您的新登录密码"
+		confirmTips = "确认密码"
 	elseif tag == CBT_BANK then
 		self.m_checkLogin:setSelected(false)
 		oldstr = "sp_old_bkpass.png"
 		newstr = "sp_new_bkpass.png"
 		oldTips = "输入您的旧银行密码"
 		newTips = "输入您的新银行密码"
-		confirmTips = "请再次输入您的新银行密码"
+		confirmTips = "确认密码"
 	end
 
 	--刷新界面

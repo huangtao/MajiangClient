@@ -1254,7 +1254,19 @@ end
  	cmd_data:pushbool(bListen)
  	self:SendData(cmd.SUB_C_LISTEN_CARD, cmd_data)
  end
-
+ function GameLayer:getUserInfo()
+   local number = 0
+   tabData = {}
+   for i = 1,cmd.GAME_PLAYER do 
+       
+       local userItem = self._gameFrame:getTableUserItem(self._gameFrame:GetTableID(), i-1)
+       if userItem ~= nil then 
+          number = number + 1
+          tabData[number] = userItem            
+       end 
+   end 
+   return tabData
+end
 --用户托管
 function GameLayer:sendUserTrustee(isTrustee)
 	if not self.bSendCardFinsh then

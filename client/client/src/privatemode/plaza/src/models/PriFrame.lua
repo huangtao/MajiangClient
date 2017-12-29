@@ -143,8 +143,13 @@ end
 
 -- 发送查询私人房
 function PriFrame:sendSearchRoom()
-    local buffer = ExternalFun.create_netdata(cmd_pri_login.CMD_MB_SerchServerTableEnter)
+    local buffer = ExternalFun.create_netdata(cmd_pri_login.CMD_MB_SearchServerTable)
     buffer:setcmdinfo(cmd_pri_login.MDM_MB_PERSONAL_SERVICE,cmd_pri_login.SUB_MB_SEARCH_SERVER_TABLE)
+--//-[--------------[QTC_MODIFY_AA]----------------//
+    buffer:pushscore(GlobalUserItem.dUserBeans)
+    buffer:pushscore(GlobalUserItem.lRoomCard)
+    buffer:pushdword(GlobalUserItem.dwUserID)
+--//-]--------------[QTC_MODIFY_AA]----------------//
     buffer:pushstring(self._roomId, define_private.ROOM_ID_LEN)
     buffer:pushdword(GlobalUserItem.nCurGameKind)
     if not self:sendSocketData(buffer) and nil ~= self._callBack then
@@ -175,9 +180,11 @@ end
 
 -- 发送解散房间
 function PriFrame:sendDissumeRoom()
-    local buffer = ExternalFun.create_netdata(cmd_pri_login.CMD_MB_SearchServerTable)
+    local buffer = ExternalFun.create_netdata(cmd_pri_login.CMD_MB_DissumeSearchServerTable)
     buffer:setcmdinfo(cmd_pri_login.MDM_MB_PERSONAL_SERVICE,cmd_pri_login.SUB_MB_DISSUME_SEARCH_SERVER_TABLE)
+
     buffer:pushstring(self._roomId, define_private.ROOM_ID_LEN)
+    
     if not self:sendSocketData(buffer) and nil ~= self._callBack then
         self._callBack(LOGINSERVER(-1),"发送解散房间失败！")
     end
@@ -318,10 +325,27 @@ function PriFrame:onSubSearchRoomResult( pData )
     local cmd_table = ExternalFun.read_netdata(cmd_pri_login.CMD_MB_SearchResult, pData)
     dump(cmd_table, "CMD_MB_SearchResult", 6)
     if 0 == cmd_table.dwServerID then
-        if nil ~= self._callBack then
+--//-[--------------[QTC_MODIFY_AA]----------------//
+		if cmd_table.cbLate ~= 0 then
+			if nil ~= self._callBack then
+				self._callBack(LOGINSERVER(cmd_pri_login.SUB_MB_SEARCH_RESULT), "这是个AA制房间, 游戏已经开始, 不能中途加入, 请重新输入!")
+				PriRoom:getInstance().m_tabJoinGameRecord[GlobalUserItem.nCurGameKind] = {}
+			end
+		elseif cmd_table.cbPoor ~= 0 and 1 == cmd_table.cbBeanOrRoomCard then
+			if nil ~= self._callBack then
+				self._callBack(LOGINSERVER(cmd_pri_login.SUB_MB_SEARCH_RESULT), "这是个AA制房间,您的房卡少于"..cmd_table.dwFee..", 请重新输入!")
+				PriRoom:getInstance().m_tabJoinGameRecord[GlobalUserItem.nCurGameKind] = {}
+			end
+		elseif cmd_table.cbPoor ~= 0 and 0 == cmd_table.cbBeanOrRoomCard then
+			if nil ~= self._callBack then
+				self._callBack(LOGINSERVER(cmd_pri_login.SUB_MB_SEARCH_RESULT), "这是个AA制房间,您的蓝钻少于"..cmd_table.dwFee..", 请重新输入!")
+				PriRoom:getInstance().m_tabJoinGameRecord[GlobalUserItem.nCurGameKind] = {}
+			end
+        elseif nil ~= self._callBack then
             self._callBack(LOGINSERVER(cmd_pri_login.SUB_MB_SEARCH_RESULT), "该房间ID不存在, 请重新输入!")
             PriRoom:getInstance().m_tabJoinGameRecord[GlobalUserItem.nCurGameKind] = {}
         end
+--//-]--------------[QTC_MODIFY_AA]----------------//
         return
     end
     -- 信息记录
@@ -510,7 +534,7 @@ function PriFrame:onGameSocketEvent( main,sub,pData )
             self:onSubTableEnd(pData)
         elseif cmd_pri_game.SUB_GR_CANCEL_TABLE_RESULT == sub then      -- 私人房解散结果
             self:onSubCancelTableResult(pData)
-        elseif cmd_pri_game.SUB_GR_CURRECE_ROOMCARD_AND_BEAN == sub then -- 强制解散桌子后的游戏豆和房卡数量
+        elseif cmd_pri_game.SUB_GR_CURRECE_ROOMCARD_AND_BEAN == sub then -- 强制解散桌子后的蓝钻和房卡数量
             self:onSubCancelTableScoreInfo(pData)
         elseif cmd_pri_game.SUB_GR_CHANGE_CHAIR_COUNT == sub then       -- 改变椅子数量
             self:onSubChangeChairCount(pData)

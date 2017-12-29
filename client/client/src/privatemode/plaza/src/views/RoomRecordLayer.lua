@@ -21,10 +21,19 @@ function RoomRecordLayer:ctor( scene )
     local cbtlistener = function (sender,eventType)
         self:onSelectedEvent(sender:getTag(),sender,eventType)
     end
+    local function callback(ref, tType)
+        if tType == ccui.TouchEventType.ended then
+            self:onButtonClickedEvent(ref:getTag(),ref)
+        end
+    end
     -- 切换按钮
     self.m_checkSwitch = csbNode:getChildByName("check_switchrec")
     self.m_checkSwitch:setSelected(true)
     self.m_checkSwitch:addEventListener(cbtlistener)
+
+    -- 关闭钮
+    self.m_btnClose = csbNode:getChildByName("btn_close")    
+    self.m_btnClose:addTouchEventListener(callback)
 
     -- 创建记录
     self.m_layCreateRec = csbNode:getChildByName("lay_create")
@@ -138,11 +147,11 @@ function RoomRecordLayer:createRecordItem( tabData )
     item:setContentSize(cc.size(1130, 50))
     
     -- 线
-    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("pri_sp_listline.png")
+    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("pri_sp_listline1.png")
     if nil ~= frame then
         local sp = cc.Sprite:createWithSpriteFrame(frame)
         item:addChild(sp)
-        sp:setPosition(565, 0)
+        sp:setPosition(565, 20)
     end
     
     -- 创建时间
@@ -227,11 +236,11 @@ function RoomRecordLayer:joinRecordItem( tabData )
     item:setContentSize(cc.size(1130, 50))
 
     -- 线
-    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("pri_sp_listline.png")
+    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("pri_sp_listline1.png")
     if nil ~= frame then
         local sp = cc.Sprite:createWithSpriteFrame(frame)
         item:addChild(sp)
-        sp:setPosition(565, 0)
+        sp:setPosition(565, 20)
     end
     
     -- 创建时间
@@ -295,6 +304,9 @@ function RoomRecordLayer:joinRecordItem( tabData )
     end
     item:addTouchEventListener( itemFunC )
     return item
+end
+function RoomRecordLayer:onButtonClickedEvent( tag, sender )
+     self.scene:onChangeShowMode()
 end
 
 return RoomRecordLayer

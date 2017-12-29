@@ -277,7 +277,7 @@ function FriendMgr:onSocketError(pData)
 				yl.CURRENT_INDEX = 1
 			end
 		else
-			print("网络错误，code："..errorcode)			
+			print("网络中断，请检查您的网络是否通畅！   "..errorcode)			
 		end
 	end
 end
@@ -528,6 +528,15 @@ function FriendMgr:onFriendMessage(sub,pData)
 	    	eventListener.msg = cmd_table.NearUserInfo
 	    	cc.Director:getInstance():getEventDispatcher():dispatchEvent(eventListener)
 		end
+    elseif sub == chat_cmd.SUB_GC_QUERY_DISTANCE_RESULT then
+        local cmd_table = ExternalFun.read_netdata(chat_cmd.CMD_GC_Query_NearuserResult, pData)
+		dump(cmd_table, "CMD_GC_Query_NearuserResult", 6)
+		if 1 == cmd_table.cbUserCount then
+			--通知更新   
+			local eventListener = cc.EventCustom:new(yl.RY_DISTANCE)
+	    	eventListener.msg = cmd_table.NearUserInfo
+	    	cc.Director:getInstance():getEventDispatcher():dispatchEvent(eventListener)
+        end
 	elseif sub == chat_cmd.SUB_GC_QUERY_NEARUSER_ECHO 
 		or sub == chat_cmd.SUB_GC_UPDATE_COORDINATE_ECHO then  	-- 坐标更新反馈
 		local data_tab = ExternalFun.read_netdata(chat_cmd.CMD_GC_ECHO, pData)
@@ -814,6 +823,19 @@ function FriendMgr:sendQueryUserLocation( dwTargetUserID )
 	print("FriendMgr:sendQueryUserLocation")
 	local sendMsgData = ExternalFun.create_netdata(chat_cmd.CMD_GC_Query_Nearuser)
 	sendMsgData:setcmdinfo(chat_cmd.MDM_GC_USER,chat_cmd.SUB_GC_QUERY_NEARUSER)
+	sendMsgData:pushdword(GlobalUserItem.dwUserID)
+	sendMsgData:pushdword(dwTargetUserID)
+	if not self:sendSocketData(sendMsgData) then
+		print("发送查询位置失败！");
+		sendMsgData:retain()
+		table.insert(self.m_sendCache, sendMsgData)
+	end
+end
+-- 发送指定用户查询距离
+function FriendMgr:sendQueryUserDistance( dwTargetUserID )
+	print("FriendMgr:sendQueryUserDistance")
+	local sendMsgData = ExternalFun.create_netdata(chat_cmd.CMD_GC_Query_Nearuser)
+	sendMsgData:setcmdinfo(chat_cmd.MDM_GC_USER,chat_cmd.SUB_GC_QUERY_DISTANCE)
 	sendMsgData:pushdword(GlobalUserItem.dwUserID)
 	sendMsgData:pushdword(dwTargetUserID)
 	if not self:sendSocketData(sendMsgData) then

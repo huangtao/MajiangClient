@@ -4,11 +4,15 @@
 --
 -- 私人房 ID 输入界面
 
-local RoomIdInputLayer = class("RoomIdInputLayer", cc.Layer)
+local RoomIdInputLayer = class("RoomIdInputLayer", function(scene)
+		local RoomIdInputLayer = display.newLayer(cc.c4b(56, 56, 56, 56))
+    return RoomIdInputLayer
+end)
 local ExternalFun = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
 
 local BTN_CLEAR = 1
 local BTN_DEL = 2
+local BTN_CLOSE = 3
 function RoomIdInputLayer:ctor()
     -- 注册触摸事件
     ExternalFun.registerTouchEvent(self, true)
@@ -16,10 +20,14 @@ function RoomIdInputLayer:ctor()
     -- 加载csb资源
     local rootLayer, csbNode = ExternalFun.loadRootCSB("room/RoomIdInputLayer.csb", self)
 
-    --
+    --背景
     self.m_spBg = csbNode:getChildByName("pri_sp_ideditbg")
     self.m_spBg:setScale(0.000001)
     local bg = self.m_spBg
+
+    --输入框提示
+    self.m_spPleaseInput = bg:getChildByName("sp_please_input")
+    self.m_spPleaseInput:setVisible(true)
 
     -- 房间ID
     self.m_atlasRoomId = bg:getChildByName("atlas_roomid")
@@ -53,11 +61,16 @@ function RoomIdInputLayer:ctor()
     btn:setTag(BTN_DEL)
     btn:addTouchEventListener(callback)
 
+    --关闭按钮
+    local btn = bg:getChildByName("btn_close")
+    btn:setTag(BTN_CLOSE)
+    btn:addTouchEventListener(callback)
+
     -- 加载动画
     local call = cc.CallFunc:create(function()
         self:setVisible(true)
     end)
-    local scale = cc.ScaleTo:create(0.2, 1.3)
+    local scale = cc.ScaleTo:create(0.2, 1)
     self.m_actShowAct = cc.Sequence:create(call, scale)
     ExternalFun.SAFE_RETAIN(self.m_actShowAct)
 
@@ -142,6 +155,7 @@ function RoomIdInputLayer:onNumButtonClickedEvent( tag, sender )
     if string.len(roomid) < 6 then
         roomid = roomid .. tag
         self.m_atlasRoomId:setString(roomid)
+        self.m_spPleaseInput:setVisible(false)
     end
 
     if string.len(roomid) == 6 then        
@@ -158,13 +172,19 @@ end
 function RoomIdInputLayer:onButtonClickedEvent( tag, sender )
     if BTN_CLEAR == tag then
         self.m_atlasRoomId:setString("")
+        self.m_spPleaseInput:setVisible(true)
     elseif BTN_DEL == tag then
         local roomid = self.m_atlasRoomId:getString()
         local len = string.len(roomid)
         if len > 0 then
-            roomid = string.sub(roomid, 1, len - 1)
+           roomid = string.sub(roomid, 1, len - 1)
+           if len == 1 then 
+              self.m_spPleaseInput:setVisible(true)
+           end
         end
-        self.m_atlasRoomId:setString(roomid)        
+        self.m_atlasRoomId:setString(roomid) 
+    elseif BTN_CLOSE == tag then 
+        self:showLayer(false)
     end
 end
 

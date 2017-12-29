@@ -189,8 +189,9 @@ function PriRoomCreateLayer:onLoginPriRoomFinish()
     if ((meUser.cbUserStatus == yl.US_FREE or meUser.cbUserStatus == yl.US_NULL or meUser.cbUserStatus == yl.US_PLAYING)) then
         if PriRoom:getInstance().m_nLoginAction == PriRoom.L_ACTION.ACT_CREATEROOM then
             -- 创建登陆
-            local buffer = CCmd_Data:create(188)
+            local buffer = CCmd_Data:create(192)
             buffer:setcmdinfo(self._cmd_pri_game.MDM_GR_PERSONAL_TABLE,self._cmd_pri_game.SUB_GR_CREATE_TABLE)
+            buffer:pushdword(0)
             buffer:pushscore(1)
             buffer:pushdword(self.m_tabSelectConfig.dwDrawCountLimit)  
             buffer:pushdword(self.m_tabSelectConfig.dwDrawTimeLimit)

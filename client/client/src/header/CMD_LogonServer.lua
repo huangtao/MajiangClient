@@ -116,6 +116,10 @@ login.SUB_GP_QUERY_USER_GAME_DATA		= 370								--查询数据
 --帐号绑定
 login.SUB_GP_ACCOUNT_BINDING			= 380								--帐号绑定
 
+--查询用户锁号信息
+login.SUB_GP_USER_KIND_LOCKER			= 400								--用户锁号
+login.SUB_GP_USER_KIND_LOCKER_RESULT	= 401								--锁号信息
+
 --操作结果
 login.SUB_GP_OPERATE_SUCCESS			= 500								--操作成功
 login.SUB_GP_OPERATE_FAILURE			= 501								--操作失败
@@ -307,7 +311,7 @@ login.CMD_GP_S_PropertySuccess = --CMD_GP_PropertyBuyResult
 	{k = "lInsureScore", t = "score"},									--银行存款
 	{k = "lUserMedal", t = "score"},									--用户元宝	
 	{k = "lLoveLiness", t = "score"},									--魅力值	
-	{k = "dCash", t = "double"},										--游戏豆	
+	{k = "dCash", t = "double"},										--蓝钻	
 	--{k = "cbSuccessed", t = "byte"},									--成功标识	
 	{k = "cbCurrMemberOrder", t = "byte"},								--会员等级
 	{k = "szNotifyContent", t = "string"},								--提示内容

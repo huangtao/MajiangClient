@@ -5,7 +5,7 @@
 ]]
 
 local OptionLayer = class("OptionLayer", function(scene)
-		local optionLayer = display.newLayer(cc.c4b(0, 0, 0, 125))
+		local optionLayer = display.newLayer(cc.c4b(56, 56, 56, 56))
     return optionLayer
 end)
 local ExternalFun = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
@@ -45,38 +45,57 @@ function OptionLayer:ctor(scene)
 	local areaWidth = yl.WIDTH
 	local areaHeight = yl.HEIGHT
 
+    --黑色背景
+    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("Option/backgroud.png")
+    if nil ~= frame then
+        local sp = cc.Sprite:createWithSpriteFrame(frame)
+        sp:setPosition(yl.WIDTH/2,yl.HEIGHT/2)
+        self:addChild(sp)
+        --sp:setVisible(false)
+    end
+
+    
+
 	--显示背景
 	display.newSprite("Option/bg_option.png")
 		:move(yl.WIDTH/2,yl.HEIGHT/2)
+--        :setScale(0.8,0.8)
 		:addTo(self)
-
-	--上方背景
-    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_top_bg.png")
-    if nil ~= frame then
-        local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(yl.WIDTH/2,yl.HEIGHT-51)
-        self:addChild(sp)
-    end
-	--标题
-	display.newSprite("Option/title_option.png")
-		:move(areaWidth/2,yl.HEIGHT-51)
+	
+--	--标题
+	display.newSprite("Option/sp_title.png")
+		:move(areaWidth/2,yl.HEIGHT-200)
 		:addTo(self)
 	--返回
-	ccui.Button:create("bt_return_0.png","bt_return_1.png")
-    	:move(75,yl.HEIGHT-51)
+	ccui.Button:create("Option/bt_close_1.png","Option/bt_close_2.png")
+    	:move(970,yl.HEIGHT-195)
     	:setTag(OptionLayer.BT_EXIT)
     	:addTo(self)
     	:addTouchEventListener(btcallback)
 
 	--音效开关
+    local offset = cc.p(150,90);
 	display.newSprite("Option/frame_option_0.png")
-		:move(1000,510)
+		:move(1000 + offset.x,520)
 		:addTo(self)
+        :setVisible(false)
 	display.newSprite("Option/text_sound.png")
-		:move(837,510)
+		--:move(837,510)
+        :move(360 + offset.x,363)
 		:addTo(self)
+
+--    self.m_spSoundOff = display.newSprite("Option/sp_option_musicOff.png")	
+--    self.m_spSoundOff:move(150+350 + offset.x,320)
+--	self.m_spSoundOff:addTo(self)
+--    self.m_spSoundOff:setVisible(GlobalUserItem.bSoundAble == false)
+
+--    self.m_spSoundOn = display.newSprite("Option/sp_option_musicOn.png")	
+--    self.m_spSoundOn:move(150+350 + offset.x,320)
+--	self.m_spSoundOn:addTo(self)
+--    self.m_spSoundOn:setVisible(GlobalUserItem.bSoundAble == true)
+
 	self._cbtSilence = ccui.CheckBox:create("Option/bt_option_switch_0.png","","Option/bt_option_switch_1.png","","")
-		:move(1175,510)
+		:move(600 + offset.x,360)
 		:setSelected(GlobalUserItem.bSoundAble)
 		:addTo(self)
 		:setTag(self.CBT_SOUND)
@@ -84,51 +103,70 @@ function OptionLayer:ctor(scene)
 
 	--音乐开关
 	display.newSprite("Option/frame_option_0.png")
-		:move(330,510)
+		:move(380 + offset.x,440)
 		:addTo(self)
+        :setVisible(false)
 	display.newSprite("Option/text_music.png")
-		:move(170,510)
+        :move(360 + offset.x,440)
 		:addTo(self)
-	self._cbtSound = ccui.CheckBox:create("Option/bt_option_switch_0.png","","Option/bt_option_switch_1.png","","")
-		:move(500,510)
+
+--    self.m_spMusicOff = display.newSprite("Option/sp_option_musicOff.png")	
+--    self.m_spMusicOff:move(150+350 + offset.x,460)
+--	self.m_spMusicOff:addTo(self)
+--    self.m_spMusicOff:setVisible(GlobalUserItem.bVoiceAble == false)
+
+--    self.m_spMusicOn = display.newSprite("Option/sp_option_musicOn.png")	
+--    self.m_spMusicOn:move(150+350 + offset.x,460)
+--	self.m_spMusicOn:addTo(self)
+--    self.m_spMusicOn:setVisible(GlobalUserItem.bVoiceAble == true)
+
+	self._cbtSound = ccui.CheckBox:create("Option/bt_option_switch_1_0.png","","Option/bt_option_switch_1_1.png","","")
+		:move(600 + offset.x,440)
 		:setSelected(GlobalUserItem.bVoiceAble)
 		:addTo(self)
 		:setTag(self.CBT_SILENCE)
 	self._cbtSound:addEventListener(cbtlistener)
 
 	--常见问题
-	display.newSprite("Option/frame_option_0.png")
-		:move(330,338)
-		:addTo(self)
-	display.newSprite("Option/text_question.png")
-		:move(170,338)
-		:addTo(self)
-	ccui.Button:create("Option/bt_option_check_0.png","Option/bt_option_check_1.png")
-		:move(500,338)
-		:setTag(OptionLayer.BT_QUESTION)
-		:addTo(self)
-		:addTouchEventListener(btcallback)
+--	display.newSprite("Option/frame_option_0.png")
+--		:move(330,338)
+--		:addTo(self)
+--        :setVisible(false)
+--	display.newSprite("Option/text_question.png")
+--		--:move(170,338)
+--        :setAnchorPoint(cc.p(0,0.5))
+--        :move(700,520)
+--		:addTo(self)
+--	ccui.Button:create("Option/bt_option_check_0.png","Option/bt_option_check_1.png")
+--		:move(950,520)
+--		:setTag(OptionLayer.BT_QUESTION)
+--		:addTo(self)
+--		:addTouchEventListener(btcallback)
 
 	--游戏反馈
-	display.newSprite("Option/frame_option_0.png")
-		:move(1000,338)
-		:addTo(self)
-	display.newSprite("Option/text_feedback.png")
-		:move(837,338)
-		:addTo(self)
-	ccui.Button:create("Option/bt_option_commit_0.png","Option/bt_option_commit_1.png")
-		:move(1173,338)
-		:setTag(OptionLayer.BT_COMMIT)
-		:addTo(self)
-		:addTouchEventListener(btcallback)
+--	display.newSprite("Option/frame_option_0.png")
+--		:move(1000,338)
+--		:addTo(self)
+--        :setVisible(false)
+--	display.newSprite("Option/text_feedback.png")
+--        :setAnchorPoint(cc.p(0,0.5))
+--		:move(700,350)
+--		:addTo(self)
+--	ccui.Button:create("Option/bt_option_commit_0.png","Option/bt_option_commit_1.png")
+--		:move(950,350)
+--		:setTag(OptionLayer.BT_COMMIT)
+--		:addTo(self)
+--		:addTouchEventListener(btcallback)
 	
 	--帐号信息
 	display.newSprite("Option/frame_option_1.png")
 		:move(yl.WIDTH/2,166)
 		:addTo(self)
+        :setVisible(false)
 	display.newSprite("Option/text_account.png")
 		:move(240,166)
 		:addTo(self)
+        :setVisible(false)
 
 	local testen = cc.Label:createWithSystemFont("A","Arial", 24)
     self._enSize = testen:getContentSize().width
@@ -143,28 +181,38 @@ function OptionLayer:ctor(scene)
        	:setLineBreakWithoutSpace(false)
        	:setTextColor(cc.c4b(240,240,240,255))
        	:addTo(self)
+        :setVisible(false)
 
     -- 锁定
-    if 1 == GlobalUserItem.cbLockMachine then
-        self.m_btnLock = ccui.Button:create("Option/btn_unlockmachine_0.png","Option/btn_unlockmachine_1.png","Option/btn_unlockmachine_0.png")
-        self.m_btnLock:setTag(OptionLayer.BT_UNLOCK)
-    else
-        self.m_btnLock = ccui.Button:create("Option/btn_lockmachine_0.png","Option/btn_lockmachine_1.png","Option/btn_lockmachine_0.png")
-        self.m_btnLock:setTag(OptionLayer.BT_LOCK)
-    end    
-    self.m_btnLock:move(631,166)        
-        :addTo(self)
-        :addTouchEventListener(btcallback)
+--    display.newSprite("Option/test_unlockmachine.png")
+--        :setAnchorPoint(cc.p(0,0.5))
+--		:move(700,450)
+--		:addTo(self)  
+--    if 1 == GlobalUserItem.cbLockMachine then
+--        self.m_btnLock = ccui.Button:create("Option/btn_unlockmachine_0.png","Option/btn_unlockmachine_1.png","Option/btn_unlockmachine_0.png")
+--        self.m_btnLock:setTag(OptionLayer.BT_UNLOCK)
+--    else
+--        self.m_btnLock = ccui.Button:create("Option/btn_lockmachine_0.png","Option/btn_lockmachine_1.png","Option/btn_lockmachine_0.png")
+--        self.m_btnLock:setTag(OptionLayer.BT_LOCK)
+--    end     
+--    self.m_btnLock:move(950,450)        
+--        :addTo(self)
+--        :addTouchEventListener(btcallback)
 
     --修改密码
-    ccui.Button:create("Option/bt_option_modify_0.png","Option/bt_option_modify_1.png")
-		:move(861,166)
-		:setTag(OptionLayer.BT_MODIFY)
-		:addTo(self)
-		:addTouchEventListener(btcallback)
+--    display.newSprite("Option/test_modify.png")
+--        :setAnchorPoint(cc.p(0,0.5))
+--		:move(700,290)
+--		:addTo(self)  
+--    ccui.Button:create("Option/bt_option_modify_0.png","Option/bt_option_modify_1.png")
+--		:move(950,290)
+--		:setTag(OptionLayer.BT_MODIFY)
+--		:addTo(self)
+--		:addTouchEventListener(btcallback)
+
 	--切换帐号
     ccui.Button:create("Option/bt_option_change_0.png","Option/bt_option_change_1.png")
-		:move(1091,166)
+		:move(667,270)
 		:setTag(OptionLayer.BT_EXCHANGE)
 		:addTo(self)
 		:addTouchEventListener(btcallback)
@@ -182,10 +230,14 @@ end
 function OptionLayer:onSelectedEvent(tag,sender,eventType)
 	if tag == OptionLayer.CBT_SILENCE then
 		GlobalUserItem.setVoiceAble(eventType == 0)
+--        self.m_spMusicOn:setVisible(eventType == 0)
+--        self.m_spMusicOff:setVisible(not (eventType == 0))
 		--背景音乐
         ExternalFun.playPlazzBackgroudAudio()
 	elseif tag == OptionLayer.CBT_SOUND then
 		GlobalUserItem.setSoundAble(eventType == 0)
+--        self.m_spSoundOn:setVisible(eventType == 0)
+--        self.m_spSoundOff:setVisible(not (eventType == 0))		
 	end
 end
 

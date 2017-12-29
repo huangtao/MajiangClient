@@ -215,6 +215,10 @@ function ShopPay:ctor(parent)
 
 	--加载csb资源
 	local rootLayer, csbNode = ExternalFun.loadRootCSB("Shop/ShopPayLayer.csb", self)
+    csbNode:setVisible(false)
+    rootLayer:setVisible(false)
+    local rootLayer2, csbNode2 = ExternalFun.loadRootCSB("Shop/ShopPayLayer2.csb", self)
+    csbNode:setVisible(true)
 
 	self.m_spBgKuang = csbNode:getChildByName("shop_pay_bg")
 	self.m_spBgKuang:setScale(0.0001)
@@ -357,10 +361,75 @@ function ShopPay:ctor(parent)
 	self.m_actHideAct = cc.Sequence:create(scale, call)
 	ExternalFun.SAFE_RETAIN(self.m_actHideAct)
 
+    -----------------------新界面
+    
+    self.m_spBgKuang2 = csbNode2:getChildByName("shop_pay_bg")
+--	self.m_spBgKuang2:setScale(0.0001)
+	local bg = self.m_spBgKuang2
+
+    --按钮回调
+	local btcallback2 = function(ref, type)
+        if type == ccui.TouchEventType.ended then
+         	self:onButtonHandle(ref:getTag(),ref)
+        end
+    end 
+
+     --关闭按钮
+    local btnClose = bg:getChildByName("btn_close")
+    btnClose:setTag(BT_CLOSE)
+    btnClose:addTouchEventListener(btcallback)
+
+    local btnWeChat = csbNode2:getChildByName("btn_wechat")
+    btnWeChat:setTag(CBT_WECHAT)
+    btnWeChat:addTouchEventListener(btcallback2)
+    btnWeChat:setVisible(false)
+    local posWechat = cc.p(btnWeChat:getPositionX(), btnWeChat:getPositionY())
+
+    
+    local btnAliPay = csbNode2:getChildByName("btn_alipay")
+    btnAliPay:setTag(CBT_ALIPAY)
+    btnAliPay:addTouchEventListener(btcallback2)
+    btnAliPay:setVisible(false)
+    local posAliPay = cc.p(btnAliPay:getPositionX(), btnAliPay:getPositionY())
+
+--    local cbtPosition = 
+--    {   
+--        {wpos},
+--        {wpos, apos},
+--        {wpos, apos, jpos}
+--    }
+    local posAll =
+    {
+        {cc.p(yl.WIDTH*0.5,posWechat.y),cc.p(yl.WIDTH*0.5,posWechat.y)},
+        {posWechat,posAliPay}
+    }
+
+    local numCount = 0
+    local bWeChat = false
+    local bAlipay = false   
+    if yl.WeChat.PartnerID ~= " " and yl.WeChat.PartnerID ~= "" then
+        numCount = numCount + 1
+        bWeChat = true
+    end
+    if yl.AliPay.PartnerID ~= " " and yl.AliPay.PartnerID ~= "" then
+        numCount = numCount + 1
+        bAlipay = true
+    end
+    if numCount ~= 0 then 
+        btnWeChat:setPosition(posAll[numCount][1])
+        btnWeChat:setVisible(bWeChat)
+        btnAliPay:setPosition(posAll[numCount][2])
+        btnAliPay:setVisible(bAlipay)
+    end 
+
+
 	self:showLayer(false)
 end
-
-function ShopPay:isPayMethodValid()
+function ShopPay:onButtonHandle(tag,ref)
+    self.m_select = tag 
+    self:onButtonClickedEvent(BT_SURE,nil)
+end 
+function ShopPay:isPayMethodValid()   
     if (yl.WeChat.PartnerID ~= " " and yl.WeChat.PartnerID ~= "") 
         or (yl.AliPay.PartnerID ~= " " and yl.AliPay.PartnerID ~= "")
         or (yl.JFT.PartnerID ~= " " and yl.JFT.PartnerID ~= "")
@@ -372,11 +441,12 @@ function ShopPay:isPayMethodValid()
 end
 
 function ShopPay:showLayer(var)
-	self:setVisible(var)
+	self:setVisible(false)
 
 	if true == var then
 		self.m_spBgKuang:stopAllActions()
 		self.m_spBgKuang:runAction(self.m_actShowAct)
+        self:onButtonHandle(CBT_JFT,nil)
 	end
 end
 
@@ -586,7 +656,7 @@ end
 
 --商城页面
 local ShopLayer = class("ShopLayer", function(scene)
-		local shopLayer = display.newLayer(cc.c4b(0, 0, 0, 125))
+		local shopLayer = display.newLayer(cc.c4b(56, 56, 56, 125))
     return shopLayer
 end)
 
@@ -595,6 +665,8 @@ ShopLayer.CBT_BEAN			= 2
 ShopLayer.CBT_VIP			= 3
 ShopLayer.CBT_PROPERTY		= 4
 ShopLayer.CBT_ENTITY		= 5
+ShopLayer.CBT_BEAN_SCORE    = 6
+ShopLayer.CBT_BEAN_ROOMCARD	= 7
 
 ShopLayer.BT_SCORE			= 30
 ShopLayer.BT_VIP			= 50
@@ -604,6 +676,10 @@ ShopLayer.BT_BEAN			= 520
 
 ShopLayer.BT_ORDERRECORD    = 1001
 ShopLayer.BT_BAG            = 1002
+
+ShopLayer.BEAN_BEAN         = 2 --豆
+ShopLayer.BEAN_SCORE        = 1 --金币
+ShopLayer.BEAN_ROOMCARD     = 3 --房卡
 
 local SHOP_BUY = {}
 SHOP_BUY[ShopLayer.BT_SCORE] = "shop_score_buy"
@@ -636,7 +712,7 @@ end
 --scene
 --stmod 进入商店后的选择类型
 function ShopLayer:ctor(scene, stmod)
-	stmod = stmod or ShopLayer.CBT_SCORE
+	stmod = stmod or ShopLayer.CBT_BEAN
     self.m_nPayMethod = GlobalUserItem.tabShopCache["nPayMethod"] or THIRDPAY
 	
 	local this = self
@@ -683,25 +759,17 @@ function ShopLayer:ctor(scene, stmod)
     --道具关联信息
     self.m_tabPropertyRelate = GlobalUserItem.tabShopCache["propertyRelate"] or {}
 
-    display.newSprite("Shop/frame_shop_0.png")
-		:move(yl.WIDTH/2,yl.HEIGHT - 51)
-		:addTo(self)
+--    display.newSprite("Shop/frame_shop_0.png")
+--		:move(yl.WIDTH/2,yl.HEIGHT - 51)
+--		:addTo(self)
 	local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
-	if nil ~= frame then
-		local sp = cc.Sprite:createWithSpriteFrame(frame)
-		sp:setPosition(yl.WIDTH/2,320)
-		self:addChild(sp)
-	end
+--	if nil ~= frame then
+--		local sp = cc.Sprite:createWithSpriteFrame(frame)
+--		sp:setPosition(yl.WIDTH/2,320)
+--		self:addChild(sp)
+--	end
 	
-    --返回按钮
-	ccui.Button:create("bt_return_0.png","bt_return_1.png")
-		:move(75,yl.HEIGHT-51)
-		:addTo(self)
-		:addTouchEventListener(function(ref, type)
-       		 	if type == ccui.TouchEventType.ended then
-					this._scene:onKeyBack()
-				end
-			end)
+    
 
     --兑换记录
     local topBtn = ccui.Button:create("Information/btn_ubag_0.png","Information/btn_ubag_1.png")
@@ -719,47 +787,70 @@ function ShopLayer:ctor(scene, stmod)
                 end
             end)
     self.m_btnTopBtn = topBtn
+    self.m_btnTopBtn:setVisible(false)
+   --背景
+   display.newSprite("Shop/frame_shop_5.png")
+    	:move(yl.WIDTH*0.5,yl.HEIGHT*0.47)
+    	:addTo(self)
 
-
+    --返回按钮
+	ccui.Button:create("Shop/bt_shop_close.png","Shop/bt_shop_close.png")
+		:move(yl.WIDTH*0.94,yl.HEIGHT*0.93)
+		:addTo(self)
+		:addTouchEventListener(function(ref, type)
+       		 	if type == ccui.TouchEventType.ended then
+					this._scene:onKeyBack()
+				end
+			end)
 	--金币、游戏豆、元宝
-	display.newSprite("Shop/frame_shop_2.png")
-		:move(365,699)
-		:addTo(self)
-	display.newSprite("Shop/icon_shop_0.png")
-		:move(247,699)
-		:addTo(self)
-	display.newSprite("Shop/frame_shop_3.png")
-		:move(679,699)
-		:addTo(self)
-	display.newSprite("Shop/icon_shop_1.png")
-		:move(555,699)
-		:addTo(self)
-	display.newSprite("Shop/frame_shop_4.png")
-		:move(1000,699)
-		:addTo(self)
-	display.newSprite("Shop/icon_shop_2.png")
-		:move(877,699)
+--	display.newSprite("Shop/frame_shop_2.png")
+--		:move(365,80)
+--		:addTo(self)
+--	display.newSprite("Shop/icon_shop_0.png")
+--		:move(247,80)
+--		:addTo(self)
+
+
+    --钻石
+    display.newSprite("Shop/frame_shop_3.png")
+		:move(yl.WIDTH*0.17,yl.HEIGHT*0.13)
+        :setAnchorPoint(cc.p(0,0.5))
+        :setVisible(false)
 		:addTo(self)
 
-	self._txtGold = cc.LabelAtlas:_create(string.formatNumberThousands(GlobalUserItem.lUserScore,true,"/"), "Shop/num_shop_0.png", 16, 22, string.byte(".")) 
-    		:move(293,699)
-    		:setAnchorPoint(cc.p(0,0.5))
-    		:addTo(self)
+--	display.newSprite("Shop/icon_shop_1.png")
+--		:move(555,80)
+--		:addTo(self)
+--	display.newSprite("Shop/frame_shop_4.png")
+--		:move(1000,80)
+--		:addTo(self)
+--	display.newSprite("Shop/icon_shop_2.png")
+--		:move(877,80)
+--		:addTo(self)
+    display.newSprite("Shop/icon_shop_1.png")
+		:move(yl.WIDTH*0.15,yl.HEIGHT*0.14)
+        :setAnchorPoint(cc.p(0,0.5))
+        :setVisible(false)
+		:addTo(self)
+
+--	self._txtGold = cc.LabelAtlas:_create(string.formatNumberThousands(GlobalUserItem.lUserScore,true,"/"), "Shop/num_shop_0.png", 16, 22, string.byte(".")) 
+--    		:move(293,80)
+--    		:setAnchorPoint(cc.p(0,0.5))
+--    		:addTo(self)
     self._txtBean = cc.LabelAtlas:_create(string.formatNumberThousands(GlobalUserItem.dUserBeans,true,"/"), "Shop/num_shop_0.png", 16, 22, string.byte(".")) 
-    		:move(603,699)
-    		:setAnchorPoint(cc.p(0,0.5))
+    		:move(yl.WIDTH*0.24,yl.HEIGHT*0.13)
+    		:setAnchorPoint(cc.p(0.5,0.5))
+            :setVisible(false)
     		:addTo(self)
-    self._txtIngot = cc.LabelAtlas:_create(string.formatNumberThousands(GlobalUserItem.lUserIngot,true,"/"), "Shop/num_shop_0.png", 16, 22, string.byte(".")) 
-    		:move(924,699)
-    		:setAnchorPoint(cc.p(0,0.5))
-    		:addTo(self)
+--    self._txtIngot = cc.LabelAtlas:_create(string.formatNumberThousands(GlobalUserItem.lUserIngot,true,"/"), "Shop/num_shop_0.png", 16, 22, string.byte(".")) 
+--    		:move(924,80)
+--    		:setAnchorPoint(cc.p(0,0.5))
+--    		:addTo(self)
+--   self._txtRoomCard = cc.LabelAtlas:_create(string.formatNumberThousands(GlobalUserItem.lRoomCard,true,"/"), "Shop/num_shop_0.png", 16, 22, string.byte(".")) 
+--    		:move(yl.WIDTH*0.3,yl.HEIGHT*0.95)
+--    		:setAnchorPoint(cc.p(0,0.5))
+--    		:addTo(self)
 
-    display.newSprite("Shop/frame_shop_5.png")
-    	:move(806,320)
-    	:addTo(self)
-    display.newSprite("Shop/frame_shop_6.png")
-    	:move(178,320)
-    	:addTo(self)
 
     --游戏币
     ccui.CheckBox:create("Shop/bt_shop_0_0.png","","Shop/bt_shop_0_1.png","","")
@@ -774,14 +865,14 @@ function ShopLayer:ctor(scene, stmod)
 
 	--游戏豆
     ccui.CheckBox:create("Shop/bt_shop_1_0.png","","Shop/bt_shop_1_1.png","","")
-		:move(190,530-104)
-		:addTo(self)
-		:setSelected(false)
+	    :move(190,530-104)
+	    :addTo(self)
+	    :setSelected(false)
         :setVisible(false)
         :setEnabled(false)
         :setName("check" .. 6)
-		:setTag(ShopLayer.CBT_BEAN)
-		:addEventListener(cbtlistener)
+	    :setTag(ShopLayer.CBT_BEAN)
+	    :addEventListener(cbtlistener)    
 
 	--VIP
     ccui.CheckBox:create("Shop/bt_shop_2_0.png","","Shop/bt_shop_2_1.png","","")
@@ -815,6 +906,32 @@ function ShopLayer:ctor(scene, stmod)
         :setName("check" .. 9)
 		:setTag(ShopLayer.CBT_ENTITY)
 		:addEventListener(cbtlistener)
+------------------------
+    --游戏豆分支中的现金充值金币和现金充值房卡
+    self.m_cbScoreOrRoomCard = 2
+    --现金充值金币
+    ccui.CheckBox:create("Shop/bt_shop_bean_0_0.png","","Shop/bt_shop_bean_0_1.png","","")
+		:move(yl.WIDTH*0.5,633)
+        :setAnchorPoint(cc.p(1,0.5))
+		:addTo(self)
+		:setSelected(false)
+        :setVisible(false)
+        :setEnabled(false)
+        :setName("check_bean_" .. 1)
+		:setTag(ShopLayer.CBT_BEAN_SCORE)
+		:addEventListener(cbtlistener)
+    --现金充值房卡
+    ccui.CheckBox:create("Shop/bt_shop_bean_1_0.png","","Shop/bt_shop_bean_1_1.png","","")
+		:move(yl.WIDTH*0.5,633)
+        :setAnchorPoint(cc.p(0,0.5))
+		:addTo(self)
+		:setSelected(false)
+        :setVisible(false)
+        :setEnabled(false)
+        :setName("check_bean_" .. 2)
+		:setTag(ShopLayer.CBT_BEAN_ROOMCARD)
+		:addEventListener(cbtlistener)
+----------------------
     self.m_tabCheckBoxPosition = 
     {   
         {cc.p(190,530)},
@@ -827,11 +944,12 @@ function ShopLayer:ctor(scene, stmod)
     self.m_tabActiveCheckBox = GlobalUserItem.tabShopCache["shopActiveCheckBox"] or {}
 
 	self._scrollView = ccui.ScrollView:create()
-									  :setContentSize(cc.size(938,520))
+									  --:setContentSize(cc.size(938,520))
+                                      :setContentSize(cc.size(1200,480))
 									  :setAnchorPoint(cc.p(0.5, 0.5))
-									  :setPosition(cc.p(805, 314))
+									  :setPosition(cc.p(yl.WIDTH*0.48, 330))
 									  :setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL)
-									  :setBounceEnabled(true)
+									  :setBounceEnabled(false)
 									  :setScrollBarEnabled(false)
 									  :addTo(self)
 end
@@ -854,13 +972,27 @@ function ShopLayer:updateCheckBoxList()
         end
     end
 
-    --选择的类型
+    --选择的类型   
     local tmp = self:getChildByTag(self._select)
     if nil ~= tmp and tmp:isVisible() then
         tmp:setSelected(true)
         --请求物品列表
         self:loadPropertyAndVip(self._select)
     end
+
+   for k,v in pairs(self.m_tabActiveCheckBox) do
+        local tmp = self:getChildByName(v)
+        if nil ~= tmp then
+            tmp:setEnabled(false)
+            tmp:setVisible(false)            
+
+            local pos = poslist[k]
+            if nil ~= pos then
+                tmp:setPosition(pos)
+            end
+        end
+    end
+
 end
 
 function ShopLayer:getShopPropertyType()
@@ -1004,6 +1136,12 @@ function ShopLayer:onSelectedEvent(tag,sender,eventType)
 		if i ~= tag then
 			self:getChildByTag(i):setSelected(false)
 		end
+        self:getChildByTag(i):setVisible(false)
+	end
+    for i=6,7 do
+		if i ~= tag then
+			self:getChildByTag(i):setSelected(false)
+		end      
 	end
 
 	--游戏币
@@ -1015,8 +1153,33 @@ function ShopLayer:onSelectedEvent(tag,sender,eventType)
 		end
 	end
 
-	--游戏豆
+	--游戏豆 -- 现金充值游戏豆
 	if (tag == ShopLayer.CBT_BEAN) then
+		self:onClearShowList()
+        self.m_cbScoreOrRoomCard = ShopLayer.BEAN_BEAN
+		if 0 == #self._beanList then
+			self:loadPropertyAndVip(tag) 
+		else
+			self:onUpdateBeanList()
+		end		
+	end
+
+    --游戏豆--分支现金充值金币
+	if (tag == ShopLayer.CBT_BEAN_SCORE) then
+        self._select = ShopLayer.CBT_BEAN
+        self.m_cbScoreOrRoomCard = ShopLayer.BEAN_SCORE
+		self:onClearShowList()
+		if 0 == #self._beanList then
+			self:loadPropertyAndVip(tag) 
+		else
+			self:onUpdateBeanList()
+		end		
+	end
+
+    --游戏豆--分支现金充值房卡    
+	if (tag == ShopLayer.CBT_BEAN_ROOMCARD) then
+        self._select = ShopLayer.CBT_BEAN
+        self.m_cbScoreOrRoomCard = ShopLayer.BEAN_ROOMCARD
 		self:onClearShowList()
 		if 0 == #self._beanList then
 			self:loadPropertyAndVip(tag) 
@@ -1136,7 +1299,6 @@ function ShopLayer:requestPayList(isIap)
     isIap = isIap or 0
     local beanurl = yl.HTTP_URL .. "/WS/MobileInterface.ashx"
     local ostime = os.time()
-
     self._scene:showPopWait()
     appdf.onHttpJsionTable(beanurl ,"GET","action=GetPayProduct&userid=" .. GlobalUserItem.dwUserID .. "&time=".. ostime .. "&signature=".. GlobalUserItem:getSignature(ostime) .. "&typeID=" .. isIap,function(sjstable,sjsdata)
         dump(sjstable, "支付列表", 6)
@@ -1164,6 +1326,10 @@ function ShopLayer:requestPayList(isIap)
                         item.paysend = tonumber(item.paysend)
                         item.paycount = sitem["PresentCurrency"] or "0"
                         item.paycount = tonumber(item.paycount)
+                        item.additionsend = sitem["AdditionalParentCurrency"]
+                        item.additionsend = tonumber(item.additionsend)
+                        item.activitysend = sitem["ActivityParentCurrency"]
+                        item.activitysend = tonumber(item.activitysend)
                         item.price = tonumber(item.price)
                         item.count = item.paysend + item.paycount
                         item.description  = sitem["Description"]                                        
@@ -1172,6 +1338,8 @@ function ShopLayer:requestPayList(isIap)
                         item.nOrder = 0
                         item.appid = tonumber(sitem["AppID"])
                         item.nProductID = sitem["ProductID"] or ""
+--                        item.PayObjectType  = sitem["PayObjectType"] or 2  
+                        item.PayObjectType  = 2  
 
                         --首充赠送
                         if 0 ~= item.paysend then
@@ -1299,6 +1467,8 @@ function ShopLayer:updateScoreInfo()
    self._txtGold:setString(string.formatNumberThousands(GlobalUserItem.lUserScore,true,"/"))
    self._txtBean:setString(string.formatNumberThousands(GlobalUserItem.dUserBeans,true,"/"))
    self._txtIngot:setString(string.formatNumberThousands(GlobalUserItem.lUserIngot,true,"/"))
+   self._txtRoomCard:setString(string.formatNumberThousands(GlobalUserItem.lRoomCard,true,"/"))
+   
 end
 
 --更新游戏币
@@ -1391,32 +1561,54 @@ function ShopLayer:onUpdateShowList(theList,tag)
 	local bOther= (self._select~=ShopLayer.CBT_SCORE)
 	local bBean = (self._select==ShopLayer.CBT_BEAN)
 
+    for i =  ShopLayer.CBT_SCORE,ShopLayer.CBT_ENTITY do 
+       -- if self._select ~= i then 
+        self:getChildByTag(i):setVisible(false)
+       -- end 
+    end 
+    for i =  ShopLayer.CBT_BEAN_SCORE,ShopLayer.CBT_BEAN_ROOMCARD do    
+        self:getChildByTag(i):setSelected(false)  
+        if  ShopLayer.BEAN_SCORE == self.m_cbScoreOrRoomCard then
+			self:getChildByTag(ShopLayer.CBT_BEAN_SCORE):setSelected(true)
+        elseif  ShopLayer.BEAN_ROOMCARD == self.m_cbScoreOrRoomCard then
+            self:getChildByTag(ShopLayer.CBT_BEAN_ROOMCARD):setSelected(true)
+		end   
+         self:getChildByTag(i):setVisible(false)  
+         self:getChildByTag(i):setEnabled(false) 
+    end  
+
 	--计算scroll滑动高度
 	local scrollHeight = 0
-	if #theList<7 then
-		scrollHeight = 520
-		self._scrollView:setInnerContainerSize(cc.size(1130, 550))
+	if #theList< 4 then
+		scrollHeight = 200
+		self._scrollView:setInnerContainerSize(cc.size(1300, 200))
 	else
-		scrollHeight = 260 * math.ceil(#theList / 3)--math.floor((#theList+math.floor(#theList%3))/3)
-		self._scrollView:setInnerContainerSize(cc.size(1130, scrollHeight+30))
+		scrollHeight = 150 * math.ceil(#theList / 3)--math.floor((#theList+math.floor(#theList%3))/3)
+		self._scrollView:setInnerContainerSize(cc.size(1300, scrollHeight+250))
 	end
 
 	for i=1,#theList do
 		local item = theList[i]
+        local nCount = 0
+        local bShow  = false
+        
 
-		self._showList[i] = cc.LayerColor:create(cc.c4b(100, 100, 100, 0), 261, 240)
-    		:move(160+math.floor((i-1)%3)*310-130,scrollHeight-(8+120+math.floor((i-1)/3)*270)-90)
-    		:addTo(self._scrollView)
+        if item.PayObjectType == self.m_cbScoreOrRoomCard or bBean == false then        
+            bShow = true
+            nCount = #self._showList + 1
+		    self._showList[nCount] = cc.LayerColor:create(cc.c4b(100, 100, 100, 0), 261, 240)
+    	    	:move(120+math.floor((nCount-1)%3)*320,scrollHeight-(math.floor((nCount-1)/3)*235)+10)
+    	    	:addTo(self._scrollView)
 
-		local btn = ccui.Button:create("Shop/frame_shop_7.png","Shop/frame_shop_7.png")
-		btn:setContentSize(cc.size(261, 240))
-			:move(130,120)
-			:setTag(tag+i)
-			:setSwallowTouches(false)
-			:setName(SHOP_BUY[tag])
-			:addTo(self._showList[i])
-			:addTouchEventListener(self._btcallback)
-   		
+		    local btn = ccui.Button:create("Shop/frame_shop_7.png","Shop/frame_shop_7.png")
+		    btn:setContentSize(cc.size(300, 166))
+		    	:move(210,120)
+		    	:setTag(tag+i)
+		    	:setSwallowTouches(false)
+		    	:setName(SHOP_BUY[tag])
+		    	:addTo(self._showList[nCount])
+		    	:addTouchEventListener(self._btcallback)
+   		end 
    		local price = 0
 		local sign = nil
 		local pricestr = ""
@@ -1425,30 +1617,71 @@ function ShopLayer:onUpdateShowList(theList,tag)
    		local showSp = nil
    		--标题
    		local titleSp = nil
-   		if bBean then
-   			showSp = display.newSprite("Shop/icon_shop_5.png")
-   			local atlas = cc.LabelAtlas:_create(string.gsub(item.count .. "", "[.]", "/"), "Shop/num_shop_5.png", 20, 25, string.byte("/"))
-   			atlas:setAnchorPoint(cc.p(1.0,0.5))
-   			self._showList[i]:addChild(atlas) 
-   			local name = display.newSprite("Shop/text_shop_1.png")
-   			name:setAnchorPoint(cc.p(0,0.5))
-   			self._showList[i]:addChild(name)
-   			local wid = (atlas:getContentSize().width + name:getContentSize().width) / 2   			
-   			atlas:setPosition(130 + (atlas:getContentSize().width - wid), 220)
-   			name:setPosition(atlas:getPositionX(), 220)
+   		if bBean then 
+            if bShow then                              
+--                local cbTypeImg = 0
+--                local cbTypeText = 0
+--                if item.PayObjectType == ShopLayer.BEAN_SCORE then --游戏币
+--                    cbTypeImg = 4
+--                    cbTypeText = 0                
+--                elseif item.PayObjectType == ShopLayer.BEAN_BEAN then --游戏豆
+--                    cbTypeImg = 5
+--                    cbTypeText = 1
+--                elseif item.PayObjectType == ShopLayer.BEAN_ROOMCARD then --房卡
+--                    cbTypeImg = 6
+--                    cbTypeText = 3
+--                end 
+--                local cbPictureNum = 0
+--                if item.count >= 10 and item.count < 20 then 
+--                    cbPictureNum = 1
+--                elseif item.count >=20 and item.count < 50 then 
+--                    cbPictureNum = 2
+--                elseif item.count >= 50 and item.count < 100 then 
+--                    cbPictureNum = 3
+--                elseif item.count >= 100 and item.count < 500 then 
+--                    cbPictureNum = 4
+--                elseif item.count >= 500 then 
+--                    cbPictureNum = 5
+--                end 
 
-   			price = item.price
-   			pricestr = "￥" .. string.formatNumberThousands(price,true,",")
 
-   			--首充
-   			if nil ~= item.paysend and 0 ~= item.paysend then
-   				local fsp = cc.Sprite:create("Shop/shop_firstpay_sp.png")
-   				fsp:setAnchorPoint(cc.p(0,1.0))
-   				fsp:setPosition(-8,248)
-   				self._showList[i]:addChild(fsp)
-   				local isFirstPay = item.isfirstpay == 0
-   				btn:setEnabled(isFirstPay)
-   			end
+   			 --   showSp = display.newSprite("Shop/icon_shop_" .. cbTypeImg .."_"..cbPictureNum..".png")
+   			    --local atlas = cc.LabelAtlas:_create(string.gsub(item.count .. "", "[.]", "/"), "Shop/num_shop_5.png", 21, 31, string.byte("/"))
+                showSp = display.newSprite("Shop/icon_shop.png")
+     --           local atlas = cc.LabelAtlas:_create(""..item.count, "Shop/num_shop_5.png", 25, 30, string.byte("."))
+                local atlas = cc.LabelAtlas:_create(string.gsub(item.count .. "", "[.]", "0"), "Shop/num_shop_5.png", 20, 24, string.byte("0"))
+   			    atlas:setAnchorPoint(cc.p(0,0.5))
+   			    self._showList[nCount]:addChild(atlas) 
+
+                --乘号
+                local roomcardsign = display.newSprite("Shop/sp_roomcard_sign.png")
+                roomcardsign:setAnchorPoint(cc.p(0.5,0.5))
+                self._showList[nCount]:addChild(roomcardsign)
+
+
+--    			local name = display.newSprite("Shop/text_shop_" .. cbTypeText .. ".png")
+--   			    name:setAnchorPoint(cc.p(0,0.5))
+--                name:setVisible(false)
+--   			    self._showList[nCount]:addChild(name)
+--   			    local wid = (atlas:getContentSize().width + name:getContentSize().width) / 2  
+                 			
+   			    atlas:setPosition(235, 150)
+--   			    name:setPosition(atlas:getPositionX()+3, 113)  			               
+                roomcardsign:setPosition(220,150)
+
+   			    --首充
+   			    if nil ~= item.paysend and 0 ~= item.paysend then
+   			    	local fsp = cc.Sprite:create("Shop/shop_firstpay_sp.png")
+   			    	fsp:setAnchorPoint(cc.p(0,1.0))
+   			    	fsp:setPosition(-8,248)
+                    fsp:setVisible(false)
+   			    	self._showList[nCount]:addChild(fsp)
+   			    	local isFirstPay = item.isfirstpay == 0
+   			    	btn:setEnabled(isFirstPay)
+   			    end           
+            end 
+            price = item.price
+   			pricestr = "￥" .. string.formatNumberThousands(price,true,"0")
    		else
             local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("icon_public_"..item.id..".png")
             if nil ~= frame then
@@ -1489,52 +1722,60 @@ function ShopLayer:onUpdateShowList(theList,tag)
 			else
 				price = item.bean
 			end
-			pricestr = string.formatNumberThousands(price,true,",")
+			pricestr = string.formatNumberThousands(price,true,"0")
 
             --
             local icon_star = cc.Sprite:create("Shop/icon_star_sp.png")
             if nil ~= icon_star then
                 icon_star:setPosition(130, 140)
-                self._showList[i]:addChild(icon_star, 1)
+                self._showList[nCount]:addChild(icon_star, 1)
             end
    		end
-		if price == 0 then
-			print("======= ***** 价格信息有误 ***** =======")
-			return
-		end
+        if bShow or bBean == false then 
+		    if price == 0 then
+		    	print("======= ***** 价格信息有误 ***** =======")
+		    	return
+		    end
 
-		if nil ~= showSp then
-			showSp:setPosition(130, 120)
-			self._showList[i]:addChild(showSp)
-		end
-		if nil ~= titleSp then
-			titleSp:setPosition(130, 220)
-			--titleSp:setVisible(bOther)
-			self._showList[i]:addChild(titleSp)
-		end		
+		    if nil ~= showSp then
+		    	showSp:setPosition(160, 153)
+		    	self._showList[nCount]:addChild(showSp)
+		    end
+		    if nil ~= titleSp then
+		    	titleSp:setPosition(130, 220)
+		    	--titleSp:setVisible(bOther)
+		    	self._showList[nCount]:addChild(titleSp)
+		    end		
+            local sp = cc.Sprite:create("Shop/sp_shop_moneyBg.png")
+            sp:move(205,85)
+            sp:addTo(self._showList[nCount])
+            local priceLabel = cc.LabelAtlas:_create(string.gsub(item.price .. "", "[.]", "0"), "Shop/num_shop_6.png", 17, 18, string.byte("0"))
+            	:setAnchorPoint(cc.p(1,0.5))
+            	:move(210,85)
+       	    	:addTo(self._showList[nCount])
+            local sign_star = cc.Sprite:create("Shop/sp_shop_start.png")
+                 :setAnchorPoint(cc.p(0.5,0.5))
+                 :move(priceLabel:getPositionX()+15,85)
+                 :addTo(self._showList[nCount])
+            
+       	    if nil ~= sign then     
+                local width = 0  		
+                if cc.FileUtils:getInstance():isFileExist("Shop/sign_shop_"..sign..".png") then
+    	           	local spsign = display.newSprite("Shop/sign_shop_"..sign..".png")
+                    width = spsign:getContentSize().width + priceLabel:getContentSize().width
+    	           	spsign:setAnchorPoint(cc.p(0.0,0.5))
+    	    			:move((260-width)/2,30)
+    	    			:addTo(self._showList[nCount])
+                    width = (260-width) * 0.5 + spsign:getContentSize().width
+                end
 
-		local priceLabel = cc.Label:createWithTTF(pricestr, "fonts/round_body.ttf", 24)
-        	:setAnchorPoint(cc.p(0.5,0.5))
-        	:move(130,34)
-       		:setTextColor(cc.c4b(255,255,255,255))
-       		:addTo(self._showList[i])
-
-       	if nil ~= sign then     
-            local width = 0  		
-            if cc.FileUtils:getInstance():isFileExist("Shop/sign_shop_"..sign..".png") then
-    	       	local spsign = display.newSprite("Shop/sign_shop_"..sign..".png")
-                width = spsign:getContentSize().width + priceLabel:getContentSize().width
-    	       	spsign:setAnchorPoint(cc.p(0.0,0.5))
-    				:move((260-width)/2,34)
-    				:addTo(self._showList[i])
-                width = (260-width) * 0.5 + spsign:getContentSize().width
-            end
-
-			priceLabel:setAnchorPoint(cc.p(0,0.5))
-			priceLabel:setPosition(width,34)
-       	end       	
+		    	priceLabel:setAnchorPoint(cc.p(0,0.5))
+		    	priceLabel:setPosition(width,34)
+       	    end 
+        end       	
 	end
 end
+
 
 function ShopLayer:onKeyBack()
     if nil ~= self.m_payLayer then

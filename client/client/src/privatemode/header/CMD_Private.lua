@@ -71,6 +71,23 @@ login.CMD_MB_QueryGameServerResult =
 -- 强制解散搜索房间
 login.CMD_MB_SearchServerTable = 
 {
+--//-[--------------[QTC_MODIFY_AA]----------------//
+    -- 试图进桌的玩家身上的蓝钻数量
+    {t = "score", k = "lBean"},
+        -- 试图进桌的玩家身上的房卡数量
+    {t = "score", k = "lRoomCard"},
+    -- 玩家ID
+    {t = "dword", k = "dwUserID"},
+--//-]--------------[QTC_MODIFY_AA]----------------//
+    -- 房间ID
+    {t = "tchar", k = "szServerID", s = private_define.ROOM_ID_LEN},
+    -- 房间类型
+    {t = "dword", k = "dwKindID"},
+}
+
+-- 解散搜索房间桌号
+login.CMD_MB_DissumeSearchServerTable = 
+{
     -- 房间ID
     {t = "tchar", k = "szServerID", s = private_define.ROOM_ID_LEN},
 }
@@ -87,10 +104,22 @@ login.CMD_MB_SerchServerTableEnter =
 -- 搜索结果
 login.CMD_MB_SearchResult = 
 {
+    --游戏类型
+    {t = "dword", k = "dwKindID"},
     -- 房间ID
     {t = "dword", k = "dwServerID"},
     -- 桌子ID
     {t = "dword", k = "dwTableID"},
+--//-[--------------[QTC_MODIFY_AA]----------------//
+    -- 被拒之门外的原因是AA制房间不够2次交费			(0为假;非0为真)
+    {t = "byte", k = "cbPoor"},
+    -- 被拒之门外的原因是AA制房间来晚了,不能中途加入	(0为假;非0为真)
+    {t = "byte", k = "cbLate"},
+    -- 搜索的房间开房费是游戏豆还是房卡(1为房卡;0为游戏豆)
+    {t = "byte", k = "cbBeanOrRoomCard"},
+    -- 开房费
+    {t = "dword", k = "dwFee"},
+--//-]--------------[QTC_MODIFY_AA]----------------//
 }
 
 -- 查询私人房间配置
@@ -177,7 +206,7 @@ game.SUB_GR_PERSONAL_TABLE_TIP = 9                                      -- 提�
 game.SUB_GR_PERSONAL_TABLE_END = 10                                     -- 结束消息
 game.SUB_GR_HOSTL_DISSUME_TABLE = 11                                    -- 房主强制解散桌子
 game.SUB_GR_CANCEL_TABLE_RESULT = 13                                    -- 强制解散结果
-game.SUB_GR_CURRECE_ROOMCARD_AND_BEAN = 16                              -- 强制解散桌子后的游戏豆和房卡数量
+game.SUB_GR_CURRECE_ROOMCARD_AND_BEAN = 16                              -- 强制解散桌子后的蓝钻和房卡数量
 game.SUB_GR_CHANGE_CHAIR_COUNT = 17                                     -- 改变椅子数量
 game.SUB_GF_PERSONAL_MESSAGE = 501                                      -- 私人房消息
 
@@ -192,6 +221,10 @@ game.CANCELTABLE_REASON_ERROR = 3                                       -- 错�
 -- 创建桌子
 game.CMD_GR_CreateTable = 
 {
+--//-[--------------[QTC_MODIFY_AA]----------------//
+    -- 房卡支付需要2次 (第1次在房主建房时由房主支付, 第2次在首局游戏开始时由房主以外所有人支付, 即房卡AA制) (0为不存在; 0以外为存在)
+    {t = "dword", k = "dwPayTwice"},
+--//-]--------------[QTC_MODIFY_AA]----------------//
     -- 底分设置
     {t = "score", k = "lCellScore"},
     -- 局数限制
@@ -217,7 +250,7 @@ game.CMD_GR_CreateSuccess =
     {t = "dword", k = "dwDrawCountLimit"},
     -- 时间限制
     {t = "dword", k = "dwDrawTimeLimit"},
-    -- 游戏豆
+    -- 蓝钻
     {t = "double", k = "dBeans"},
     -- 房卡数量
     {t = "score", k = "lRoomCard"},
@@ -302,13 +335,14 @@ game.CMD_GR_PersonalTableTip =
     {t = "byte", k = "cbIsJoinGame"},
     -- 金币场0, 积分场1
     {t = "byte", k = "cbIsGoldOrGameScore"},
+    {t = "byte", k = "cbGanmeRule",l = {100}},
 }
 
 -- 结束消息
 game.CMD_GR_PersonalTableEnd = 
 {
     {t = "string", k = "szDescribeString", s = 128},
-    {t = "score", k = "lScore", l = {100}},
+    {t = "score", k = "lScore", l = {200}},
     -- 特殊信息长度 
     {t = "int", k = "nSpecialInfoLen"},
     -- 特殊信息数据
@@ -346,10 +380,10 @@ game.Personal_Room_Message =
     {t = "byte", k = "cbMessageType"},
 }
 
--- 强制解散桌子后的游戏豆和房卡
+-- 强制解散桌子后的蓝钻和房卡
 game.CMD_GR_CurrenceRoomCardAndBeans = 
 {
-    -- 游戏豆
+    -- 蓝钻
     {t = "double", k = "dbBeans"},
     -- 房卡
     {t = "score", k = "lRoomCard"},

@@ -173,6 +173,7 @@ function PromoterInputLayer:ctor( viewparent )
     btn = self.m_spBg:getChildByName("btn_close")
     btn:setTag(TAG_MASK)
     btn:addTouchEventListener( touchFunC )
+    btn:setVisible(false)
 
     -- 微信分享按钮
     btn = self.m_spBg:getChildByName("btn_wechat")
@@ -198,12 +199,14 @@ function PromoterInputLayer:ctor( viewparent )
     btn = self.m_spBg:getChildByName("btn_qrcode")
     btn:setTag(BT_QR_ENTER)
     btn:addTouchEventListener( touchFunC )
+    btn:setVisible(false)
 
     self.m_qrContent = GlobalUserItem.szWXSpreaderURL or yl.HTTP_URL
 	local qr = QrNode:createQrNode(self.m_qrContent, 184, 5, 1)
     self.m_spBg:addChild(qr)
     qr:setPosition(btn:getPosition())
 	self.m_qrNode = qr
+    self.m_qrNode:setVisible(false)
 end
 
 function PromoterInputLayer:onButtonClickedEvent( tag, sender )
@@ -642,6 +645,7 @@ UserInfoLayer.LAY_SELHEAD		= 17
 UserInfoLayer.BT_BAG			= 18
 UserInfoLayer.BT_QRCODE 		= 19
 UserInfoLayer.BT_PROMOTER 		= 20
+UserInfoLayer.BT_SAFE 		    = 21
 
 function UserInfoLayer:ctor(scene)
 	ExternalFun.registerNodeEvent(self)
@@ -676,21 +680,14 @@ function UserInfoLayer:ctor(scene)
 
 	--上方背景
 	local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_top_bg.png")
-	if nil ~= frame then
-		local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(yl.WIDTH/2,yl.HEIGHT-51)
-        self:addChild(sp)
-	end
-	--标题
-	display.newSprite("Information/title_info.png")
-		:move(yl.WIDTH/2,yl.HEIGHT-51)
-		:addTo(self)
-	--返回
-	ccui.Button:create("bt_return_0.png","bt_return_1.png")
-    	:move(75,yl.HEIGHT-51)
-    	:setTag(UserInfoLayer.BT_EXIT)
-    	:addTo(self)
-    	:addTouchEventListener(btcallback)
+--	if nil ~= frame then
+--		local sp = cc.Sprite:createWithSpriteFrame(frame)
+--        sp:setPosition(yl.WIDTH/2,yl.HEIGHT-51)
+--        self:addChild(sp)
+--        sp:setVisible(false)
+--	end
+	
+	
     --背包
     --[[ccui.Button:create("Information/btn_ubag_0.png","Information/btn_ubag_1.png")
     	:move(yl.WIDTH-90,yl.HEIGHT-51)
@@ -705,13 +702,34 @@ function UserInfoLayer:ctor(scene)
     self.m_btnPromoter:addTouchEventListener(btcallback)]]
 
     --下方背景
-	frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
-    if nil ~= frame then
-        local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(yl.WIDTH/2,310)
-        self:addChild(sp)
-    end
+	frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_3.png")
+--    if nil ~= frame then
+--        local sp = cc.Sprite:createWithSpriteFrame(frame)
+--        sp:setPosition(yl.WIDTH/2,375)
+--        self:addChild(sp)
+--    end
 
+    --信息背景
+	display.newSprite("Information/info_frame_1.png")
+		--:move(850,310)
+        :move(670,340)
+		:addTo(self)
+    --标题
+	display.newSprite("Information/title_info.png")
+		:move(yl.WIDTH/2,yl.HEIGHT*0.77)
+		:addTo(self)        
+    --返回
+	ccui.Button:create("Information/bt_return_0.png","Information/bt_return_1.png")
+    	:move(yl.WIDTH*0.82,yl.HEIGHT*0.8)
+    	:setTag(UserInfoLayer.BT_EXIT)
+    	:addTo(self)
+    	:addTouchEventListener(btcallback)
+--    ccui.Button:create("Information/bt_info_safe.png","Information/bt_info_safe.png")
+--    	:move(yl.WIDTH*0.32,yl.HEIGHT*0.2)
+--    	:setTag(UserInfoLayer.BT_SAFE)
+--    	:addTo(self)
+--    	:addTouchEventListener(btcallback)
+        
 	--头像
 	--[[local texture = display.loadImage("face.png")
 	local facex = (GlobalUserItem.cbGender == yl.GENDER_MANKIND and 1 or 0)
@@ -720,9 +738,12 @@ function UserInfoLayer:ctor(scene)
 		:move(210,485)
 		:setScale(142.00/200.00)
 		:addTo(self)]]
-	local head = HeadSprite:createClipHead(GlobalUserItem, 142)
-	head:setPosition(210, 445)
-	head:enableHeadFrame(true)
+	--local head = HeadSprite:createClipHead(GlobalUserItem, 142)
+    local head = HeadSprite:createNormal(GlobalUserItem, 240)
+	--head:setPosition(210, 445)
+    head:setAnchorPoint(cc.p(0,1))
+    head:setPosition(300, 500)
+	head:enableHeadFrame(false)
 	head:registerInfoPop(true, function( )
 		self:onClickUserHead()		
 	end)
@@ -735,45 +756,56 @@ function UserInfoLayer:ctor(scene)
 
 	--ID
 	display.newSprite("Information/text_info_id.png")
-		:move(150,328)
+		:move(360,200)
 		:addTo(self)
 	local textId = string.format("%d", GlobalUserItem.dwGameID)
-	self._txtID = cc.Label:createWithTTF(textId, "fonts/round_body.ttf", 25)
-		:setTextColor(cc.c4b(176,204,243,255))
+	self._txtID = cc.Label:createWithTTF(textId, "fonts/round_body.ttf", 30)
+		:setTextColor(cc.c4b(96,59,0,255))
 		:setAnchorPoint(cc.p(0,0.5))
 		:setDimensions(345,60)
 		:setVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
 		:setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT)
-		:move(190,328)
+		:move(410,200)
 		:addTo(self)
+
+--	self._txtID = ClipText:createClipText(cc.size(345,60), string.formatNumberThousands(textId,true), "ftext_info_nicknameonts/round_body.ttf", 25)
+--	self._txtID:setTextColor(cc.c4b(96,59,0,255))
+--	self._txtID:setAnchorPoint(cc.p(0,0.5))	
+--    self._txtID:setPosition(410,200)
+--	self:addChild(self._txtID)	
+	
 
 	--等级
-	display.newSprite("Information/icon_info_level.png")
-		:move(175,280+15)
-		:addTo(self)
-	display.newSprite("Information/text_info_level.png")
-		:move(215,278+15)
-		:addTo(self)
-
+	--display.newSprite("Information/icon_info_level.png")
+	--	:move(175,280+15)
+	--	:addTo(self)
+	--display.newSprite("Information/text_info_level.png")
+	--	:move(215,278+15)
+	--	:addTo(self)
+    --
 	self._level = cc.LabelAtlas:_create(GlobalUserItem.wCurrLevelID.."", "Information/num_info_level.png", 16, 20, string.byte("0")) 
     		:move(235,278+15)
     		:setAnchorPoint(cc.p(0, 0.5))
     		:addTo(self)
+            :setVisible(false)
 
     --进度条
     display.newSprite("Information/frame_info_level.png")
 		:move(203,240+15)
 		:addTo(self)
+        :setVisible(false)
     --进度条
     self._levelpro = display.newSprite("Information/progress_info_level.png")
     	:setAnchorPoint(cc.p(0,0.5))
 		:move(203-218/2,240+15)
 		:addTo(self)
+        :setVisible(false)
 	
     --等级信息
     display.newSprite("Information/info_frame_4.png")
 		:move(210,170)
 		:addTo(self)
+        :setVisible(false)
 
 	if GlobalUserItem.dwUpgradeExperience >0 then
 		local scalex = GlobalUserItem.dwExperience/GlobalUserItem.dwUpgradeExperience
@@ -791,10 +823,12 @@ function UserInfoLayer:ctor(scene)
 		:move(210,140+45)
 		:setTextColor(cc.c3b(250,250,0))
 		:addTo(self)
+        :setVisible(false)
 	
 	display.newSprite("Information/icon_info_up.png")
 		:move(95,100+40)
 		:addTo(self)
+        :setVisible(false)
 	local gold = GlobalUserItem.lUpgradeRewardGold 
 	local szgold
 	if gold > 9999 then
@@ -806,61 +840,69 @@ function UserInfoLayer:ctor(scene)
 		:move(210-50,115+40)
 		:setTextColor(cc.c3b(250,250,0))
 		:addTo(self)
+        :setVisible(false)
 	cc.Label:createWithTTF("+ "..szgold.." 游戏币","fonts/round_body.ttf", 18)
 		:move(165+20,115+40)
 		:setAnchorPoint(cc.p(0,0.5))
 		:setTextColor(cc.c3b(250,250,0))
 		:addTo(self)
+        :setVisible(false)
 	cc.Label:createWithTTF("+ "..GlobalUserItem.lUpgradeRewardIngot.." 元宝","fonts/round_body.ttf", 18)
 		:move(165+20,120+10)
 		:setAnchorPoint(cc.p(0,0.5))
 		:setTextColor(cc.c3b(250,250,0))
 		:addTo(self)
+        :setVisible(false)
 
-	--信息背景
-	display.newSprite("Information/info_frame_1.png")
-		:move(850,310)
-		:addTo(self)
+	
 
 	--信息提示
-	display.newSprite("Information/text_info_account.png")
-		:move(533,537)
-		:addTo(self)
+--    --账号
+--	display.newSprite("Information/text_info_account.png")
+--		:move(533,510)
+--		:addTo(self)
+    --性别
 	display.newSprite("Information/text_info_gender.png")
-		:move(533,466)
+		:move(683,400)
 		:addTo(self)
+    --昵称
 	display.newSprite("Information/text_info_nickname.png")
-		:move(533,387)
+        :move(683,460)
 		:addTo(self)
-	display.newSprite("Information/text_info_sign.png")
-		:move(503,310)
-		:addTo(self)
+    
+    --金币
 	display.newSprite("Information/text_info_gold.png")
-		:move(518,232)
+		:move(710,280)
 		:addTo(self)
-	display.newSprite("Information/text_info_bean.png")
-		:move(518,155)
-		:addTo(self)
+--	display.newSprite("Information/text_info_bean.png")
+--		:move(518,270)
+--		:addTo(self)
+    --元宝
 	display.newSprite("Information/text_info_ingot.png")
-		:move(533,80)
+		:move(710,340)
 		:addTo(self)
+    --个性签名
+--	display.newSprite("Information/text_info_sign.png")
+--		:move(503,150)
+--		:addTo(self)
 
-	self._txtScore = ClipText:createClipText(cc.size(345,60), string.formatNumberThousands(GlobalUserItem.lUserScore,true), "fonts/round_body.ttf", 25)
-	self._txtScore:setTextColor(cc.c4b(176,204,243,255))
+	self._txtScore = ClipText:createClipText(cc.size(345,60), string.formatNumberThousands(GlobalUserItem.lUserScore,true), "ftext_info_nicknameonts/round_body.ttf", 25)
+	self._txtScore:setTextColor(cc.c4b(96,59,0,255))
 	self._txtScore:setAnchorPoint(cc.p(0,0.5))
-	self._txtScore:setPosition(590, 232)
+	self._txtScore:setPosition(780, 280)
 	self:addChild(self._txtScore)
 
-	self._txtBean = ClipText:createClipText(cc.size(345,60), string.format("%.2f", GlobalUserItem.dUserBeans), "fonts/round_body.ttf", 25)
-	self._txtBean:setTextColor(cc.c4b(176,204,243,255))
-	self._txtBean:setAnchorPoint(cc.p(0,0.5))
-	self._txtBean:setPosition(590, 155)
-	self:addChild(self._txtBean)
+--	self._txtBean = ClipText:createClipText(cc.size(345,60), string.format("%.2f", GlobalUserItem.dUserBeans), "fonts/round_body.ttf", 25)
+--	self._txtBean:setTextColor(cc.c4b(0,0,0,255))
+--	self._txtBean:setAnchorPoint(cc.p(0,0.5))
+--	self._txtBean:setPosition(590, 270)
+--	self:addChild(self._txtBean)
 
-	self._txtIngot = ClipText:createClipText(cc.size(345,60), string.formatNumberThousands(GlobalUserItem.lUserIngot,true), "fonts/round_body.ttf", 25)
-	self._txtIngot:setTextColor(cc.c4b(176,204,243,255))
+	--self._txtIngot = ClipText:createClipText(cc.size(345,60), string.formatNumberThousands(GlobalUserItem.lUserIngot,true), "fonts/round_body.ttf", 25)
+    self._txtIngot = ClipText:createClipText(cc.size(345,60), string.formatNumberThousands(GlobalUserItem.lUserIngot,true), "ftext_info_nicknameonts/round_body.ttf", 25)
+	self._txtIngot:setTextColor(cc.c4b(95,59,0,255))
 	self._txtIngot:setAnchorPoint(cc.p(0,0.5))
-	self._txtIngot:setPosition(590, 80)
+	self._txtIngot:setPosition(780, 340)
 	self:addChild(self._txtIngot)
 
 	local account = GlobalUserItem.szAccount
@@ -868,97 +910,102 @@ function UserInfoLayer:ctor(scene)
 	if GlobalUserItem.bWeChat then
 		account = GlobalUserItem.szNickName
 	end
-	local accountClip = ClipText:createClipText(cc.size(200, 30), account, "fonts/round_body.ttf", 25)
-	accountClip:setTextColor(cc.c4b(176,204,243,255))
-	accountClip:setAnchorPoint(cc.p(0,0.5))
-	accountClip:setPosition(590,537)
-	self:addChild(accountClip)
+--	local accountClip = ClipText:createClipText(cc.size(200, 30), account, "fonts/round_body.ttf", 25)
+--	accountClip:setTextColor(cc.c4b(0,0,0,255))
+--	accountClip:setAnchorPoint(cc.p(0,0.5))
+--	accountClip:setPosition(590,510)
+--	self:addChild(accountClip)
 
-    if GlobalUserItem.bVisitor == true and false == GlobalUserItem.getBindingAccount() then
+    if GlobalUserItem.bVisitor == true and false == GlobalUserItem.getBindingAccount() then    
     	--绑定帐号
-		ccui.Button:create("Information/bt_info_binding_0.png","Information/bt_info_binding_1.png")
-	    	:move(860,537)
-	    	:setTag(UserInfoLayer.BT_BINDING)
-	    	:addTo(self)
-	    	:addTouchEventListener(btcallback)
+--		local btn = ccui.Button:create("Information/bt_info_binding_0.png","Information/bt_info_binding_1.png")
+--	    	:move(860,537)
+--	    	:setTag(UserInfoLayer.BT_BINDING)
+--	    	:addTo(self)
+--	    	:addTouchEventListener(btcallback)
+
     end
 
     local vip = GlobalUserItem.cbMemberOrder or 0
     if 0 == vip then
     	--开通VIP
-		ccui.Button:create("Information/bt_info_vip_0.png","Information/bt_info_vip_1.png")
-	    	:move(1064,537)
-	    	:setTag(UserInfoLayer.BT_VIP)
-	    	:addTo(self)
-	    	:addTouchEventListener(btcallback)
+--		ccui.Button:create("Information/bt_info_vip_0.png","Information/bt_info_vip_1.png")
+--	    	:move(1064,510)
+--	    	:setTag(UserInfoLayer.BT_VIP)
+--	    	:addTo(self)
+--	    	:addTouchEventListener(btcallback)
 	else
-		local sp_vip = cc.Sprite:create("Information/atlas_vipnumber.png")
-		if nil ~= sp_vip then
-			--sp_vip:setScale(1.5)
-			sp_vip:setPosition(accountClip:getClipText():getContentSize().width + 610, 535)
-			self:addChild(sp_vip)
-			sp_vip:setTextureRect(cc.rect(28*vip,0,28,26))
-		end
+--		local sp_vip = cc.Sprite:create("Information/atlas_vipnumber.png")
+--		if nil ~= sp_vip then
+--			--sp_vip:setScale(1.5)
+--			sp_vip:setPosition(accountClip:getClipText():getContentSize().width + 610, 535)
+--			self:addChild(sp_vip)
+--			sp_vip:setTextureRect(cc.rect(28*vip,0,28,26))
+--		end
     end    
 
     if GlobalUserItem.bIsAngentAccount then
     	--我的代理
-		ccui.Button:create("Information/bt_agent_0.png","Information/bt_agent_1.png")
-	    	:move(1064,466)
-	    	:setTag(UserInfoLayer.BT_AGENT)
-	    	:addTo(self)
-	    	:addTouchEventListener(btcallback)
+--		ccui.Button:create("Information/bt_agent_0.png","Information/bt_agent_1.png")
+--	    	:move(1064,466)
+--	    	:setTag(UserInfoLayer.BT_AGENT)
+--	    	:addTo(self)
+--	    	:addTouchEventListener(btcallback)
     end   
 
     -- 我的推广码
-    ccui.Button:create("Information/btn_qrcode_0.png","Information/btn_qrcode_1.png")
-	    	:move(210,50)
-	    	:setTag(UserInfoLayer.BT_QRCODE)
-	    	:addTo(self)
-	    	:addTouchEventListener(btcallback)
+--    ccui.Button:create("Information/btn_qrcode_0.png","Information/btn_qrcode_1.png")
+--	    	:move(260,200)
+--	    	:setTag(UserInfoLayer.BT_QRCODE)
+--	    	:addTo(self)
+--	    	:addTouchEventListener(btcallback)
 
     --性别选择
     self._cbtMan = ccui.CheckBox:create("Information/checkbox_info_0.png","","Information/checkbox_info_1.png","","")
-		:move(615,466)
+		:move(765,400)
 		:setSelected(bGender)
 		:addTo(self)
 		:setTag(self.CBT_MAN)
 	self._cbtMan:addEventListener(cbtlistener)
 
     self._cbtWoman = ccui.CheckBox:create("Information/checkbox_info_0.png","","Information/checkbox_info_1.png","","")
-		:move(715,466)
+		:move(865,400)
 		:setSelected(not bGender)
 		:addTo(self)
 		:setTag(self.CBT_WOMAN)
 	self._cbtWoman:addEventListener(cbtlistener)
 
 	display.newSprite("Information/icon_info_1.png")
-		:move(654,466)
+		:move(804,400)
 		:addTo(self)
 	display.newSprite("Information/icon_info_0.png")
-		:move(759,466)
+		:move(909,400)
 		:addTo(self)
 
 	display.newSprite("Information/info_frame_2.png")
-		:move(710,387)
-		:addTo(self)
+		:move(730,460)
+        :setAnchorPoint(cc.p(0,0.5))
+		:addTo(self)      
 	display.newSprite("Information/info_frame_3.png")
-		:move(910,310)
-		:addTo(self)
+		:move(910,150)
+		:addTo(self) 
+        :setVisible(false)      
 	display.newSprite("Information/icon_info_edit.png")
-		:move(798,387)
-		:addTo(self)
+		:move(950,460)
+        :setAnchorPoint(cc.p(0,0.5))
+		:addTo(self)     
 	display.newSprite("Information/icon_info_edit.png")
-		:move(1198,310)
+		:move(1198,150)
 		:addTo(self)
+        :setVisible(false)
 
 	local editHanlder = function ( name, sender )
 		self:onEditEvent(name, sender)
 	end
 	--输入框
-	self.edit_Nickname = ccui.EditBox:create(cc.size(180,40), "blank.png")
-		:move(688,387)
-		:setAnchorPoint(cc.p(0.5,0.5))
+	self.edit_Nickname = ccui.EditBox:create(cc.size(300,40), "blank.png")
+		:move(730,460)
+		:setAnchorPoint(cc.p(0,0.5))
 		:setFontName("fonts/round_body.ttf")
 		:setPlaceholderFontName("fonts/round_body.ttf")
 		:setFontSize(24)
@@ -966,15 +1013,15 @@ function UserInfoLayer:ctor(scene)
 		:setMaxLength(32)
 		:setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE)
 		:setPlaceHolder("请输入您的游戏昵称")
-		:setFontColor(cc.c4b(254,164,107,255))
+		:setFontColor(cc.c4b(96,59,0,255))
 		:setText(GlobalUserItem.szNickName)		
 		:addTo(self)
 	self.edit_Nickname:registerScriptEditBoxHandler(editHanlder)
 	self.edit_Nickname:setName("edit_nickname")
 	self.m_szNick = GlobalUserItem.szNickName
-
-	self.edit_Sign = ccui.EditBox:create(cc.size(570,40), "blank.png")
-		:move(884,310)
+   
+	self.edit_Sign = ccui.EditBox:create(cc.size(600,40), "blank.png")
+		:move(884,150)
 		:setAnchorPoint(cc.p(0.5,0.5))
 		:setFontName("fonts/round_body.ttf")
 		:setPlaceholderFontName("fonts/round_body.ttf")
@@ -983,38 +1030,41 @@ function UserInfoLayer:ctor(scene)
 		:setMaxLength(32)
 		:setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE)
 		:setPlaceHolder("请输入您的个人签名")
-		:setFontColor(cc.c4b(254,164,107,255))
+		:setFontColor(cc.c4b(0,0,0,255))
 		:setText(GlobalUserItem.szSign)		
 		:addTo(self)
 	self.edit_Sign:registerScriptEditBoxHandler(editHanlder)
 	self.edit_Sign:setName("edit_sign")	
+    self.edit_Sign:setVisible(false)
 	self.m_szSign = GlobalUserItem.szSign
 
-	--确认修改
-	--[[ccui.Button:create("Information/bt_info_edit_0.png","Information/bt_info_edit_1.png")
-    	:move(210,86)
-    	:setTag(UserInfoLayer.BT_CONFIRM)
-    	:addTo(self)
-    	:addTouchEventListener(btcallback)]]
+--	--确认修改
+--	ccui.Button:create("Information/bt_info_edit_0.png","Information/bt_info_edit_1.png")
+--    	:move(210,86)
+--    	:setTag(UserInfoLayer.BT_CONFIRM)
+--    	:addTo(self)
+--    	:addTouchEventListener(btcallback)
 
     --取款按钮
-    ccui.Button:create("Information/bt_info_take_0.png","Information/bt_info_take_1.png")
-    	:move(1045,232)
-    	:setTag(UserInfoLayer.BT_TAKE)
-    	:addTo(self)
-    	:addTouchEventListener(btcallback)
-
-    ccui.Button:create("Information/bt_info_recharge_0.png","Information/bt_info_recharge_1.png")
-    	:move(1045,155)
-    	:setTag(UserInfoLayer.BT_RECHARGE)
-    	:addTo(self)
-    	:addTouchEventListener(btcallback)
-
-    ccui.Button:create("Information/bt_info_exchange_0.png","Information/bt_info_exchange_1.png")
-    	:move(1045,80)
-    	:setTag(UserInfoLayer.BT_EXCHANGE)
-    	:addTo(self)
-    	:addTouchEventListener(btcallback)
+--    ccui.Button:create("Information/bt_info_take_0.png","Information/bt_info_take_1.png")
+--    	:move(1064,330)
+--    	:setTag(UserInfoLayer.BT_TAKE)
+--    	:addTo(self)
+--    	:addTouchEventListener(btcallback)
+        
+    
+--    ccui.Button:create("Information/bt_info_recharge_0.png","Information/bt_info_recharge_1.png")
+--    	:move(1064,270)
+--    	:setTag(UserInfoLayer.BT_RECHARGE)
+--    	:addTo(self)
+--    	:addTouchEventListener(btcallback)
+        
+    
+--    ccui.Button:create("Information/bt_info_exchange_0.png","Information/bt_info_exchange_1.png")
+--    	:move(1064,210)
+--    	:setTag(UserInfoLayer.BT_EXCHANGE)
+--    	:addTo(self)
+--    	:addTouchEventListener(btcallback)
 end
 
 
@@ -1096,6 +1146,8 @@ function UserInfoLayer:onButtonClickedEvent(tag,ref)
 	elseif tag == UserInfoLayer.BT_PROMOTER then
 		--local prolayer = PromoterInputLayer:create(self)
 		--self:addChild(prolayer)
+    elseif tag == UserInfoLayer.BT_SAFE then
+		--安全按钮
 	end
 end
 

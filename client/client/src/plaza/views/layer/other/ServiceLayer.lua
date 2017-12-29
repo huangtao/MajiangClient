@@ -29,7 +29,7 @@ function ServiceLayer:ctor()
 	local areaHeight = yl.HEIGHT
 
     --背景
-    display.newSprite("background_2.jpg")
+    display.newSprite("background_2.png")
         :move(yl.WIDTH/2,yl.HEIGHT/2)
         :addTo(self)
 

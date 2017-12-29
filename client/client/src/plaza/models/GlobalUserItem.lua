@@ -38,7 +38,7 @@ function GlobalUserItem.reSetData()
 	GlobalUserItem.lUserScore								= 0						--用户金币
 	GlobalUserItem.lUserIngot								= 0						--用户元宝
 	GlobalUserItem.lUserInsure								= 0						--银行存款
-	GlobalUserItem.dUserBeans								= 0.00 					--游戏豆
+	GlobalUserItem.dUserBeans								= 0.00 					--蓝钻
 	GlobalUserItem.cbInsureEnabled							= 0	
 	GlobalUserItem.nLargeTrumpetCount						= 0						--大喇叭数量	
 
@@ -675,6 +675,7 @@ end
 
 -- 当日首页广告
 function GlobalUserItem.isShowAdNotice()
+    if true then return false end 
 	local everyDayAdNotice = cc.UserDefault:getInstance():getStringForKey(GlobalUserItem.dwUserID .. "everyDayNoAdNotice", "nil")
 	if "nil" ~= everyDayAdNotice then
 		local n = tonumber(everyDayAdNotice)

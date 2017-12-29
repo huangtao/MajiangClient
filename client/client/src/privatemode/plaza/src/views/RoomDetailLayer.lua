@@ -13,6 +13,7 @@ local TAG_SHARE_GRADE = 102         -- 战绩分享
 local TAG_JOIN_GAME = 103           -- 加入游戏
 local TAG_DISSUME_GAME = 104        -- 解散房间
 local TAG_INVITE_FRIEND = 105       -- 邀请好友
+local TAG_BTN_RETURN = 106          
 
 local tabPosition = 
 {
@@ -67,8 +68,9 @@ function RoomDetailLayer:ctor( tabDetail )
     local posList = tabPosition[count]
     -- 房间战绩列表
     if onGame then
-        local clipGrad = ClipText:createClipText(cc.size(373, 28), "该房间正在游戏中,暂无战绩!", "fonts/round_body.ttf", 24)
+        local clipGrad = ClipText:createClipText(cc.size(373, 28), "该房间正在游戏中,暂无战绩!", "fonts/yehe_body.TTF", 28)
         clipGrad:setAnchorPoint(cc.p(0, 0.5))
+        clipGrad:setTextColor(cc.c4b(106,60,11,255))
         local pos = posList[1]
         clipGrad:setPosition(pos)
         image_bg:addChild(clipGrad)
@@ -90,9 +92,9 @@ function RoomDetailLayer:ctor( tabDetail )
         end
 
         -- 列表
-        self._listView = cc.TableView:create(cc.size(500, 180))
+        self._listView = cc.TableView:create(cc.size(500, 230))
         self._listView:setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL)    
-        self._listView:setPosition(cc.p(170, 100))
+        self._listView:setPosition(cc.p(190, 68))
         self._listView:setDelegate()
         self._listView:addTo(image_bg)
         self._listView:registerScriptHandler(handler(self, self.tableCellTouched), cc.TABLECELL_TOUCHED)
@@ -132,10 +134,16 @@ function RoomDetailLayer:ctor( tabDetail )
         -- 分享战绩
         local btn = ccui.Button:create("pri_btn_sharegrade_0.png","pri_btn_sharegrade_1.png","pri_btn_sharegrade_0.png", UI_TEX_TYPE_PLIST)
         btn:setTag(TAG_SHARE_GRADE)
-        btn:setPosition(378.5, 50)
+        btn:setPosition(378.5, 100)
+        btn:setVisible(false)
         image_bg:addChild(btn)  
         btn:addTouchEventListener( touchFunC )      
     end
+
+      --退出按钮
+      self._btnClose = image_bg:getChildByName("pri_btn_return")
+      self._btnClose:setTag(TAG_BTN_RETURN) 
+      self._btnClose:addTouchEventListener( touchFunC )
 
     -- 加载动画
     image_bg:runAction(cc.ScaleTo:create(0.2, 1.0))
@@ -161,9 +169,10 @@ function RoomDetailLayer:tableCellAtIndex(view, idx)
         cell:removeAllChildren()
     end
     if true == self.m_bNoGradInfo then
-        local clipGrad = ClipText:createClipText(cc.size(373, 28), "该房间无战绩, 房间已解散", "fonts/round_body.ttf", 24)
+        local clipGrad = ClipText:createClipText(cc.size(373, 28), "该房间无战绩, 房间已解散", "fonts/yehe_body.TTF", 28)
         clipGrad:setAnchorPoint(cc.p(0, 0.5))
-        clipGrad:setPosition(0, 14)
+        clipGrad:setPosition(135, 25)
+        clipGrad:setTextColor(cc.c4b(108,53,21,255))
         cell:addChild(clipGrad)
 
         return cell
@@ -171,18 +180,20 @@ function RoomDetailLayer:tableCellAtIndex(view, idx)
     local gradInfo = self.m_tabGradList[idx + 1]
     if nil ~= gradInfo then
         local str = gradInfo.szUserNicname
-        local clipGrad = ClipText:createClipText(cc.size(200, 28), str, "fonts/round_body.ttf", 24)
+        local clipGrad = ClipText:createClipText(cc.size(200, 28), str, "fonts/yehe_body.TTF", 28)
         clipGrad:setAnchorPoint(cc.p(0, 0.5))
-        clipGrad:setPosition(0, 14)
+        clipGrad:setPosition(140, 25)
+        clipGrad:setTextColor(cc.c4b(108,53,21,255))
         cell:addChild(clipGrad)
 
         str = "+" .. gradInfo.lScore
         if gradInfo.lScore < 0 then
             str = "" .. gradInfo.lScore
         end
-        clipGrad = ClipText:createClipText(cc.size(200, 28), str, "fonts/round_body.ttf", 24)
+        clipGrad = ClipText:createClipText(cc.size(200, 28), str, "fonts/yehe_body.TTF", 28)
         clipGrad:setAnchorPoint(cc.p(0, 0.5))
-        clipGrad:setPosition(210, 14)
+        clipGrad:setPosition(355, 25)
+        clipGrad:setTextColor(cc.c4b(108,53,21,255))
         cell:addChild(clipGrad)
     end
 
@@ -248,7 +259,9 @@ function RoomDetailLayer:onButtonClickedEvent( tag, sender)
         end)
     elseif TAG_MASK == tag then
         self:hide()
-    end
+    elseif TAG_BTN_RETURN == tag then
+        self:hide()
+   end
 end
 
 function RoomDetailLayer:hide()

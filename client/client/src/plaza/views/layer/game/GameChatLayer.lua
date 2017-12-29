@@ -300,7 +300,7 @@ function GameChatLayer:getDataTableView(size)
 	--tableview
 	local m_tableView = cc.TableView:create(size)
 	m_tableView:setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL)
-	m_tableView:setPosition(cc.p(45,110))
+	m_tableView:setPosition(cc.p(110,140))
 	m_tableView:setDelegate()
 	m_tableView:registerScriptHandler(handler(self, self.cellSizeForTable), cc.TABLECELL_SIZE_FOR_INDEX)
 	m_tableView:registerScriptHandler(handler(self, self.tableCellAtIndex), cc.TABLECELL_SIZE_AT_INDEX)
@@ -464,7 +464,7 @@ function GameChatLayer:cellSizeForTable( view, idx )
 	if CBT_TEXT == self.m_nSelect then
 		local record = textChatConfig[idx + 1]
 		if nil ~= record then
-			return 580, 60--self:getTextChatSize(record.strChat)
+			return 580, 47--self:getTextChatSize(record.strChat)
 		end
 		return 0,0
 	elseif CBT_RECORD == self.m_nSelect then
@@ -581,7 +581,8 @@ end
 function ChatItem:refreshTextItem(str,sendusernick)
 	if nil == self.m_labelChat then
 		self.m_labelChat = cc.LabelTTF:create(str, "fonts/round_body.ttf", SIZE_CHAT_LABEL, cc.size(LEN_CHAT_WIDTH,0), cc.TEXT_ALIGNMENT_LEFT)
-		self.m_labelChat:setPosition(2, self.m_spLine:getContentSize().height * 0.5)
+		self.m_labelChat:setPosition(2, self.m_spLine:getContentSize().height * 0.9+18)
+        self.m_labelChat:setColor(cc.c3b(0, 0, 0))
 
 		self:addChild(self.m_labelChat)
 	else

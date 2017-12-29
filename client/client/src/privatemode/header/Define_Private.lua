@@ -9,7 +9,7 @@ private_define.MAX_CREATE_PERSONAL_ROOM = 20                                -- �
 private_define.PERSONAL_ROOM_CHAIR = 8
 private_define.RULE_LEN = 100                                               -- 私人房补充规则
 private_define.LEN_PERSONAL_ROOM_SCORE = 854                                -- sizeof(tagQueryPersonalRoomUserScore)
-private_define.LEN_PERSONAL_TABLE_PARAMETER = 24                            -- sizeof(tagPersonalTableParameter)
+private_define.LEN_PERSONAL_TABLE_PARAMETER = 28                            -- sizeof(tagPersonalTableParameter)
 
 local tabModule = {}
 -- 模块定义
@@ -29,6 +29,7 @@ tabLayTag.LAYER_CREATERESULT       = 1006                                   -- �
 tabLayTag.LAYER_EXCHANGESCORE      = 1007                                   -- 房卡兑换游戏币
 tabLayTag.LAYER_BUYCARD            = 1008                                   -- 游戏豆购买房卡
 tabLayTag.LAYER_FRIENDLIST         = 1009                                   -- 好友分享列表
+tabLayTag.LAYER_ZHANJI             = 1010                                   -- 战绩
 private_define.tabLayTag = tabLayTag
 
 -- 游戏服务器登陆操作定义

@@ -48,7 +48,10 @@ function RoomCreateResult:ctor( scene )
     btn:addTouchEventListener( touchFunC )
 
     -- 加载动画
-    image_bg:runAction(cc.ScaleTo:create(0.2, 1.0))
+    --image_bg:runAction(cc.ScaleTo:create(0.2, 1.0))
+
+    rootLayer:setVisible(false)
+    self:onButtonClickedEvent(BT_JOIN, nil)
 end
 
 function RoomCreateResult:onButtonClickedEvent( tag, sender )

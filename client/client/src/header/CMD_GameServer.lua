@@ -511,7 +511,7 @@ game_cmd.CMD_GR_S_PropertyBuyResult =
 	{t = "score", k = "lUserMedal"},
 	-- 魅力值
 	{t = "score", k = "lLoveLiness"},
-	-- 游戏豆
+	-- 蓝钻
 	{t = "double", k = "dCash"},
 	-- 成功标识
 	{t = "byte", k = "cbSuccessed"},

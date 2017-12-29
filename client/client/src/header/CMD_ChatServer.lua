@@ -44,6 +44,7 @@ chat_cmd.SUB_GC_GET_NEARUSER 			= 110 							--附近的人
 chat_cmd.SUB_GC_QUERY_NEARUSER 			= 111 							--查询附近
 chat_cmd.SUB_GC_USER_SHARE 				= 112	 						--分享消息
 chat_cmd.SUB_GC_INVITE_PERSONAL 		= 113 							--私人房邀请
+chat_cmd.SUB_GC_QUERY_DISTANCE			= 114							--查询距离
 
 chat_cmd.SUB_GC_USER_CHAT_NOTIFY		= 200							--聊天通知
 chat_cmd.SUB_GC_APPLYFOR_NOTIFY			= 201							--申请通知
@@ -57,6 +58,7 @@ chat_cmd.SUB_GC_GET_NEARUSER_RESULT 	= 210 							--附近结果
 chat_cmd.SUB_GC_QUERY_NEARUSER_RESULT 	= 211 							--查询结果
 chat_cmd.SUB_GC_USER_SHARE_NOTIFY 		= 212							--分享通知
 chat_cmd.SUB_GC_INVITE_PERSONAL_NOTIFY  = 213 							--私人房邀请通知
+chat_cmd.SUB_GC_QUERY_DISTANCE_RESULT 	= 214 							--查询距离结果
 
 chat_cmd.SUB_GC_USER_CHAT_ECHO			= 300							--聊天反馈
 chat_cmd.SUB_GC_APPLYFOR_FRIEND_ECHO	= 301							--申请反馈

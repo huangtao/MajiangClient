@@ -11,7 +11,8 @@ local LogonFrame = appdf.req(appdf.CLIENT_SRC.."plaza.models.LogonFrame")
 
 -- 进入场景而且过渡动画结束时候触发。
 function GameListLayer:onEnterTransitionFinish()
-	self._listView:reloadData()
+    --self._scrollview:reloadData()
+	--self._listView:reloadData()
     return self
 end
 
@@ -20,7 +21,7 @@ function GameListLayer:onExitTransitionStart()
     return self
 end
 
-function GameListLayer:ctor(gamelist)
+function GameListLayer:ctor(gamelist,bIsMajiang)
 	print("============= 游戏列表界面创建 =============")
 	self.m_bQuickStart = false
 
@@ -29,6 +30,8 @@ function GameListLayer:ctor(gamelist)
 	self:setContentSize(yl.WIDTH,yl.HEIGHT)
 
 	self._gameList = gamelist
+
+    self.bMaJiang = bIsMajiang
 
     local logonCallBack = function (result,message)
 		this:onLogonCallBack(result,message)
@@ -49,26 +52,52 @@ function GameListLayer:ctor(gamelist)
 		end
 	end)
 
-	--游戏列表
-	self._listView = cc.TableView:create(cc.size(yl.WIDTH, 420))
-	self._listView:setDirection(cc.SCROLLVIEW_DIRECTION_HORIZONTAL)    
-	self._listView:setPosition(cc.p(0,160))
-	self._listView:setDelegate()
-	self._listView:addTo(self)
-	self._listView:registerScriptHandler(self.tableCellTouched, cc.TABLECELL_TOUCHED)
-	self._listView:registerScriptHandler(self.cellSizeForTable, cc.TABLECELL_SIZE_FOR_INDEX)
-	self._listView:registerScriptHandler(self.tableCellAtIndex, cc.TABLECELL_SIZE_AT_INDEX)
-	self._listView:registerScriptHandler(self.numberOfCellsInTableView, cc.NUMBER_OF_CELLS_IN_TABLEVIEW)
-	self._listView:registerScriptHandler(self.cellHightLight, cc.TABLECELL_HIGH_LIGHT)
-	self._listView:registerScriptHandler(self.cellUnHightLight, cc.TABLECELL_UNHIGH_LIGHT)
+    self.m_fThird = yl.WIDTH / 3
+
+    self._scrollview = nil
+
+    --游戏列表（多列）
+    local count = 6
+    local column = 2
+    
+    if self.bMaJiang then
+        column = 2
+        --line = 2
+    else
+        column = 3
+        --line = 1
+    end
+    
+    local line = math.ceil(count/column) --行数
+    local spacing = 200;
+    local cellsize = self:cellSizeForTable()
+    local scrollwidth = (cellsize.width + spacing)*column
+    local scrollheight = (cellsize.height + spacing)*line
+    
+    self._scrollview=ccui.ScrollView:create()  
+    self._scrollview:setTouchEnabled(true) 
+    self._scrollview:setBounceEnabled(true) --这句必须要不然就不会滚动噢
+    self._scrollview:setScrollBarEnabled(false)
+    self._scrollview:setDirection(ccui.ScrollViewDir.vertical) --设置滚动的方向 
+
+
+    self._scrollview:setContentSize(cc.size(scrollwidth,scrollheight)) --设置尺寸 
+    self._scrollview:setAnchorPoint(cc.p(0.5,0.5)) 
+
+    if self.bMaJiang then
+        self._scrollview:setPosition(cc.p(yl.WIDTH/2,yl.HEIGHT/2-455))
+    else
+        self._scrollview:setPosition(cc.p(yl.WIDTH/2,yl.HEIGHT/2+100))
+    end
+    
+    self._scrollview:addTo(self)
+    self:onUpdateShowList(scrollwidth, scrollheight,spacing,column)
 
 	self._txtTips = ccui.Text:create("", "fonts/round_body.ttf", 32)
          	:setAnchorPoint(cc.p(1,0))
          	:move(yl.WIDTH,110)
          	:setTextColor(cc.c4b(0,250,0,255))
          	:addTo(self)
-
-    self.m_fThird = yl.WIDTH / 3
 
     --下载提示
     self.m_spDownloadMask = nil
@@ -77,6 +106,59 @@ function GameListLayer:ctor(gamelist)
     self.m_spDownloadCycle = nil
     self.m_bGameUpdate = false
     self.m_bUpdating = false
+end
+
+--更新当前显示(宽，高，间距,每行数量)
+function GameListLayer:onUpdateShowList(width, height,spacing,column)
+    if self._gameList ~= nil then
+        local count = 6
+        local line = math.ceil(count/column); --行数
+        if line == 0 then
+            line = 1
+        end
+--        if self.bMaJiang then
+--            line = 2
+--        else
+--            line = 1
+--        end
+        local cellsize = self:cellSizeForTable();
+        local scrollwidth = width   --内容宽度
+        local scrollheight = cellsize.height * line + spacing*(line - 1);   --内容高度
+        self._scrollview:setInnerContainerSize(cc.size(scrollwidth,scrollheight))
+
+        local cell_width = nil
+        local cell_height = nil
+        self._showList = nil
+        self._showList = {}
+        if self.bMaJiang then
+ 	        for i=1,2 do
+                self._showList[i] = self:tableCellAtIndex(i)
+                if ccui.ScrollViewDir.vertical == self._scrollview:getDirection() then
+                    cell_width = math.floor((i-1)%column)*(cellsize.width+spacing) + (cellsize.width+spacing)/2
+                    cell_height = math.floor((i-1)/column)*(cellsize.height+spacing) + (cellsize.height)-- + cellsize.height+spacing
+                else
+                    cell_width = math.floor((i-1)/column)*(cellsize.width+spacing) + (cellsize.width+spacing)/2
+                    cell_height = math.floor((i-1)%column)*(cellsize.height+spacing) + (cellsize.height)-- + cellsize.height+spacing
+                end
+                self._showList[i]:move(cell_width,height-cell_height)
+                self._showList[i]:addTo(self._scrollview)
+	        end 
+        else
+			local icount = #self._gameList
+             for i=1,icount-4 do
+                self._showList[i] = self:tableCellAtIndex(i+4)
+                if ccui.ScrollViewDir.vertical == self._scrollview:getDirection() then
+                    cell_width = math.floor((i-1)%column)*(cellsize.width+spacing) + (cellsize.width+spacing)/2
+                    cell_height = math.floor((i-1)/column)*(cellsize.height+spacing) + (cellsize.height)-- + cellsize.height+spacing
+                else
+                    cell_width = math.floor((i-1)/column)*(cellsize.width+spacing) + (cellsize.width+spacing)/2
+                    cell_height = math.floor((i-1)%column)*(cellsize.height+spacing) + (cellsize.height)-- + cellsize.height+spacing
+                end
+                self._showList[i]:move(cell_width,height-cell_height)
+                self._showList[i]:addTo(self._scrollview)
+	        end 
+        end  
+    end
 end
 
 --获取父场景节点(ClientScene)
@@ -126,9 +208,10 @@ end
 function GameListLayer.cellUnHightLight(view,cell)
 end
 
+
 --子视图大小
-function GameListLayer.cellSizeForTable(view, idx)
-  	return view:getParent().m_fThird , 360
+function GameListLayer:cellSizeForTable()
+  	return cc.size(323 , 272)
 end
 
 --子视图数目
@@ -141,71 +224,80 @@ function GameListLayer.numberOfCellsInTableView(view)
 end
 
 --子视图点击
-function GameListLayer.tableCellTouched(view, cell)
-	if GlobalUserItem.isAngentAccount() then
-		return
-	end
-		
-	local index = cell:getIdx() 
-	local gamelistLayer = view:getParent()
+function GameListLayer:tableCellTouched(view, cell, type)
+    if type == ccui.TouchEventType.ended then
 
-	--获取游戏信息
-	local gameinfo = gamelistLayer._gameList[index+1]
-	if  not gameinfo then
-		showToast(gamelistLayer:getParent():getParent(),"未找到游戏信息！",2)
-		return
-	end
-	gameinfo.gameIndex = index
+    	if GlobalUserItem.isAngentAccount() then
+		    return
+	    end
 
-	--下载/更新资源 clientscene:getApp
-	local app = gamelistLayer:getParent():getParent():getApp()
-	local version = tonumber(app:getVersionMgr():getResVersion(gameinfo._KindID))
-    local versionMgr = app:getVersionMgr()
-	if not version or gameinfo._ServerResVersion > version then
-		gamelistLayer:updateGame(gameinfo, index)
-	else
-		gamelistLayer:onEnterGame(gameinfo, false)
-	end
+	    local index = cell:getTag() 
+	    local gamelistLayer = view:getParent()
+
+	    --获取游戏信息
+	    local gameinfo = gamelistLayer._gameList[index]
+	    if  not gameinfo then
+		    showToast(gamelistLayer:getParent():getParent(),"未找到游戏信息！",2)
+		    return
+	    end
+	    gameinfo.gameIndex = index
+
+	    --下载/更新资源 clientscene:getApp
+	    local app = gamelistLayer:getParent():getParent():getApp()
+	    local version = tonumber(app:getVersionMgr():getResVersion(gameinfo._KindID))
+	    if not version or gameinfo._ServerResVersion > version then
+            if self.bMaJiang then
+		        gamelistLayer:updateGame(gameinfo, index)
+            else
+                gamelistLayer:updateGame(gameinfo, index - 4)
+            end    
+	    else
+		    gamelistLayer:onEnterGame(gameinfo, false)
+	    end
+
+    end
 end
 	
 --获取子视图
-function GameListLayer.tableCellAtIndex(view, idx)	
-	local cell = view:dequeueCell()
+function GameListLayer:tableCellAtIndex(idx)
+    local cell = nil
+    if self._showList ~= nil then
+        cell = self._showList[idx]
+    end
 	
-	local gameinfo = view:getParent()._gameList[idx+1]
+	local gameinfo = self._gameList[idx]
 	gameinfo.gameIndex = idx
+
 	local filestr = "GameList/game_"..gameinfo._KindID..".png"
 	if false == cc.FileUtils:getInstance():isFileExist(filestr) then
 		filestr = "GameList/default.png"
 	end
-	local game = nil
+
 	local mask = nil
 	local spTip = nil
-	local cellpos = cc.p(view:getParent().m_fThird * 0.5,view:getViewSize().height * 0.5)
+
+	local cellpos = cc.p(323 * 0.5,272 * 0.5)
 	if not cell then
-		cell = cc.TableViewCell:new()
-		game = display.newSprite(filestr)
-		game:addTo(cell)
-			:setAnchorPoint(cc.p(0.5, 0))
-			:setPosition(view:getParent().m_fThird * 0.5, 0)
-			:setTag(1)
+        cell = ccui.Button:create(filestr,filestr)
+		cell:setContentSize(self:cellSizeForTable())
+			:setSwallowTouches(false)
+			:setName(gameinfo._KindName)
 
 		local maskSp = cc.Sprite:create(filestr)
-		local pos = cc.p(0,0)
 		if nil ~= maskSp then			
 			maskSp:setColor(cc.BLACK)
 			maskSp:setOpacity(100)
 			local size = maskSp:getContentSize()
-			--maskSp:setAnchorPoint(cc.p(0, 0))
 			maskSp:setPosition(cc.p(size.width * 0.5,size.height * 0.5))
 			maskSp:setName("download_mask_sp")			
 
 			mask = ccui.Layout:create()
 			mask:setClippingEnabled(true)
 			mask:setAnchorPoint(cc.p(0.5,0))
-			mask:setPosition(cc.p(view:getParent().m_fThird * 0.5, 0))
+			mask:setPosition(cc.p(size.width * 0.5, 0))
 			mask:setContentSize(size)
 			mask:addChild(maskSp)
+
 			cell:addChild(mask)
 			mask:setName("download_mask")
 
@@ -225,10 +317,9 @@ function GameListLayer.tableCellAtIndex(view, idx)
 			end			
 		end	
 	else
-		game = cell:getChildByTag(1)
-		game:setTexture(filestr)
-
+		cell:setTexture(filestr)
 		mask = cell:getChildByName("download_mask")
+
 		if nil ~= mask then
 			local sp = mask:getChildByName("download_mask_sp")
 			if nil ~= sp then
@@ -253,10 +344,18 @@ function GameListLayer.tableCellAtIndex(view, idx)
 	if nil ~= spTip then
 		spTip:setString("")
 	end
+
+    local btCallBack = function (ref,type)
+        self:tableCellTouched(self._scrollview,ref,type)
+	end
+
 	cell:setVisible(true)
-	cell:setTag(gameinfo._KindID)
+	cell:setTag(idx)
+--    cell:setAnchorPoint(cc.p(0.5,0.5))
+    cell:addTouchEventListener(btCallBack)
 	return cell
 end
+
 ---------------------------------------------------------------------
 
 --链接游戏
@@ -367,7 +466,7 @@ function GameListLayer:updateGame(gameinfo, index)
 	else
 		local cell = nil
 		if nil ~= index then
-			cell = self._listView:cellAtIndex(index)
+			cell = self._showList[index]
 		end
 
 		self:onGameUpdate(gameinfo)
@@ -414,14 +513,14 @@ function GameListLayer:onGameUpdate(gameinfo)
 	end
 
 	--更新参数
-	local newfileurl = self:getParent():getParent():getApp()._updateUrl.."game/"..self._downgameinfo._Module.."res/filemd5List.json"
+	local newfileurl = self:getParent():getParent():getApp()._updateUrl.."/game/"..self._downgameinfo._Module.."/res/filemd5List.json"
 	local dst = device.writablePath .. "game/" .. self._downgameinfo._Type .. "/"
 	local targetPlatform = cc.Application:getInstance():getTargetPlatform()
 	if cc.PLATFORM_OS_WINDOWS == targetPlatform then
 		dst = device.writablePath .. "download/game/" .. self._downgameinfo._Type .. "/"
 	end
 	
-	local src = device.writablePath.."game/"..self._downgameinfo._Module.."res/filemd5List.json"
+	local src = device.writablePath.."game/"..self._downgameinfo._Module.."/res/filemd5List.json"
 	local downurl = self:getParent():getParent():getApp()._updateUrl .. "/game/" .. self._downgameinfo._Type .. "/"
 
 	--创建更新

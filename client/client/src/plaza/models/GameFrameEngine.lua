@@ -324,6 +324,7 @@ function GameFrameEngine:onSocketUserEnter(dataBuffer)
 
 	userItem.lScore			= dataBuffer:readscore(int64):getvalue()
 	userItem.lIngot			= dataBuffer:readscore(int64):getvalue()
+    userItem.lRoomCrad	    = dataBuffer:readscore(int64):getvalue()
 	userItem.dBeans			= dataBuffer:readdouble()
 
 	userItem.dwWinCount		= dataBuffer:readdword()

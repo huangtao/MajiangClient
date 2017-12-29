@@ -10,18 +10,24 @@ local ClientUpdate = appdf.req("base.src.app.controllers.ClientUpdate")
 local QueryDialog = appdf.req("base.src.app.views.layer.other.QueryDialog")
 local ClientConfig = appdf.req(appdf.BASE_SRC .."app.models.ClientConfig")
 
---local URL_REQUEST = " " --@http_url
+
+
 --local URL_REQUEST = " " --@http_url
 local URL_REQUEST = "http://47.94.252.125:8081" --@http_url
+--local URL_REQUEST = "http://59.110.240.93:8081" --<QTC_DEBUG>
 
 local EXTRA_CMD_KEY = "extra_command_version"
 --全局toast函数(ios/android端调用)
+
 cc.exports.g_NativeToast = function (msg)
 	local runScene = cc.Director:getInstance():getRunningScene()
 	if nil ~= runScene then
 		showToastNoFade(runScene, msg, 2)
 	end
 end
+local size =cc.Director:getInstance():getWinSize()  
+
+
 
 function WelcomeScene:onCreate()
 	local this = self
@@ -49,25 +55,25 @@ function WelcomeScene:onCreate()
 		sp = cc.Sprite:create("logo_name_00.png")
 	end
 	if nil ~= sp then
-		sp:setPosition(appdf.WIDTH/2,appdf.HEIGHT/2+100)
+		sp:setPosition(appdf.WIDTH/2,appdf.HEIGHT/2+50)
 		self:addChild(sp)
 		sp:runAction(cc.RepeatForever:create(cc.Sequence:create(cc.FadeTo:create(2,255),cc.FadeTo:create(2,128))))
 	end
-    
+    sp:setVisible(false)
 	--slogan
-	local sloganfile = newbasepath .. "base/res/logo_text_00.png"
-	if false == cc.FileUtils:getInstance():isFileExist(sloganfile) then
-		sloganfile = "logo_text_00.png"
-	end
-	sp = cc.Sprite:create(sloganfile)
-	if nil == sp then
-		sp = cc.Sprite:create("logo_text_00.png")
-	end
-	if nil ~= sp then
-		sp = cc.Sprite:create(sloganfile)
-		sp:setPosition(appdf.WIDTH/2, 200)
-		self:addChild(sp)
-	end
+--	local sloganfile = newbasepath .. "base/res/logo_text_00.png"
+--	if false == cc.FileUtils:getInstance():isFileExist(sloganfile) then
+--		sloganfile = "logo_text_00.png"
+--	end
+--	sp = cc.Sprite:create(sloganfile)
+--	if nil == sp then
+--		sp = cc.Sprite:create("logo_text_00.png")
+--	end
+--	if nil ~= sp then
+--		sp = cc.Sprite:create(sloganfile)
+--		sp:setPosition(appdf.WIDTH/2, 200)
+--		self:addChild(sp)
+--	end
 
 	--提示文本
 	self._txtTips = cc.Label:createWithTTF("", "fonts/round_body.ttf", 24)
@@ -145,6 +151,7 @@ end
 
 --进入登录界面
 function  WelcomeScene:EnterClient()
+
 	--重置大厅与游戏
 	for k ,v in pairs(package.loaded) do
 		if k ~= nil then 
@@ -156,7 +163,7 @@ function  WelcomeScene:EnterClient()
 			end
 		end
 	end	
-	--场景切换
+
 	self:getApp():enterSceneEx(appdf.CLIENT_SRC.."plaza.views.LogonScene","FADE",1)
 end
 
@@ -330,13 +337,13 @@ function WelcomeScene:httpNewVersion()
  				    	if not version or gameInfo._ServerResVersion > version then
  				    		local updateConfig2 = {}
 					 		updateConfig2.isClient = false
-					 		updateConfig2.newfileurl = this:getApp()._updateUrl.."game/"..gameInfo._Module.."res/filemd5List.json"
+					 		updateConfig2.newfileurl = this:getApp()._updateUrl.."/game/"..gameInfo._Module.."/res/filemd5List.json"
 							updateConfig2.downurl = this:getApp()._updateUrl .. "/game/" .. gameInfo._Type .. "/"
 							updateConfig2.dst = device.writablePath .. "game/" .. gameInfo._Type .. "/"
 							if cc.PLATFORM_OS_WINDOWS == targetPlatform then
 								updateConfig2.dst = device.writablePath .. "download/game/" .. gameInfo._Type .. "/"
 							end						
-							updateConfig2.src = device.writablePath.."game/"..gameInfo._Module.."res/filemd5List.json"
+							updateConfig2.src = device.writablePath.."game/"..gameInfo._Module.."/res/filemd5List.json"
 					 		updateConfig2._ServerResVersion = gameInfo._ServerResVersion
 					 		updateConfig2._KindID = gameInfo._KindID
 					 		table.insert(self.m_tabUpdateQueue, updateConfig2)

@@ -54,7 +54,7 @@ function UpdateScene:onCreate( )
         sp:setPosition(appdf.WIDTH/2, 200)
         self:addChild(sp)
     end
-
+    --sp:setVisible(false)
     --提示文本
     self._txtTips = cc.Label:createWithTTF("", "fonts/round_body.ttf", 24)
         :setTextColor(cc.c4b(0,250,0,255))
@@ -118,14 +118,14 @@ function UpdateScene:goUpdate()
     updategame = self.m_tabUpdateGame
 
     --更新参数
-    local newfileurl = self:getApp()._updateUrl .. "/game/".. updategame._Module.."res/filemd5List.json"
+    local newfileurl = self:getApp()._updateUrl .. "/game/".. updategame._Module.."/res/filemd5List.json"
     local dst = device.writablePath .. "game/" .. updategame._Type .. "/"
     local targetPlatform = cc.Application:getInstance():getTargetPlatform()
     if cc.PLATFORM_OS_WINDOWS == targetPlatform then
         dst = device.writablePath .. "download/game/" .. updategame._Type .. "/"
     end
     
-    local src = device.writablePath.."game/" .. updategame._Module.."res/filemd5List.json"
+    local src = device.writablePath.."game/" .. updategame._Module.."/res/filemd5List.json"
     local downurl = self:getApp()._updateUrl .. "/game/" .. updategame._Type .. "/"
 
     --创建更新

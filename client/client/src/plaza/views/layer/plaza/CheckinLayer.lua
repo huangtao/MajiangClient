@@ -26,6 +26,8 @@ CheckinLayer.TEXT_DAY			= CheckinLayer.TEXT_GOLD+7
 CheckinLayer.NUM_DAY			= CheckinLayer.TEXT_DAY+7
 CheckinLayer.ICON_CHECKIN_DBG   = CheckinLayer.NUM_DAY+7
 
+local qiandaoPos = {cc.p(500,480),cc.p(700,480),cc.p(900,480),cc.p(1100,480),cc.p(600,280),cc.p(800,280),cc.p(1000,280)}
+
 -- 进入场景而且过渡动画结束时候触发。
 function CheckinLayer:onEnterTransitionFinish()
 	if false == GlobalUserItem.bQueryCheckInData then
@@ -78,12 +80,13 @@ function CheckinLayer:ctor(scene)
         self:addChild(sp)
 	end
 	display.newSprite("Checkin/title_checkin.png")
-		:move(yl.WIDTH/2,yl.HEIGHT - 51)
+		:move(yl.WIDTH/2,yl.HEIGHT - 80)
+        :setLocalZOrder(2)
 		:addTo(self)
 	frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
 	if nil ~= frame then
 		local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(yl.WIDTH/2,326)
+        sp:setPosition(yl.WIDTH/2,375)
         self:addChild(sp)
 	end
 	frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_2.png")
@@ -92,9 +95,13 @@ function CheckinLayer:ctor(scene)
         sp:setPosition(yl.WIDTH/2,326)
         self:addChild(sp)
 	end
+   
+    display.newSprite("Checkin/sp_girl.png")
+		:move(200,300)
+		:addTo(self)
 
-	ccui.Button:create("bt_return_0.png","bt_return_1.png")
-		:move(75,yl.HEIGHT-51)
+	ccui.Button:create("Checkin/bt_return_0.png","Checkin/bt_return_1.png")
+		:move(1334-75,yl.HEIGHT-51)
 		:addTo(self)
 		:addTouchEventListener(function(ref, type)
        		 	if type == ccui.TouchEventType.ended then
@@ -105,18 +112,21 @@ function CheckinLayer:ctor(scene)
 	--连续签到提示
 	display.newSprite("Checkin/frame_checkin_2.png")
 		:move(yl.WIDTH/2,555)
+        :setVisible(false)
 		:addTo(self)
 	display.newSprite("Checkin/text_checkin_0.png")
 		:move(yl.WIDTH/2,555)
+        :setVisible(false)
 		:addTo(self)
 	self._txtDay = cc.LabelAtlas:_create("0", "Checkin/num_checkin_0.png", 22, 29, string.byte("0"))
     		:move(760,555)
     		:setAnchorPoint(cc.p(0.5,0.5))
+            :setVisible(false)
     		:addTo(self)
 
     --签到按钮
     self._btConfig = ccui.Button:create("Checkin/bt_checkin_0.png","Checkin/bt_checkin_1.png","Checkin/bt_checkin_2.png")
-	self._btConfig:move(yl.WIDTH/2,112)
+	self._btConfig:move(810,112)
 	self._btConfig:setTag(CheckinLayer.BT_CHECKIN)		
 	self._btConfig:addTo(self)
 	self._btConfig:addTouchEventListener(self._btcallback)	
@@ -125,46 +135,54 @@ function CheckinLayer:ctor(scene)
 	--签到展示区域
 	for i=0,CheckinLayer.CHECKIN_NUMBER-1 do
 		-- 签到背景
-		display.newSprite("Checkin/back_checkin_frame.png")
-		:move(178+163*i,326)
-		:setTag(CheckinLayer.ICON_CHECKIN_DBG+i)
-		:addTo(self)
+		--display.newSprite("Checkin/back_checkin_frame.png")
+		----:move(178+163*i,326)
+        --:move(qiandaoPos[i+1].x,qiandaoPos[i+1].y)       
+		--:setTag(CheckinLayer.ICON_CHECKIN_DBG+i)
+        --:setVisible(false)
+		--:addTo(self)
 
 		--背景
 		display.newSprite("Checkin/back_checkin_0.png")
-		:move(178+163*i,326)
+		--:move(178+163*i,326)
+        :move(qiandaoPos[i+1].x,qiandaoPos[i+1].y) 
 		:setTag(CheckinLayer.BG_CHECKIN+i)
 		:addTo(self)
 
 		--天数背景
 		display.newSprite("Checkin/text_checkin_1.png")
-		:move(178+163*i,470)
+		--:move(178+163*i,470)
+        :move(qiandaoPos[i+1].x,qiandaoPos[i+1].y-100) 
 		:setTag(CheckinLayer.TEXT_DAY+i)
 		:addTo(self)
 
 		--天数数字
 		cc.LabelAtlas:_create(""..i+1, "Checkin/num_checkin_1.png", 19, 25, string.byte("0"))
-    		:move(178+163*i,470)
+    		--:move(178+163*i,470)
+            :move(qiandaoPos[i+1].x,qiandaoPos[i+1].y-100) 
     		:setAnchorPoint(cc.p(0.5,0.5))
     		:setTag(CheckinLayer.NUM_DAY+i)
     		:addTo(self)
 
     	--已签到标志
     	display.newSprite("Checkin/icon_checkin_1.png")
-		:move(182+163*i,258)
+		--:move(182+163*i,258)
+        :move(qiandaoPos[i+1].x-50,qiandaoPos[i+1].y+50) 
 		:setTag(CheckinLayer.ICON_CHECKIN_DONE+i)
 		:setVisible(false)
 		:addTo(self)
 
 		--可签到标志
 		display.newSprite("Checkin/text_checkin_2.png")
-		:move(178+163*i,245)
+		--:move(178+163*i,245)
+        :move(qiandaoPos[i+1].x-50,qiandaoPos[i+1].y+50) 
 		:setTag(CheckinLayer.ICON_CHECKIN_Y+i)
 		:addTo(self)
 
 		--不可签标志
     	display.newSprite("Checkin/text_checkin_3.png")
-		:move(178+163*i,245)
+		--:move(178+163*i,245)
+        :move(qiandaoPos[i+1].x-50,qiandaoPos[i+1].y+50) 
 		:setTag(CheckinLayer.ICON_CHECKIN_N+i)
 		:setVisible(false)
 		:addTo(self)
@@ -173,11 +191,13 @@ function CheckinLayer:ctor(scene)
 		display.newSprite("Checkin/icon_checkin_0.png")
 		:move(140+163*i,192)
 		:setTag(CheckinLayer.ICON_GOLD+i)
+        :setVisible(false)
 		:addTo(self)
 
 		--金币数字
-		cc.LabelAtlas:_create("1000", "Checkin/num_checkin_3.png", 12, 16, string.byte("0"))
-    		:move(183+163*i,192)
+		cc.LabelAtlas:_create("1000", "Checkin/num_checkin_3.png", 22, 29, string.byte("0"))
+    		--:move(183+163*i,192)
+            :move(qiandaoPos[i+1].x,qiandaoPos[i+1].y-60) 
     		:setAnchorPoint(cc.p(0.5,0.5))
     		:setTag(CheckinLayer.TEXT_GOLD+i)
     		:addTo(self)
@@ -187,6 +207,7 @@ function CheckinLayer:ctor(scene)
 		:move(1013,115)
 		:setTag(CheckinLayer.BT_VIPGIFT)
 		:addTo(self)
+        :setVisible(false)
 		:addTouchEventListener(self._btcallback)
 
 	print("*cbMemberOrder-"..GlobalUserItem.cbMemberOrder)

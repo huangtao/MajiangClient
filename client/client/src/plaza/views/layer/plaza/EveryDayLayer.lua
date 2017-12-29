@@ -72,15 +72,17 @@ function EveryDayLayer:ctor(scene)
 	if nil ~= frame then
 		local sp = cc.Sprite:createWithSpriteFrame(frame)
 		sp:setPosition(yl.WIDTH/2,yl.HEIGHT - 51)
+        sp:setVisible(false)
 		self:addChild(sp)
 	end
 	display.newSprite("EveryDay/title_everyday.png")
-		:move(yl.WIDTH/2,yl.HEIGHT - 51)
+		:move(yl.WIDTH/2,yl.HEIGHT - 80)
+        :setLocalZOrder(2)
 		:addTo(self)
     frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
     if nil ~= frame then
         local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(yl.WIDTH/2,320)
+        sp:setPosition(yl.WIDTH/2,375)
         self:addChild(sp)
     end
     frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_2.png")
@@ -90,8 +92,8 @@ function EveryDayLayer:ctor(scene)
         self:addChild(sp)
     end
 
-	ccui.Button:create("bt_return_0.png","bt_return_1.png")
-		:move(75,yl.HEIGHT-51)
+	ccui.Button:create("public/bt_return_0.png","public/bt_return_1.png")
+		:move(1334-75,yl.HEIGHT-51)
 		:addTo(self)
 		:addTouchEventListener(function(ref, type)
        		 	if type == ccui.TouchEventType.ended then

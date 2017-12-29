@@ -152,19 +152,22 @@ function LogonView:refreshBtnList( )
 
 	local btnpos = 
 	{
-		{cc.p(667, 70), cc.p(0, 0), cc.p(0, 0)},
+		{cc.p(667, 80), cc.p(0, 0), cc.p(0, 0)},
 		{cc.p(463, 70), cc.p(868, 70), cc.p(0, 0)},
 		{cc.p(222, 70), cc.p(667, 70), cc.p(1112, 70)}
 	}	
 
 	-- 登陆限定
 	local loginConfig = 7--self.m_serverConfig.moblieLogonMode or 0
-	-- 1:帐号 2:游客 3:微信
+	--local loginConfig = 7--<QTC_DEBUG>
+	-- 1:帐号 2:游客 4:微信
+    local bAccounts = true;
 	local btnlist = {}
 	if (1 == bit:_and(loginConfig, 1)) then
 		table.insert(btnlist, "btn_1")
 	else
 		-- 隐藏帐号输入信息
+        bAccounts = false;
 		self:hideAccountInfo()
 	end
 	
@@ -185,6 +188,9 @@ function LogonView:refreshBtnList( )
 			tmp:setVisible(true)
 
 			local pos = poslist[k]
+            if bAccounts == false then
+                pos.y = pos.y + 130
+            end
             if nil ~= pos then
             	tmp:setPosition(pos)
             end
@@ -196,7 +202,9 @@ function LogonView:onEditEvent(name, editbox)
 	--print(name)
 	if "changed" == name then
 		if editbox:getText() ~= GlobalUserItem.szAccount then
-			self.edit_Password:setText("")
+--[===============DEBUG_MODIFY================--
+--			self.edit_Password:setText("")
+--]===============DEBUG_MODIFY================--
 		end		
 	end
 end

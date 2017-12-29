@@ -88,7 +88,9 @@ function LogonScene:onEnterTransitionFinish()
 		if GlobalUserItem.bAutoLogon then
 			GlobalUserItem.bVisitor = false
 			if yl.AUTO_LOGIN then
-				self:onLogon(GlobalUserItem.szAccount,GlobalUserItem.szPassword,true,true)
+--[===============DEBUG_MODIFY================--
+--				self:onLogon(GlobalUserItem.szAccount,GlobalUserItem.szPassword,true,true)
+--]===============DEBUG_MODIFY================--
 			end
 		end
 		GlobalUserItem.m_tabOriginGameList = self:getApp()._gameList
@@ -152,18 +154,18 @@ function LogonScene:onCreate()
         :addTo(self._backLayer)
  
  	--平台logo
-	display.newSprite("Logon/logon_logo.png")
-		:move(yl.WIDTH/2,yl.HEIGHT-150)
-		:addTo(self._backLayer)
-		:runAction(cc.MoveTo:create(0.3,cc.p(yl.WIDTH/2,yl.HEIGHT-150)))
+--	display.newSprite("Logon/logon_logo.png")
+--		:move(yl.WIDTH/2,yl.HEIGHT-150)
+--		:addTo(self._backLayer)
+--		:runAction(cc.MoveTo:create(0.3,cc.p(yl.WIDTH/2,yl.HEIGHT-150)))
 
 	--返回
 	if  device.platform ~= "mac" and device.platform ~= "ios" then
-		ccui.Button:create("bt_return_0.png","bt_return_1.png")
-			:move(75,yl.HEIGHT-51)
-			:setTag(LogonScene.BT_EXIT)
-			:addTo(self._backLayer)
-			:addTouchEventListener(btcallback)
+--		ccui.Button:create("bt_return_0.png","bt_return_1.png")
+--			:move(250,yl.HEIGHT-81)
+--			:setTag(LogonScene.BT_EXIT)
+--			:addTo(self._backLayer)
+--			:addTouchEventListener(btcallback)
 	end
 
 	self._txtTips = cc.Label:createWithTTF("同步服务器信息中...", "fonts/round_body.ttf", 24)
@@ -178,7 +180,7 @@ function LogonScene:onCreate()
 	GlobalUserItem.LoadData()
 
 	--背景音乐
-	ExternalFun.playPlazzBackgroudAudio( )
+	ExternalFun.playPlazzBackgroudAudio()
 
 	-- 激活房卡
 	GlobalUserItem.bEnableRoomCard = (self:getApp()._serverConfig["isOpenCard"] == 0)

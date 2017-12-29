@@ -15,6 +15,8 @@ function PriRoomListLayer:ctor( scene )
     GlobalUserItem.nCurRoomIndex = -1
 
     self._scene = scene
+    self._isRoom = false;
+
     -- 加载csb资源
     local rootLayer, csbNode = ExternalFun.loadRootCSB("room/PriRoomListLayer.csb", self)
 
@@ -31,6 +33,7 @@ function PriRoomListLayer:ctor( scene )
     btn:setVisible(bHaveNormalRoom)
     btn:setEnabled(bHaveNormalRoom)
     btn:addTouchEventListener(touchFunC)
+    btn:setPositionY(-444)
 
     -- 加入房间
     btn = csbNode:getChildByName("btn_joinroom")
@@ -42,11 +45,17 @@ function PriRoomListLayer:ctor( scene )
     btn = csbNode:getChildByName("btn_createroom")
     btn:setTag(BTN_CREATE_PRIROOM)
     btn:addTouchEventListener(touchFunC)
-    local createBtn = btn
-    if not bHaveNormalRoom then
-        joinBtn:setPositionX(392)
-        createBtn:setPositionX(940)
-    end
+--    local createBtn = btn
+--    if not bHaveNormalRoom then
+--        joinBtn:setPositionX(392)
+--        createBtn:setPositionX(940)
+--    end
+
+
+    btn = csbNode:getChildByName("btn_close")
+    btn:setTag(BTN_BACK_GAME)
+    btn:addTouchEventListener(touchFunC)
+
     --[[self.m_szBackGameRoomId = nil
     -- 是否暂离了房间
     local joinGame = PriRoom:getInstance().m_tabJoinGameRecord[GlobalUserItem.nCurGameKind]
@@ -74,14 +83,22 @@ function PriRoomListLayer:onButtonClickedEvent( tag, sender )
     elseif BTN_JOIN_PRIROOM == tag then
         PriRoom:getInstance():getTagLayer(PriRoom.LAYTAG.LAYER_ROOMID)
     elseif BTN_CREATE_PRIROOM == tag then
-        self._scene:onChangeShowMode(PriRoom.LAYTAG.LAYER_CREATEPRIROOME)
+        --PriRoom:getInstance():getTagLayer(PriRoom.LAYTAG.LAYER_CREATEPRIROOME)
+        --PriRoom:getInstance():getTagLayer(PriRoom.LAYTAG.LAYER_CREATEPRIROOME)
+        self:getParent():getParent():onChangeShowMode(PriRoom.LAYTAG.LAYER_CREATEPRIROOME)
+        --self._scene:onChangeShowMode(PriRoom.LAYTAG.LAYER_CREATEPRIROOME)
     elseif BTN_BACK_GAME == tag then
-        PriRoom:getInstance():showPopWait()
-        PriRoom:getInstance():getNetFrame():onSearchRoom(self.m_szBackGameRoomId)
+        self._scene:onKeyBack()
+        --PriRoom:getInstance():showPopWait()
+        --PriRoom:getInstance():getNetFrame():onSearchRoom(self.m_szBackGameRoomId)
     end
 end
 
 function PriRoomListLayer:onEnterTransitionFinish()
+end
+
+function PriRoomListLayer:getIsRoom(args)
+    self._isRoom = args
 end
 
 return PriRoomListLayer

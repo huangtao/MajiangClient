@@ -441,7 +441,7 @@ function ExternalFun.loadLexicon( )
 	local endTime = os.clock()
 	print("load time ==> " .. endTime - startTime)
 end
-ExternalFun.loadLexicon( )
+ExternalFun.loadLexicon()
 
 --判断是否包含过滤词
 function ExternalFun.isContainBadWords( str )

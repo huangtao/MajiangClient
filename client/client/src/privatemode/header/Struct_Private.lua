@@ -30,6 +30,10 @@ private_struct.tagPersonalTableParameter =
     {t = "score", k = "lIniScore"},
     -- 创建费用
     {t = "score", k = "lFeeScore"},
+    -- AA
+    {t = "dword", k = "dwPayTwice"},
+    -- 房间类型
+    {t = "dword", k = "dwKindID"},
 }
 
 -- 私人房间玩家信息
@@ -52,6 +56,10 @@ private_struct.tagPersonalUserScoreInfo =
 -- 用于请求单个私人房间信息
 private_struct.tagPersonalRoomInfo = 
 {
+--//-[--------------[QTC_MODIFY_AA]----------------//
+	-- 房卡支付需要2次 (第1次在房主建房时由房主支付, 第2次在首局游戏开始时由房主以外所有人支付, 即房卡AA制) (0为不存在; 0以外为存在)
+	{t = "dword", k = "dwPayTwice"},
+--//-]--------------[QTC_MODIFY_AA]----------------//
     {t = "string", k = "szRoomID", s = private_define.ROOM_ID_LEN},
     -- 消耗类型(0 游戏豆; 1 房卡)
     {t = "byte", k = "cbCardOrBean"},
@@ -93,6 +101,9 @@ private_struct.tagQueryPersonalRoomUserScore =
 
 private_struct.tagPersonalRoomOption = 
 {
+     --//-[--------------[QTC_MODIFY_AA]----------------//
+    {t = "dword", k = "dwPayTwice"},
+    --//-]--------------[QTC_MODIFY_AA]----------------//
     -- 消耗类型(0 游戏豆; 1 房卡)
     {t = "byte", k = "cbCardOrBean"},
     -- 消耗数量

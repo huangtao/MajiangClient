@@ -63,7 +63,7 @@ function PopupInfoLayer:ctor(viewParent, isGame)
 	self.m_clipNick:setPosition(tmp:getPosition())
 	bg_kuang:addChild(self.m_clipNick)
 	self.m_clipNick:setAnchorPoint(cc.p(0.0,0.5))
-	self.m_clipNick:setTextColor(cc.c4b(255,232,170,255))
+	self.m_clipNick:setTextColor(cc.c4b(168,83,0,255))
 	tmp:removeFromParent()
 
 	--id
@@ -85,6 +85,7 @@ function PopupInfoLayer:ctor(viewParent, isGame)
 	-- 距离
 	self.m_textDistance = bg_kuang:getChildByName("distance_text")	
 	self.m_textDistance:setVisible(yl.SHOW_IP_ADDRESS)
+    self.m_posDistance = cc.p(self.m_textDistance:getPositionX(),self.m_textDistance:getPositionY())
 	self.m_clipDistance = ClipText:createClipText(cc.size(120, 30),"")
 	self.m_clipDistance:setVisible(yl.SHOW_IP_ADDRESS)
 	if true == isGame then
@@ -93,8 +94,9 @@ function PopupInfoLayer:ctor(viewParent, isGame)
 		self.m_clipDistance:setPosition(cc.p(254, 132))
 	end
 	bg_kuang:addChild(self.m_clipDistance)
-	self.m_clipDistance:setAnchorPoint(cc.p(1.0,0.5))
-	self.m_clipDistance:setTextColor(cc.c4b(255,232,170,255))
+	self.m_clipDistance:setAnchorPoint(cc.p(0,0.5))
+--	self.m_clipDistance:setTextColor(cc.c4b(255,232,170,255))
+    self.m_clipDistance:setTextColor(cc.c4b(168,83,0,255))
 
 	--添加好友/好友申请/好友
 	local btn = bg_kuang:getChildByName("addfriend_btn")
@@ -159,9 +161,15 @@ function PopupInfoLayer:onNearUserInfo( event )
 		if nil ~= self.m_userInfo.dwDistance and 0 ~= self.m_userInfo.dwDistance then
 			if self.m_userInfo.dwDistance > 1000 then
 				self.m_clipDistance:setString(string.format("%.2f", self.m_userInfo.dwDistance / 1000))
+                self.m_clipDistance:setPosition(self.m_posDistance.x,self.m_posDistance.y)
+                local num = string.len(self.m_userInfo.dwDistance / 1000 .. "")
+                self.m_textDistance:setPosition(self.m_posDistance.x + num*10 ,self.m_posDistance.y)
 				self.m_textDistance:setString("千米")
 			else
 				self.m_clipDistance:setString("" .. self.m_userInfo.dwDistance)
+                self.m_clipDistance:setPosition(self.m_posDistance.x,self.m_posDistance.y)
+                local num = string.len(self.m_userInfo.dwDistance .. "")
+                self.m_textDistance:setPosition(self.m_posDistance.x + num*10 ,self.m_posDistance.y)
 				self.m_textDistance:setString("米")
 			end
 		else
@@ -361,9 +369,15 @@ function PopupInfoLayer:refresh( useritem, popPos ,anr)
 	if nil ~= self.m_userInfo.dwDistance and 0 ~= self.m_userInfo.dwDistance then
 		if self.m_userInfo.dwDistance > 1000 then
 			self.m_clipDistance:setString(string.format("%.2f", self.m_userInfo.dwDistance / 1000))
+            self.m_clipDistance:setPosition(self.m_posDistance.x,self.m_posDistance.y)
+            local num = string.len(self.m_userInfo.dwDistance / 1000 .. "")+ 3
+            self.m_textDistance:setPosition(self.m_posDistance.x + num*10 ,self.m_posDistance.y)
 			self.m_textDistance:setString("千米")
 		else
 			self.m_clipDistance:setString("" .. self.m_userInfo.dwDistance)
+            self.m_clipDistance:setPosition(self.m_posDistance.x,self.m_posDistance.y)
+            local num = string.len(self.m_userInfo.dwDistance .. "")
+            self.m_textDistance:setPosition(self.m_posDistance.x + num*10 ,self.m_posDistance.y)
 			self.m_textDistance:setString("米")
 		end
 	else

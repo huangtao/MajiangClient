@@ -9,6 +9,10 @@ local PopWait = appdf.req(appdf.BASE_SRC.."app.views.layer.other.PopWait")
 
 local Option = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.other.OptionLayer")
 
+local Share = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.other.ShareLayer")
+
+local Notice = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.other.NoticeLayer")
+
 local GameListView	= appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.GameListLayer")
 
 local RoomList = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.RoomListLayer")
@@ -38,6 +42,8 @@ local Agent = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.AgentLayer")
 
 local Shop = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.ShopLayer")
 
+local IngotLayer = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.IngotLayer")
+
 local ShopDetail = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.ShopDetailLayer")
 
 local Bag = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.plaza.BagLayer")
@@ -66,6 +72,8 @@ local TrumpetSendLayer = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.friend.T
 
 local BindingRegisterLayer = appdf.req(appdf.CLIENT_SRC .. "plaza.views.layer.plaza.BindingRegisterLayer")
 
+local ModifyFrame = appdf.req(appdf.CLIENT_SRC.."plaza.models.ModifyFrame")
+
 local HeadSprite = appdf.req(appdf.EXTERNAL_SRC .. "HeadSprite")
 local ExternalFun = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
 local NotifyMgr = appdf.req(appdf.EXTERNAL_SRC .. "NotifyMgr")
@@ -74,6 +82,9 @@ local MultiPlatform = appdf.req(appdf.EXTERNAL_SRC .. "MultiPlatform")
 
 local chat_cmd = appdf.req(appdf.HEADER_SRC.."CMD_ChatServer")
 local GameChatLayer = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.game.GameChatLayer")
+
+LAYER_CREATEPRIROOME = 1002
+local GAME_ID = "6"
 
 ClientScene.BT_EXIT 		= 1
 ClientScene.BT_CONFIG 		= 2
@@ -93,11 +104,27 @@ ClientScene.BT_BOX			= 16
 ClientScene.BT_CHECKIN		= 17
 ClientScene.BT_TRUMPET		= 18
 ClientScene.BT_PERSON		= 19
+ClientScene.BT_ACTIVE	    = 21
+ClientScene.BT_HELP			= 22
+ClientScene.BT_HELP_CLOSE   = 23
+ClientScene.BT_MESSAGE      = 24
+ClientScene.BT_SHARE        = 25
+ClientScene.BT_NOTICE       = 26
+ClientScene.BT_INGOT        = 27
+ClientScene.BT_ZHANJI       = 28
+ClientScene.BT_INVITE_CODE  = 30
+ClientScene.BT_INVITE_CODE_OK  = 31
+ClientScene.BT_INVITE_CODE_CLOSE  = 32
+ClientScene.BT_PLAYRULE_CLOSE  = 33
+ClientScene.BT_PLAYRULE        = 34
 
 local HELP_LAYER_NAME = "__introduce_help_layer__"
 local HELP_BTN_NAME = "__introduce_help_button__"
 local VOICE_BTN_NAME = "__voice_record_button__"
 local VOICE_LAYER_NAME = "__voice_record_layer__"
+
+--local btextVisible = true;
+--local Inttext = 0;
 -- 进入场景而且过渡动画结束时候触发。
 function ClientScene:onEnterTransitionFinish()
 	self:registerNotifyList()
@@ -114,9 +141,10 @@ function ClientScene:onEnterTransitionFinish()
 	--根据会员等级确定裁剪资源
 	local vipIdx = GlobalUserItem.cbMemberOrder or 0
 	--裁切头像
-	local head = HeadSprite:createClipHead(GlobalUserItem, 70)
+	--local head = HeadSprite:createClipHead(GlobalUserItem, 70)
+    local head = HeadSprite:createNormal(GlobalUserItem, 78)
 	if nil ~= head then
-		head:setPosition(self._btExit:getPosition())
+		head:setPosition(70,55)
 		self._AreaTop:addChild(head)
 		self._head = head
 
@@ -127,7 +155,7 @@ function ClientScene:onEnterTransitionFinish()
 			scaleRate = nil
 		end
 
-		self._head:enableHeadFrame(true, {_framefile = frameFile, _scaleRate = scaleRate})
+		self._head:enableHeadFrame(true, {_framefile = frameFile, _scaleRate = scaleRate})      
 	end
 
 	self.m_actBoxAni = ExternalFun.loadTimeLine( "plaza/BoxAni.csb" )
@@ -136,18 +164,21 @@ function ClientScene:onEnterTransitionFinish()
 	self.m_actBoxAni:gotoFrameAndPlay(0,true)
 	self._btBox:runAction(self.m_actBoxAni)
 
-	self.m_actStartBtnAni = ExternalFun.loadTimeLine( "plaza/StartBtnAni.csb" )
-	ExternalFun.SAFE_RETAIN(self.m_actStartBtnAni)
-	self.m_quickStart:stopAllActions()
-	self.m_actStartBtnAni:gotoFrameAndPlay(0,true)
-	self.m_quickStart:runAction(self.m_actStartBtnAni)
+	--self.m_actStartBtnAni = ExternalFun.loadTimeLine( "plaza/StartBtnAni.csb" )
+	--ExternalFun.SAFE_RETAIN(self.m_actStartBtnAni)
+	--self.m_quickStart:stopAllActions()
+	--self.m_actStartBtnAni:gotoFrameAndPlay(0,true)
+	--self.m_quickStart:runAction(self.m_actStartBtnAni)
 
 	self.m_actChargeBtnAni = ExternalFun.loadTimeLine( "plaza/ChargeAni.csb" )
 	ExternalFun.SAFE_RETAIN(self.m_actChargeBtnAni)
 	self.m_btnCharge:stopAllActions()
 	self.m_actChargeBtnAni:gotoFrameAndPlay(0,true)
 	self.m_btnCharge:runAction(self.m_actChargeBtnAni)
-
+    --ysy_start
+    self.m_btnCharge:stopAllActions()
+    self.m_btnCharge:setVisible(false)   
+    --ysy_end
 	--请求公告
 	self:requestNotice()			
     return self
@@ -204,7 +235,8 @@ function ClientScene:onCreate()
 	self.m_trumpetLayer = nil	
 	GlobalUserItem.bHasLogon = true
 	self._gameFrame = GameFrameEngine:create(self,function (code,result)
-		this:onRoomCallBack(code,result)
+		--this:onRoomCallBack(code,result)
+        this:onStartGame()
 	end)	
 	
 	if PriRoom then
@@ -222,7 +254,7 @@ function ClientScene:onCreate()
 	end)
     
     -- 背景
-    self._bg = ccui.ImageView:create("background_2.jpg")
+    self._bg = ccui.ImageView:create("background_2.png")
         :move(display.center)
         :addTo(self)
 
@@ -236,8 +268,7 @@ function ClientScene:onCreate()
 
 	self._sceneLayer = display.newLayer()
 		:setContentSize(yl.WIDTH,yl.HEIGHT)
-		:addTo(self)	
-
+		:addTo(self)            
 	--返回键事件
 	self._sceneLayer:registerScriptKeypadHandler(function(event)
 		if event == "backClicked" then
@@ -258,7 +289,7 @@ function ClientScene:onCreate()
 
 	--加载csb资源
 	local rootLayer, csbNode = ExternalFun.loadRootCSB( "plaza/PlazzLayer.csb", self )
-	self.m_plazaLayer = csbNode
+	self.m_plazaLayer = csbNode   
 
 	self.m_touchFilter = PopWait:create()
 			:show(self,"请稍候！")
@@ -279,100 +310,228 @@ function ClientScene:onCreate()
 	--顶部区域
 	local areaTop = csbNode:getChildByName("top_bg")
 	self._AreaTop = areaTop
-	--设置
-	self._btConfig = areaTop:getChildByName("btn_set")
-	self._btConfig:setTag(ClientScene.BT_CONFIG)
-	self._btConfig:addTouchEventListener(btcallback)
 
-	--返回
-	self._btExit = areaTop:getChildByName("btn_return")
-	self._btExit:setTag(ClientScene.BT_EXIT)
-	self._btExit:addTouchEventListener(btcallback)
+    if areaTop ~= nil then
+        --昵称
+        self._nikename = areaTop:getChildByName("t_nikename")
+        self._userID = areaTop:getChildByName("txt_ID")
+        self._userBeanNum = areaTop:getChildByName("txt_beanNum")
 
-	--查看信息
-	self._btPersonInfo = areaTop:getChildByName("bt_person")
-	self._btPersonInfo:setTag(ClientScene.BT_PERSON)
-	self._btPersonInfo:addTouchEventListener(btcallback)
+        --商城
+	    btn = areaTop:getChildByName("btn_add_roomCard")
+	    btn:setTag(ClientScene.BT_SHOP)
+	    btn:addTouchEventListener(btcallback)
 
-	--等级信息
-	self._level = areaTop:getChildByName("atlas_levels")
-	self._level:setString(GlobalUserItem.wCurrLevelID.."")
+        --排行	
+	    btn = areaTop:getChildByName("btn_rank")
+	    btn:setTag(ClientScene.BT_RANK)
+	    btn:addTouchEventListener(btcallback) 
 
-    --进度条
-    self._levelpro = areaTop:getChildByName("bar_progress")
-    self._levelpro:setPercent(0)
+        --宝箱
+        self.m_btnBox = areaTop:getChildByName("btn_box")
+        self.m_btnBox:setTag(ClientScene.BT_BOX)
+        self.m_btnBox:addTouchEventListener(btcallback)
+	    local box = ExternalFun.loadCSB("plaza/BoxAni.csb", areaTop)
+	    box:setPosition(self.m_btnBox:getPosition())
+	    self._btBox = box
 
-	--金币
-	self._gold = areaTop:getChildByName("atlas_coin")
-    local btn = areaTop:getChildByName("btn_take")
-    btn:setTag(ClientScene.BT_BANK)
-    btn:addTouchEventListener(btcallback)
+        --返回
+	    self._btExit = areaTop:getChildByName("btn_return")
+	    self._btExit:setTag(ClientScene.BT_EXIT)
+	    self._btExit:addTouchEventListener(btcallback)
 
-	--游戏豆
-	self._bean = areaTop:getChildByName("atlas_bean")
-	btn = areaTop:getChildByName("btn_charge")
-    btn:setTag(ClientScene.BT_EXCHANGE)
-    btn:addTouchEventListener(btcallback)
-    local box = ExternalFun.loadCSB("plaza/ChargeAni.csb", areaTop)
-	box:setPosition(btn:getPosition())
-    self.m_btnCharge = box
+        --查看信息
+	    self._btPersonInfo = areaTop:getChildByName("bt_person")
+	    self._btPersonInfo:setTag(ClientScene.BT_PERSON)
+--	    self._btPersonInfo:addTouchEventListener(btcallback)
 
-	--元宝
-	self._ingot = areaTop:getChildByName("atlas_ingot")
-	btn = areaTop:getChildByName("btn_exchange")
-    btn:setTag(ClientScene.BT_RECHARGE)
-    btn:addTouchEventListener(btcallback)
+        --金币
+	    self._gold = areaTop:getChildByName("atlas_coin")
+        local btn = areaTop:getChildByName("btn_take")
+        btn:setTag(ClientScene.BT_BANK)
+        btn:addTouchEventListener(btcallback)
+        btn:setVisible(true)
 
-    --宝箱
-    self.m_btnBox = areaTop:getChildByName("btn_box")
-    self.m_btnBox:setTag(ClientScene.BT_BOX)
-    self.m_btnBox:addTouchEventListener(btcallback)
-	local box = ExternalFun.loadCSB("plaza/BoxAni.csb", areaTop)
-	box:setPosition(self.m_btnBox:getPosition())
-	self._btBox = box
+        --元宝
+	    self._ingot = areaTop:getChildByName("atlas_ingot")
+	    btn = areaTop:getChildByName("btn_exchange")
+        btn:setTag(ClientScene.BT_RECHARGE)
+        btn:addTouchEventListener(btcallback)
+        btn:setVisible(false)
+
+
+        --客服	
+	    btn = areaTop:getChildByName("btn_help")
+	    btn:setTag(ClientScene.BT_HELP)
+	    btn:addTouchEventListener(btcallback)
+
+
+         --邀请码
+	    self._btInviteCode = areaTop:getChildByName("btn_invite_code")
+	    self._btInviteCode:setTag(ClientScene.BT_INVITE_CODE)
+	    self._btInviteCode:addTouchEventListener(btcallback)
+
+        --公告
+	    btn = areaTop:getChildByName("btn_gonggao")
+	    btn:setTag(ClientScene.BT_NOTICE)
+	    btn:addTouchEventListener(btcallback)
+        self._btConfig = btn
+
+    end
+    --邀请码
+    self._InviteCode = csbNode:getChildByName("sp_invite_code")
+    self._InviteCode:setVisible(false)
+    --确认邀请码
+    self._btInviteCodeOK = self._InviteCode:getChildByName("btn_invite_code_ok")
+	self._btInviteCodeOK:setTag(ClientScene.BT_INVITE_CODE_OK)
+	self._btInviteCodeOK:addTouchEventListener(btcallback)
+    --关闭邀请码
+    self._btInviteCodeClose = self._InviteCode:getChildByName("btn_invite_code_close")
+	self._btInviteCodeClose:setTag(ClientScene.BT_INVITE_CODE_CLOSE)
+	self._btInviteCodeClose:addTouchEventListener(btcallback)
+
+    --玩法
+    self._panel_playRule = csbNode:getChildByName("panel_rule")
+    self._panel_playRule:setVisible(false)  
+    --关闭玩法
+    self._panel_playRuleClose = self._panel_playRule:getChildByName("btn_close")
+	self._panel_playRuleClose:setTag(ClientScene.BT_PLAYRULE_CLOSE)
+	self._panel_playRuleClose:addTouchEventListener(btcallback)
+
+     --推广员  	
+	self.edit_Spreader = ccui.EditBox:create(cc.size(254,48), ccui.Scale9Sprite:create("plaza/pub_sp_invite_code_1.png"))
+		:move(736,425)
+		:setAnchorPoint(cc.p(0.5,0.5))
+		:setFontName("fonts/round_body.ttf")
+		:setPlaceholderFontName("fonts/round_body.ttf")
+		:setFontSize(24)
+		:setPlaceholderFontSize(24)
+		:setMaxLength(32)
+		:setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC)--:setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE)
+        :setPlaceHolder("请输入推广员ID")
+		:addTo(self._InviteCode)
+    
+    --网络回调
+    local modifyCallBack = function(result,message)
+        self:onModifyCallBack(result,message)
+    end
+    --网络处理
+    self._modifyFrame = ModifyFrame:create(self,modifyCallBack)
+    self._modifyFrame:onQueryUserInfo()
+
+
+
 
 	--底部区域
 	local areaBottom = csbNode:getChildByName("bottom_bg")
     self._AreaBottom = areaBottom
 
-	--快速开始
-	btn = areaBottom:getChildByName("image_start")
-	btn:setTouchEnabled(true)
-	self.m_btnQuickStart = btn
-    btn:setTag(ClientScene.BT_QUICKSTART)
-    btn:addTouchEventListener(btcallback)
-	local quickStart = ExternalFun.loadCSB("plaza/StartBtnAni.csb", areaBottom)
-	quickStart:setPosition(btn:getPosition())
-	self.m_quickStart = quickStart
+    if areaBottom ~= nil then
+        --等级信息及进度条
+	    self._level = areaBottom:getChildByName("atlas_levels")
+	    self._level:setString(GlobalUserItem.wCurrLevelID.."")
+        self._levelpro = areaBottom:getChildByName("bar_progress")
+        self._levelpro:setPercent(0)
 
-	--背包
-	--[[btn = areaBottom:getChildByName("btn_bag")
-	btn:setTag(ClientScene.BT_BAG)
-	btn:addTouchEventListener(btcallback)]]
-	--商城
-	btn = areaBottom:getChildByName("btn_shop")
-	btn:setTag(ClientScene.BT_SHOP)
-	btn:addTouchEventListener(btcallback)
-	--好友
-	btn = areaBottom:getChildByName("btn_friend")
-	btn:setTag(ClientScene.BT_FRIEND)
-	btn:addTouchEventListener(btcallback)
-	self.m_btnFriend = btn
-	--任务	
-	btn = areaBottom:getChildByName("btn_task")
-	btn:setTag(ClientScene.BT_TASK)
-	btn:addTouchEventListener(btcallback) 
-	self.m_btnTask = btn
-	--排行	
-	btn = areaBottom:getChildByName("btn_rank")
-	btn:setTag(ClientScene.BT_RANK)
-	btn:addTouchEventListener(btcallback) 	
+        --游戏豆
+	    self._bean = areaBottom:getChildByName("atlas_bean")
+	    btn = areaBottom:getChildByName("btn_charge")
+        btn:setTag(ClientScene.BT_EXCHANGE)
+        btn:addTouchEventListener(btcallback)
+        local box = ExternalFun.loadCSB("plaza/ChargeAni.csb", areaTop)
+	    box:setPosition(btn:getPosition())
+        self.m_btnCharge = box
+
+        --设置
+	    btn = areaBottom:getChildByName("btn_set")
+	    btn:setTag(ClientScene.BT_CONFIG)
+	    btn:addTouchEventListener(btcallback)
+        self._btConfig = btn
+
+        --分享
+	    btn = areaBottom:getChildByName("btn_everyday")
+	    btn:setTag(ClientScene.BT_SHARE)
+	    btn:addTouchEventListener(btcallback)
+        self._btConfig = btn
+
+         --商城
+	    btn = areaBottom:getChildByName("btn_shop")
+	    btn:setTag(ClientScene.BT_SHOP)
+	    btn:addTouchEventListener(btcallback)
+
+        --战绩
+	    btn = areaBottom:getChildByName("btn_zhanji")
+	    btn:setTag(ClientScene.BT_ZHANJI)
+	    btn:addTouchEventListener(btcallback)
+
+        --玩法
+	    self._btPlayRule = areaBottom:getChildByName("btn_playHow")
+	    self._btPlayRule:setTag(ClientScene.BT_PLAYRULE)
+	    self._btPlayRule:addTouchEventListener(btcallback)
+
+        --好友
+	    btn = areaBottom:getChildByName("btn_friend")
+	    btn:setTag(ClientScene.BT_FRIEND)
+	    btn:addTouchEventListener(btcallback)
+	    self.m_btnFriend = btn
+
+        --活动	
+	    btn = areaBottom:getChildByName("btn_Active")
+	    btn:setTag(ClientScene.BT_ACTIVE)
+	    btn:addTouchEventListener(btcallback)
+
+        --背包
+--	    btn = areaBottom:getChildByName("btn_bag")
+--	    btn:setTag(ClientScene.BT_BAG)
+--	    btn:addTouchEventListener(btcallback)
+--        self.m_btnBag = btn
+
+        --消息
+	    btn = areaBottom:getChildByName("btn_message")
+	    btn:setTag(ClientScene.BT_MESSAGE)
+	    btn:addTouchEventListener(btcallback)
+        self.m_btnMessage = btn
+
+
+
+        --快速开始
+	    --btn = areaBottom:getChildByName("image_start")
+	    --btn:setTouchEnabled(true)
+	    --self.m_btnQuickStart = btn
+        --btn:setTag(ClientScene.BT_QUICKSTART)
+        --btn:addTouchEventListener(btcallback)
+	    --local quickStart = ExternalFun.loadCSB("plaza/StartBtnAni.csb", areaBottom)
+	    --quickStart:setPosition(btn:getPosition())
+	    --self.m_quickStart = quickStart
+
+        
+
+         --元宝	
+--	    btn = areaBottom:getChildByName("btn_bag_0")
+--	    btn:setTag(ClientScene.BT_INGOT)
+--	    btn:addTouchEventListener(btcallback) 	   
+
+	    --任务	
+--	    btn = areaBottom:getChildByName("btn_task")
+--	    btn:setTag(ClientScene.BT_TASK)
+--	    btn:addTouchEventListener(btcallback) 
+--	    self.m_btnTask = btn
+
+    end
+
+
+    --公告
+--	local webNotice = csbNode:getChildByName("sp_webnotice_bg")
+--    self._webNotice_bg = webNotice
+--    self._webNotice_content = webNotice:getChildByName("content")
+
 
 	--喇叭
 	self._notify = csbNode:getChildByName("sp_trumpet_bg")
+    self._notify:setVisible(false)
 	btn = self._notify:getChildByName("btn_trumpet")
 	btn:setTag(ClientScene.BT_TRUMPET)
-	btn:addTouchEventListener(btcallback)
+	--btn:addTouchEventListener(btcallback)
 
 	local stencil  = display.newSprite()
 		:setAnchorPoint(cc.p(0,0.5))
@@ -380,7 +539,7 @@ function ClientScene:onCreate()
 	self._notifyClip = cc.ClippingNode:create(stencil)
 		:setAnchorPoint(cc.p(0,0.5))
 	self._notifyClip:setInverted(false)
-	self._notifyClip:move(95,30)
+	self._notifyClip:move(95,20)
 	self._notifyClip:addTo(self._notify)
 
 	self._notifyText = cc.Label:createWithTTF("", "fonts/round_body.ttf", 24)
@@ -399,9 +558,17 @@ function ClientScene:onCreate()
 	self.m_bNotifyRunning = false
 
 	self.m_bSingleGameMode = false
-	if 1 == #self:getApp()._gameList and yl.SINGLE_GAME_MODOLE then
+--	if 1 == #self:getApp()._gameList and yl.SINGLE_GAME_MODOLE then
+    if  yl.SINGLE_GAME_MODOLE and #self:getApp()._gameList >= 1 then
 		--默认使用第一个游戏
-		local entergame = self:getApp()._gameList[1]
+        local index = 1
+        for i = 1,#self:getApp()._gameList do 
+            if self:getApp()._gameList[i]._KindID == GAME_ID then --查找十点半
+                index = i
+                break 
+            end 
+        end 
+		local entergame = self:getApp()._gameList[index]
 		if nil ~= entergame then
 			self.m_bSingleGameMode = true
 			self:updateEnterGameInfo(entergame)
@@ -421,7 +588,7 @@ function ClientScene:onCreate()
 				self:onChangeShowMode(yl.SCENE_ROOMLIST)
 			end
 
-			self._bg:loadTexture("plaza/backgroud_plazz.jpg")
+			self._bg:loadTexture("plaza/backgroud_plazz.png")
 		else
 			self:onChangeShowMode(yl.SCENE_GAMELIST)
 		end	
@@ -555,6 +722,15 @@ function ClientScene:onCreate()
 	-- 金币、金币动画
 	self.m_nodeCoinAni = nil
 	self.m_actCoinAni = nil	
+
+    self.m_help = self.m_plazaLayer:getChildByName("sp_help")
+    self.m_help:setLocalZOrder(5)
+    self.m_help:setVisible(false)
+
+    local btn_close_help = self.m_help:getChildByName("btn_close")
+    btn_close_help:setTag(ClientScene.BT_HELP_CLOSE)
+	btn_close_help:addTouchEventListener(btcallback)   
+
 end
 
 function ClientScene:registerNotifyList()
@@ -932,6 +1108,13 @@ end
 
 --跑马灯更新
 function ClientScene:onChangeNotify(msg)
+---------暂时屏蔽，总是出现很讨厌-------------------------
+--self._notifyText:stopAllActions()
+--self._notify:setVisible(false)
+--if true then 
+--return 
+--end 
+--------------------------------
 	self._notifyText:stopAllActions()
 	if not msg or not msg.str or #msg.str == 0 then
 		self._notifyText:setString("")
@@ -940,6 +1123,24 @@ function ClientScene:onChangeNotify(msg)
 		self._sysIndex = 1
 		return
 	end
+      
+--    local b = self._notify:isVisible()
+--    if b == false then
+--        self._notify:setVisible(true)
+--        local x,y = self._notify:getPosition()
+--        self._notify:setPosition(cc.p(x,y+200))
+--        self._notify:runAction(cc.Sequence:create(cc.MoveBy:create(0.5,cc.p(0,-200)),cc.CallFunc:create( function() self:onChangeNotify(msg) end)))
+--       --self:onChangeNotify(msg);
+--       return
+--    end
+--    self._notify:stopAllActions()
+--[[
+    if Inttext <= self._sysIndex or self._tipIndex >= Inttext  then 
+           local moveto = cc.MoveBy:create(0.5,cc.p(0,200));
+           local seq = cc.Sequence:create(moveto,cc.CallFunc:create(function()self._notify:setVisible(false) end))
+           self._notify:runAction(seq)
+    end
+--]]
 	self.m_bNotifyRunning = true
 	local msgcolor = msg.color or cc.c4b(255,191,123,255)
 	self._notifyText:setVisible(false)
@@ -986,6 +1187,18 @@ function ClientScene:onChangeNotify(msg)
 				end)
 			)
 	)
+--    local moveto = cc.MoveBy:create(0.5,cc.p(0,200));
+--    self._notify:runAction(
+--            cc.Sequence:create( 
+--                cc.DelayTime:create(17 + (tmpWidth / 172)),
+--                moveto,
+--                cc.CallFunc:create(function() 
+--                     self._notify:setVisible(false) 
+--                     local x,y = self._notify:getPosition()
+--                     self._notify:setPosition(x,y-200)
+--                end)
+--            )
+--    )
 end
 
 function ClientScene:ExitClient()
@@ -1063,7 +1276,8 @@ function ClientScene:onButtonClickedEvent(tag,ref)
 			self:onEnterRoom()
 		end
 	else
-		if tag ~= ClientScene.BT_CONFIG and tag ~= ClientScene.BT_PERSON then
+		if tag ~= ClientScene.BT_CONFIG and tag ~= ClientScene.BT_PERSON and 
+           tag ~= ClientScene.BT_SHARE and tag ~= ClientScene.BT_NOTICE then
 			if GlobalUserItem.isAngentAccount() then
 				return
 			end
@@ -1083,6 +1297,12 @@ function ClientScene:onButtonClickedEvent(tag,ref)
 		end
 		if tag == ClientScene.BT_CONFIG then
 			self:onChangeShowMode(yl.SCENE_OPTION)
+        elseif tag == ClientScene.BT_SHARE then
+			self:onChangeShowMode(yl.SCENE_SHARE)
+        elseif tag == ClientScene.BT_NOTICE then
+            --请求公告
+	        self:requestNotice()	
+			self:onChangeShowMode(yl.SCENE_NOTICE)
 		elseif tag == ClientScene.BT_USER then
 			self:onChangeShowMode(yl.SCENE_USERINFO)
 		elseif tag == ClientScene.BT_BANK then
@@ -1094,7 +1314,8 @@ function ClientScene:onButtonClickedEvent(tag,ref)
 					return
 				end
 			end	
-			self:onChangeShowMode(yl.SCENE_BANK)		
+			--self:onChangeShowMode(yl.SCENE_BANK)
+            self:onChangeShowMode(yl.SCENE_SHOP)	
 		elseif tag == ClientScene.BT_RANK then
 			local param = self.m_nPreTag
 			self:onChangeShowMode(yl.SCENE_RANKINGLIST, param)
@@ -1113,7 +1334,7 @@ function ClientScene:onButtonClickedEvent(tag,ref)
 			self:onChangeShowMode(yl.SCENE_SHOP, Shop.CBT_ENTITY)
 		elseif tag == ClientScene.BT_EXCHANGE then
 			self:onChangeShowMode(yl.SCENE_SHOP, Shop.CBT_BEAN)
-		elseif tag == ClientScene.BT_BOX then
+		elseif tag == ClientScene.BT_BOX or tag == ClientScene.BT_ACTIVE then
 			self:onChangeShowMode(yl.SCENE_EVERYDAY)
 		elseif tag == ClientScene.BT_BAG then
 			self:onChangeShowMode(yl.SCENE_BAG)			
@@ -1125,7 +1346,39 @@ function ClientScene:onButtonClickedEvent(tag,ref)
 		elseif tag == ClientScene.BT_PERSON then
 			self:onChangeShowMode(yl.SCENE_USERINFO)
 		elseif tag == ClientScene.BT_SHOP then
-			self:onChangeShowMode(yl.SCENE_SHOP)
+        --wmc屏蔽商城
+--			self:onChangeShowMode(yl.SCENE_SHOP)
+        elseif tag == ClientScene.BT_INGOT then
+			self:onChangeShowMode(yl.SCENE_INGOT)
+        elseif tag == ClientScene.BT_ZHANJI then
+            self:onChangeShowMode(PriRoom.LAYTAG.LAYER_ZHANJI,nil,nil,1)          
+            --self:onChangeShowMode(PriRoom.LAYTAG.LAYER_CREATEPRIROOME,nil,nil,1)
+        elseif tag == ClientScene.BT_INVITE_CODE then
+            self._InviteCode:setVisible(true)
+        elseif tag == ClientScene.BT_INVITE_CODE_CLOSE then
+            self._InviteCode:setVisible(false)
+        elseif tag == ClientScene.BT_PLAYRULE then
+            self._panel_playRule:setVisible(true)
+        elseif tag == ClientScene.BT_PLAYRULE_CLOSE then
+            self._panel_playRule:setVisible(false)
+        elseif tag == ClientScene.BT_INVITE_CODE_OK then
+            local txt = string.gsub(self.edit_Spreader:getText(), "[.]", "")
+		    if txt == "" then
+			    showToast(self, "推广员ID不能为空!", 1)
+			    return
+		    end
+		    txt = tonumber(txt)
+		    if nil == txt then
+			    showToast(self, "请输入合法的推广员ID!", 1)
+			    return
+		    end
+		    self:showPopWait()
+		    self._modifyFrame:onBindSpreader(txt)
+        elseif tag == ClientScene.BT_HELP then            
+            --self:onChangeShowMode(yl.SCENE_FEEDBACK)                   
+            self.m_help:setVisible(true)
+        elseif tag == ClientScene.BT_HELP_CLOSE then                        
+            self.m_help:setVisible(false) 
 		else
 			showToast(self,"功能尚未开放，敬请期待！",2)
 		end
@@ -1295,7 +1548,29 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 	end
 
 	--目标页面
-	local dst_layer = self:getTagLayer(tag, param)
+	local dst_layer = self:getTagLayer(tag, param)  
+--    if tag == 1002 then 
+
+--        --self.m_plazaLayer:setVisible(false)        
+--        --local btn =ccui.Button:create("public/bt_return_0.png","public/bt_return_0.png")
+--	  	--   	                :move(1334-71,700)
+--	  	--   	                :setTag(ClientScene.BT_EXIT)
+--	  	--   	                :addTo(dst_layer)
+--	  	--   	                :addTouchEventListener(function(ref, type)
+--        --                        if type == ccui.TouchEventType.ended then
+--        --                             self:onButtonClickedEvent(ClientScene.BT_EXIT,nil)
+--        --                             end
+--        --                     end ) 
+--    else
+--        self.m_plazaLayer:setVisible(true)
+--    end     
+    --if tag == 1002 then 
+    --   self._sceneLayer:setLocalZOrder(2)
+    --   self.m_plazaLayer:setLocalZOrder(1)
+    --else 
+    --  self._sceneLayer:setLocalZOrder(1)
+    --  self.m_plazaLayer:setLocalZOrder(2)
+    --end         
 	if dst_layer then
 		--游戏界面不触发切换动画
 		if tag == yl.SCENE_GAME then
@@ -1344,22 +1619,37 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 
 	self._AreaBottom:stopAllActions()
 	self._AreaTop:stopAllActions()
-	if tag == yl.SCENE_GAMELIST or tag == yl.SCENE_ROOMLIST  or tag == yl.SCENE_ROOM then
-		self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,732)))
+    --self._webNotice_bg:stopAllActions()
+
+	if tag == yl.SCENE_GAMELIST  or tag == yl.SCENE_ROOM or tag == PriRoom.LAYTAG.LAYER_ROOMLIST then
+		--self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,732)))
+        self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,750)))
 		self._AreaBottom:runAction(cc.MoveTo:create(0.3,cc.p(667,0)))
+        --self._webNotice_bg:runAction(cc.MoveTo:create(0.3,cc.p(0,360)))
 	else
 		if PriRoom and PriRoom.haveBottomTop(tag) then
 			if self._AreaBottom:getPositionY() < 0 then
-				self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,732)))
-				self._AreaBottom:runAction(cc.MoveTo:create(0.3,cc.p(667,0)))
+				--self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,732)))
+                --self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,750)))
+		        --self._AreaBottom:runAction(cc.MoveTo:create(0.3,cc.p(667,0)))
+                self._AreaTop:setPosition(cc.p(667,900))
+                self._AreaBottom:setPosition(cc.p(667,-200))
+                --self._webNotice_bg:runAction(cc.MoveTo:create(0.3,cc.p(0,360)))
+            else 
+                self._AreaTop:setPosition(cc.p(667,900))
+                self._AreaBottom:setPosition(cc.p(667,-200))
 			end
 		else
 			if tag == yl.SCENE_GAME then
-				self._AreaBottom:setPosition(cc.p(667,-170))
-				self._AreaTop:setPosition(cc.p(667,845))
+				--self._AreaTop:setPosition(cc.p(667,845))
+                self._AreaTop:setPosition(cc.p(667,900))
+                self._AreaBottom:setPosition(cc.p(667,-200))
+                --self._webNotice_bg:setPosition(cc.p(-548,360))
 			else
-				self._AreaBottom:runAction(cc.MoveTo:create(0.3,cc.p(667,-170)))
-				self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,845)))
+				--self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,845)))
+                self._AreaTop:runAction(cc.MoveTo:create(0.3,cc.p(667,900)))
+                self._AreaBottom:runAction(cc.MoveTo:create(0.3,cc.p(667,-200)))
+                --self._webNotice_bg:runAction(cc.MoveTo:create(0.3,cc.p(-548,360)))
 			end
 		end				
 	end
@@ -1415,9 +1705,9 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 		self._btExit:setEnabled(not var)
 		self._btPersonInfo:setEnabled(var)
 		if nil ~= self._head then
-			self._head:setVisible(var)
+			self._head:setVisible(not var)
 		end
-		self._bg:loadTexture("plaza/backgroud_plazz.jpg")
+		self._bg:loadTexture("plaza/backgroud_plazz.png")
 	elseif tag == yl.SCENE_ROOM then
 		self._btExit:setVisible(true)
 		self._btExit:setEnabled(true)
@@ -1425,7 +1715,7 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 		if nil ~= self._head then
 			self._head:setVisible(false)
 		end			
-		self._bg:loadTexture("plaza/backgroud_plazz.jpg")
+		self._bg:loadTexture("plaza/backgroud_plazz.png")
 	elseif tag == yl.SCENE_GAMELIST then
 		self._btExit:setVisible(false)
 		self._btExit:setEnabled(false)
@@ -1433,7 +1723,7 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 			self._head:setVisible(true)
 		end
 		self._btPersonInfo:setEnabled(true)
-		self._bg:loadTexture("background_2.jpg")
+		self._bg:loadTexture("background_2.png")
 	elseif bEnableBackBtn then
 		self._btExit:setVisible(true)
 		self._btExit:setEnabled(true)
@@ -1443,12 +1733,21 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 			self._head:setVisible(false)
 		end	
 	else
-		self._bg:loadTexture("plaza/backgroud_plazz.jpg")
+		self._bg:loadTexture("plaza/backgroud_plazz.png")
 	end
-
+    --self.text_ClockFun = nil
+    --if btextVisible == true then
+    --   self.text_ClockFun = cc.Director:getInstance():getScheduler():scheduleScriptFunc(function()
+    --            this:text_Scheduler()
+    --        end, 5, false)
+    --   btextVisible = false
+    --end
 	--控制宝箱、喇叭显示	
 	local infoShow = (tag == yl.SCENE_GAMELIST or bRoomList )--or tag == yl.SCENE_ROOM)
+
 	self._notify:setVisible(infoShow)
+    
+
 	self._btBox:setVisible( GlobalUserItem.bEnableEveryDay and infoShow )
 	self.m_btnBox:setVisible( GlobalUserItem.bEnableEveryDay and infoShow )
 	if true == infoShow then
@@ -1458,6 +1757,21 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 			self._btBox:runAction(self.m_actBoxAni)
 		end
 	end
+
+
+--    self._webNotice_bg:stopAllActions()
+--    if tag == yl.SCENE_GAMELIST and true == infoShow then
+--        if nil ~= self._webNotice_bg then
+--            self._webNotice_bg:runAction(cc.MoveTo:create(0.3,cc.p(0,360)))
+--        end
+--    else
+--        if nil ~= self._webNotice_bg then
+--            self._webNotice_bg:runAction(cc.MoveTo:create(0.3,cc.p(-1334,360)))
+--        end
+--    end
+
+
+
 	--更新金币
 	infoShow = (tag == yl.SCENE_GAMELIST or tag == yl.SCENE_ROOMLIST or tag == yl.SCENE_ROOM or bRoomList)
 	if true == infoShow then
@@ -1474,12 +1788,34 @@ function ClientScene:onChangeShowMode(nTag, param, transitionCallBack)
 		GlobalUserItem.dwServerRule = 0
 	end
 end
+function ClientScene:text_Scheduler(args)
 
+if Inttext >= 1 then 
+return
+end 
+--[[
+    if Inttext >= 1 and Inttext < 9 then Inttext = Inttext + 1 return 
+    elseif Inttext > 11 and Inttext <14 then Inttext = Inttext + 1 return
+    elseif Inttext > 16 then  return   
+    end
+--]]
+        local item = {}
+        item.str = "用户" .. Inttext .. "说:" ..   string.gsub("11111111111111111", "\n", "")
+		item.color = cc.c4b(255,191,123,255)
+		item.autoremove = true
+		item.showcount = 1
+		item.bNotice = false
+		item.id = self:getNoticeId()
+        Inttext = Inttext + 1
+		self:addNotice(item)
+
+end
 --获取页面
 function ClientScene:getTagLayer(tag, param)
 	local dst
 	if tag == yl.SCENE_GAMELIST then
-		dst =  GameListView:create(self:getApp()._gameList)
+		dst =  GameListView:create(self:getApp()._gameList,self)
+        --dst =  GameListView:create()
 	elseif tag == yl.SCENE_ROOMLIST then
 		--是否有自定义房间列表
 		local entergame = self:getEnterGameInfo()
@@ -1503,6 +1839,10 @@ function ClientScene:getTagLayer(tag, param)
 		dst = UserInfo:create(self)
 	elseif tag == yl.SCENE_OPTION then
 		dst = Option:create(self)
+    elseif tag == yl.SCENE_SHARE then
+		dst = Share:create(self)
+    elseif tag == yl.SCENE_NOTICE then
+		dst = Notice:create(self)
 	elseif tag == yl.SCENE_BANK then
 		dst = Bank:create(self, self._gameFrame)
 	elseif tag == yl.SCENE_RANKINGLIST then
@@ -1541,6 +1881,8 @@ function ClientScene:getTagLayer(tag, param)
 		dst = ShopDetail:create(self, self._gameFrame)
 	elseif tag == yl.SCENE_BAG then
 		dst = Bag:create(self, self._gameFrame)
+    elseif tag == yl.SCENE_INGOT then
+		dst = IngotLayer:create(self,param)
 	elseif tag == yl.SCENE_BAGDETAIL then
 		dst = BagDetail:create(self, self._gameFrame)
 	elseif tag == yl.SCENE_BAGTRANS then
@@ -1625,16 +1967,37 @@ function ClientScene:updateInfomation(  )
 		str = string.sub(str, 1, 11) .. "..."
 	end
 	self._gold:setString(str)
+    self._gold:setVisible(false)
 	str = string.formatNumberThousands(GlobalUserItem.dUserBeans,true,"/")
 	if string.len(str) > 11 then
 		str = string.sub(str, 1, 11) .. "..."
 	end
 	self._bean:setString(str)
+    self._bean:setVisible(false)
 	str = string.formatNumberThousands(GlobalUserItem.lUserIngot,true,"/")
 	if string.len(str) > 11 then
-		str = string.sub(str, 1, 11) .. "..."
+		str = string.sub(str, 1, 11) .. "..."   
 	end
 	self._ingot:setString(str)
+    self._ingot:setVisible(false)
+
+    str = GlobalUserItem.szNickName
+    if string.len(str) > 20 then
+		str = string.sub(str, 1, 20) .. "..."
+	end
+    self._nikename:setString(str)
+
+    str = GlobalUserItem.dUserBeans
+    if string.len(str) > 20 then
+		str = string.sub(str, 1, 6) .. "..."
+	end
+    self._userBeanNum:setString(str)
+
+    str = GlobalUserItem.dwGameID
+    if string.len(str) > 20 then
+		str = string.sub(str, 1, 20) .. "..."
+	end
+    self._userID:setString(str)
 end
 
 --缓存公共资源
@@ -1767,9 +2130,6 @@ function ClientScene:updateGame(dwKindID)
 	--获取更新
 	local app = self:getApp()
 	local version = app:getVersionMgr():getResVersion(gameinfo._KindID)
-     if type(version) == "string" then
-        version = tonumber(version)
-    end
 	if not version or gameinfo._ServerResVersion > version then
 		gamelist:updateGame(gameinfo, gameinfo.gameIndex)
 		return true
@@ -2309,7 +2669,7 @@ function ClientScene:createVoiceBtn(pos, zorder, parent)
             self:stopVoiceRecord()
         end
     end
-	pos = pos or cc.p(100, 100)
+	pos = pos or cc.p(150, 150)
 	local btn = ccui.Button:create("btn_voice_chat_0.png", "btn_voice_chat_1.png", "btn_voice_chat_0.png", UI_TEX_TYPE_PLIST)
 	btn:setPosition(pos)
 	btn:setName(VOICE_BTN_NAME)
@@ -2428,5 +2788,31 @@ function ClientScene:imageShareToFriend( toFriendId, imagepath, shareMsg )
     	showToast(runScene, "您要分享的图片不存在, 请重试", 2)
     end
 end
+function ClientScene:getNoticeListToNoticeLayer()
+    return self.m_tabSystemNotice
+end
+--操作结果
+function ClientScene:onModifyCallBack(result,message)
+	self:dismissPopWait()
+	if  message ~= nil and message ~= "" then
+		showToast(self,message,2);
+	end
+	if -1 == result then
+		return
+	end
 
+
+    if GlobalUserItem.szSpreaderAccount ~= nil and GlobalUserItem.szSpreaderAccount ~= "" then
+        self._InviteCode:setVisible(false)
+        self.edit_Spreader:setPlaceHolder(GlobalUserItem.szSpreaderAccount)
+        self._btInviteCodeOK:setVisible(false)
+        self._btInviteCodeOK:setEnabled(false);
+    else
+        self._InviteCode:setVisible(true)
+        self._btInviteCodeOK:setVisible(true)
+        self._btInviteCodeOK:setEnabled(true);
+    end
+    self._InviteCode:setVisible(false)
+
+end
 return ClientScene

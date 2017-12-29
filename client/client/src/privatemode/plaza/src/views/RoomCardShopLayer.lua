@@ -15,7 +15,7 @@ local BTN_BUY = 105 -- 购买
 local CBT_NULL = 200
 local CBT_BEAN = 201 -- 游戏豆选择
 local CBT_GOLD = 202 -- 游戏币选择
-
+local CBT_INGOT =203 -- 元宝选择
 -- param[tabParam] 参数列表
 function RoomCardShopLayer:ctor( tabParam )
     self.m_tabParam = tabParam
@@ -51,28 +51,30 @@ function RoomCardShopLayer:ctor( tabParam )
         gameFrame._shotFrame = self._shopDetailFrame
     end
 
-    display.newSprite("Shop/frame_shop_0.png")
-        :move(yl.WIDTH/2,yl.HEIGHT - 51)
+--    display.newSprite("Shop/frame_shop_0.png")
+--        :move(yl.WIDTH/2,yl.HEIGHT - 51)
+--        :addTo(self)
+
+    
+    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
+--    if nil ~= frame then
+--        local sp = cc.Sprite:createWithSpriteFrame(frame)
+--        sp:setPosition(yl.WIDTH/2,325)
+--        self:addChild(sp)
+--    end
+
+    display.newSprite("Shop/Detail/frame_detail_0.png")
+        :move(yl.WIDTH*0.5,yl.HEIGHT*0.5)
         :addTo(self)
 
-    ccui.Button:create("bt_return_0.png","bt_return_1.png")
-        :move(75,yl.HEIGHT-51)
+    ccui.Button:create("Shop/Detail/Detail_btn_close.png","Shop/Detail/Detail_btn_close.png")
+        :move(yl.WIDTH*0.73,yl.HEIGHT*0.78)
         :addTo(self)
         :addTouchEventListener(function(ref, type)
                 if type == ccui.TouchEventType.ended then
                     PriRoom:getInstance():getPlazaScene():onKeyBack()
                 end
             end)
-    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
-    if nil ~= frame then
-        local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(yl.WIDTH/2,325)
-        self:addChild(sp)
-    end
-
-    display.newSprite("Shop/Detail/frame_detail_0.png")
-        :move(840,350)
-        :addTo(self)
 
     --按钮回调
     self._btcallback = function(ref, type)
@@ -110,8 +112,8 @@ function RoomCardShopLayer:initExchangeUI(csbNode)
         self:onEditEvent(event,editbox)
     end
     -- 编辑框
-    local editbox = ccui.EditBox:create(cc.size(400, 48),"blank.png",UI_TEX_TYPE_PLIST)
-        :setPosition(cc.p(872,520))
+    local editbox = ccui.EditBox:create(cc.size(300, 48),"Shop/Detail/frame_detail_2.png")
+        :setPosition(cc.p(807,526))
         :setFontName("fonts/round_body.ttf")
         :setPlaceholderFontName("fonts/round_body.ttf")
         :setFontSize(30)
@@ -119,15 +121,15 @@ function RoomCardShopLayer:initExchangeUI(csbNode)
         :setPlaceholderFontSize(30)
         :setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC)
     exchangeUi:addChild(editbox)
-    editbox:setText("1")
-    editbox:setVisible(false)
+    editbox:setText("1") 
+    editbox:setVisible(false)  
     editbox:registerScriptEditBoxHandler(editHanlder)
     self.m_editNumber = editbox
 
-    local btn = ccui.Button:create("blank.png","blank.png","blank.png", UI_TEX_TYPE_PLIST) 
+    local btn = ccui.Button:create("Shop/Detail/frame_detail_2.png","Shop/Detail/frame_detail_2.png","Shop/Detail/frame_detail_2.png") 
     btn:setScale9Enabled(true)
-    btn:setContentSize(cc.size(400, 48))
-    btn:setPosition(cc.p(872,520))
+    btn:setContentSize(cc.size(300, 48))
+    btn:setPosition(cc.p(807,526))
     btn:setTag(BTN_BLANK)
     btn:addTouchEventListener(self._btcallback)
     exchangeUi:addChild(btn) 
@@ -172,8 +174,8 @@ function RoomCardShopLayer:initBuyUI(csbNode)
         self:onEditEvent(event,editbox)
     end
     -- 编辑框
-    local editbox = ccui.EditBox:create(cc.size(400, 48),"blank.png",UI_TEX_TYPE_PLIST)
-        :setPosition(cc.p(900,520))
+    local editbox = ccui.EditBox:create(cc.size(300, 48),"Shop/Detail/frame_detail_2.png")
+        :setPosition(cc.p(807,526))
         :setFontName("fonts/round_body.ttf")
         :setPlaceholderFontName("fonts/round_body.ttf")
         :setFontSize(30)
@@ -181,18 +183,18 @@ function RoomCardShopLayer:initBuyUI(csbNode)
         :setPlaceholderFontSize(30)
         :setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC)
     buyUi:addChild(editbox)
-    editbox:setText("1")
-    editbox:setVisible(false)
+    editbox:setText("1") 
+    editbox:setVisible(false)   
     editbox:registerScriptEditBoxHandler(editHanlder)
     self.m_editNumber = editbox
 
-    local btn = ccui.Button:create("blank.png","blank.png","blank.png", UI_TEX_TYPE_PLIST) 
+    local btn = ccui.Button:create("Shop/Detail/frame_detail_2.png","Shop/Detail/frame_detail_2.png","Shop/Detail/frame_detail_2.png") 
     btn:setScale9Enabled(true)
-    btn:setContentSize(cc.size(400, 48))
-    btn:setPosition(cc.p(900,520))
+    btn:setContentSize(cc.size(200, 48))
+    btn:setPosition(cc.p(807,526))
     btn:setTag(BTN_BLANK)
     btn:addTouchEventListener(self._btcallback)
-    buyUi:addChild(btn) 
+    buyUi:addChild(btn,-1) 
 
     -- 加减按钮
     btn = buyUi:getChildByName("btn_add")
@@ -232,17 +234,17 @@ function RoomCardShopLayer:initBuyUI(csbNode)
     local y = 300
     -- 游戏豆
     if nil ~= self.m_tabParam.item.bean and 0 ~= self.m_tabParam.item.bean then
-        cc.Label:createWithTTF(string.formatNumberThousands(self.m_tabParam.item.bean,true,",").."游戏豆", "fonts/round_body.ttf", 24)
-            :setAnchorPoint(cc.p(0.0,0.5))
-            :move(144,y)
-            :setTextColor(cc.c4b(255,255,0,255))
-            :addTo(buyUi)
-        ccui.CheckBox:create("Shop/Detail/cbt_detail_0.png","","Shop/Detail/cbt_detail_1.png","","")
-            :move(110,y)
-            :addTo(buyUi)
-            :setSelected(true)
-            :setTag(CBT_BEAN)
-            :addEventListener(cbtlistener)
+--        cc.Label:createWithTTF(string.formatNumberThousands(self.m_tabParam.item.bean,true,",").."游戏豆", "fonts/round_body.ttf", 24)
+--            :setAnchorPoint(cc.p(0.0,0.5))
+--            :move(144,y)
+--            :setTextColor(cc.c4b(255,255,0,255))
+--            :addTo(buyUi)
+--        ccui.CheckBox:create("Shop/Detail/cbt_detail_0.png","","Shop/Detail/cbt_detail_1.png","","")
+--            :move(110,y)
+--            :addTo(buyUi)
+--            :setSelected(true)
+--            :setTag(CBT_BEAN)
+--            :addEventListener(cbtlistener)
         y = y-61
         self.m_nSelect = CBT_BEAN
         self.m_buyRate = self.m_tabParam.item.bean
@@ -257,18 +259,41 @@ function RoomCardShopLayer:initBuyUI(csbNode)
             self.m_buyRate = self.m_tabParam.item.gold
         end
 
-        cc.Label:createWithTTF(string.formatNumberThousands(self.m_tabParam.item.gold,true,",").."游戏币", "fonts/round_body.ttf", 24)
-            :setAnchorPoint(cc.p(0.0,0.5))
-            :move(144,y)
-            :setTextColor(cc.c4b(255,255,0,255))
-            :addTo(buyUi)
-        ccui.CheckBox:create("Shop/Detail/cbt_detail_0.png","","Shop/Detail/cbt_detail_1.png","","")
-            :move(110,y)
-            :addTo(buyUi)
-            :setSelected(bSelect)
-            :setTag(CBT_GOLD)
-            :addEventListener(cbtlistener)
+--        cc.Label:createWithTTF(string.formatNumberThousands(self.m_tabParam.item.gold,true,",").."游戏币", "fonts/round_body.ttf", 24)
+--            :setAnchorPoint(cc.p(0.0,0.5))
+--            :move(144,y)
+--            :setTextColor(cc.c4b(255,255,0,255))
+--            :addTo(buyUi)
+--        ccui.CheckBox:create("Shop/Detail/cbt_detail_0.png","","Shop/Detail/cbt_detail_1.png","","")
+--            :move(110,y)
+--            :addTo(buyUi)
+--            :setSelected(bSelect)
+--            :setTag(CBT_GOLD)
+--            :addEventListener(cbtlistener)
     end
+    -- 元宝
+    if nil ~= self.m_tabParam.item.ingot and 0 ~= self.m_tabParam.item.ingot then
+        local bSelect = false
+        if nil ~= self.m_tabParam.item.ingot or 0 ~= self.m_tabParam.item.ingot then
+            self.m_nSelect = CBT_INGOT
+            bSelect = true
+            self.m_txtItemPriceType:setString("元宝")
+            self.m_buyRate = self.m_tabParam.item.ingot
+        end
+
+--        cc.Label:createWithTTF(string.formatNumberThousands(self.m_tabParam.item.ingot,true,",").."元宝", "fonts/round_body.ttf", 24)
+--            :setAnchorPoint(cc.p(0.0,0.5))
+--            :move(144,y)
+--            :setTextColor(cc.c4b(255,255,0,255))
+--            :addTo(buyUi)
+--        ccui.CheckBox:create("Shop/Detail/cbt_detail_0.png","","Shop/Detail/cbt_detail_1.png","","")
+--            :move(110,y)
+--            :addTo(buyUi)
+--            :setSelected(bSelect)
+--            :setTag(CBT_INGOT)
+--            :addEventListener(cbtlistener)
+    end
+
     local vip = GlobalUserItem.cbMemberOrder or 0
     local bShowDiscount = vip ~= 0
     self.m_discount = 100
@@ -319,6 +344,8 @@ function RoomCardShopLayer:onButtonClickedEvent(tag, ref)
                 self._shopDetailFrame:onPropertyBuy(yl.CONSUME_TYPE_CASH, self._nCount, 501, 0)
             elseif self.m_nSelect == CBT_GOLD then
                 self._shopDetailFrame:onPropertyBuy(yl.CONSUME_TYPE_GOLD, self._nCount, 501, 0)
+            elseif self.m_nSelect == CBT_INGOT then
+                self._shopDetailFrame:onPropertyBuy(yl.CONSUME_TYPE_USEER_MADEL, self._nCount, 501, 0)
             end
         end        
     end
@@ -334,12 +361,17 @@ function RoomCardShopLayer:onSelectedEvent(tag,sender,eventType)
     if tag == CBT_BEAN then
         self.m_buyRate = self.m_tabParam.item.bean
         if nil ~= self.m_buyUi:getChildByTag(CBT_GOLD) then
-            self.m_buyUi:getChildByTag(CBT_GOLD):setSelected(false)  
+            --self.m_buyUi:getChildByTag(CBT_GOLD):setSelected(false)  
         end     
     elseif tag == CBT_GOLD then
         self.m_buyRate = self.m_tabParam.item.gold
         if nil ~= self.m_buyUi:getChildByTag(CBT_BEAN) then
-            self.m_buyUi:getChildByTag(CBT_BEAN):setSelected(false)
+            --self.m_buyUi:getChildByTag(CBT_BEAN):setSelected(false)
+        end
+    elseif tag == CBT_INGOT then
+        self.m_buyRate = self.m_tabParam.item.ingot
+        if nil ~= self.m_buyUi:getChildByTag(CBT_INGOT) then
+            --self.m_buyUi:getChildByTag(CBT_INGOT):setSelected(false)
         end
     end
     self:onUpdatePrice()
@@ -402,6 +434,10 @@ function RoomCardShopLayer:onUpdatePrice()
         self.m_txtItemPriceType:setString("游戏币/个")
         self.m_txtBuyPriceType:setString("游戏币")
         self.m_txtDiscountPriceType:setString("游戏币/个")
+    elseif CBT_INGOT == self.m_nSelect then
+        self.m_txtItemPriceType:setString("元宝/个")
+        self.m_txtBuyPriceType:setString("元宝")
+        self.m_txtDiscountPriceType:setString("元宝/个")
     end
 end
 

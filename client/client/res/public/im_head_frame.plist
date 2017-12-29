@@ -7,15 +7,15 @@
             <key>head_mask.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{390,384},{95,95}}</string>
+                <string>{{390,480},{87,88}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{95,95}}</string>
+                <string>{{0,0},{87,88}}</string>
                 <key>sourceSize</key>
-                <string>{95,95}</string>
+                <string>{87,88}</string>
             </dict>
             <key>sp_frame_0_0.png</key>
             <dict>
@@ -33,15 +33,15 @@
             <key>sp_frame_0_0_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{233,539},{149,149}}</string>
+                <string>{{390,384},{96,94}}</string>
                 <key>offset</key>
-                <string>{-1,-17}</string>
+                <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{55,37},{149,149}}</string>
+                <string>{{0,1},{96,94}}</string>
                 <key>sourceSize</key>
-                <string>{261,189}</string>
+                <string>{96,96}</string>
             </dict>
             <key>sp_frame_1_0.png</key>
             <dict>
@@ -118,7 +118,7 @@
             <key>size</key>
             <string>{512,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f53e8423077543844a73247dadf855b0$</string>
+            <string>$TexturePacker:SmartUpdate:f8e1b067cc7b6dba9fe130a57ade72d0$</string>
             <key>textureFileName</key>
             <string>im_head_frame.png</string>
         </dict>

@@ -139,7 +139,7 @@ function ShopDetailFrame:onSubPropertyBuyResult(pData)
 	GlobalUserItem.lUserInsure = cmdtable.lInsureScore
 	--更新元宝
 	GlobalUserItem.lUserIngot = cmdtable.lUserMedal
-	--更新游戏豆
+	--更新蓝钻
 	GlobalUserItem.dUserBeans = cmdtable.dCash
 
 	--通知更新        

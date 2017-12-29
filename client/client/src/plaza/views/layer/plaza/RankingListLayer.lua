@@ -85,7 +85,7 @@ function RankingListLayer:ctor(scene, preTag)
     frame = cc.SpriteFrameCache:getInstance():getSpriteFrame("sp_public_frame_0.png")
     if nil ~= frame then
         local sp = cc.Sprite:createWithSpriteFrame(frame)
-        sp:setPosition(667,324)
+        sp:setPosition(667,375)
         self:addChild(sp)
     end
 
@@ -100,8 +100,8 @@ function RankingListLayer:ctor(scene, preTag)
 		:move(667,yl.HEIGHT - 41)
 		:addTo(self)
 
-	ccui.Button:create("bt_return_0.png","bt_return_1.png")
-		:move(75,yl.HEIGHT-51)
+	ccui.Button:create("Rank/bt_return_0.png","Rank/bt_return_1.png")
+		:move(1334-75,yl.HEIGHT-51)
 		:addTo(self)
 		:addTouchEventListener(function(ref, type)
        		 	if type == ccui.TouchEventType.ended then
@@ -111,6 +111,7 @@ function RankingListLayer:ctor(scene, preTag)
     display.newSprite("Rank/dikuang6.png")
     	:move(667,555)
     	:addTo(self)
+        :setVisible(false)
 
     local y = 542
 	--头像
@@ -284,6 +285,7 @@ function RankingListLayer.tableCellAtIndex(view, idx)
 			:setTag(5)
 			:setVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
 			:setAnchorPoint(cc.p(0,0.5))
+            :setColor(cc.c3b(78, 51, 7))
 			:addTo(cell)
 		--金币标识
 		display.newSprite("Rank/biaoti4.png")

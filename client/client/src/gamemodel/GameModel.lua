@@ -122,6 +122,12 @@ end
 --退出询问
 function GameModel:onQueryExitGame()
     if PriRoom and true == GlobalUserItem.bPrivateRoom then
+
+        if 0 == PriRoom:getInstance().m_tabPriData.dwPlayCount 
+        and 0 == self.m_cbGameStatus then
+            self._gameFrame:StandUp(1)
+        end
+        --self._gameFrame:StandUp(1)
         PriRoom:getInstance():queryQuitGame(self.m_cbGameStatus)
     else
         if self._queryDialog then

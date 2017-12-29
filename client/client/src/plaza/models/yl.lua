@@ -7,43 +7,45 @@ yl.DEVICE_TYPE							= 0x10
 yl.KIND_ID								= 122
 yl.STATION_ID							= 1
 
+yl.PORT_OBJECTID						= 0
+
 --测试
 --yl.LOGONSERVER							= " " --@login_ip
-yl.LOGONSERVER							= "47.94.252.125" --@login_ip
+yl.LOGONSERVER                            = "47.94.252.125" --@login_ip
+--yl.LOGONSERVER							= "59.110.240.93"
+
 -- 登陆地址列表
 yl.SERVER_LIST = 
 {
-    --" ", --@login_ip
     "47.94.252.125", --@login_ip
+--    "59.110.240.93"
 }
 -- 当前地址索引
 yl.CURRENT_INDEX = 1
 yl.TOTAL_COUNT = #yl.SERVER_LIST
 
---演示
---yl.LOGONSERVER                          = "120.25.147.47" --@login_ip
---yl.LOGONPORT							= 8600 --@login_port
-yl.LOGONPORT							= 8600 --@login_port
 
---yl.LOGONSERVER							= "172.16.0.24"
---yl.LOGONPORT							= 8600
+
+yl.LOGONPORT							= 8600 + yl.PORT_OBJECTID --@login_port
+
 
 --yl.FRIENDPORT							= 8630 --@friend_port
-yl.FRIENDPORT							= 8630 --@friend_port
+yl.FRIENDPORT							= 8630 + yl.PORT_OBJECTID --@friend_port
 --编译码
 yl.VALIDATE 							= "D7253720-D69F-41C1-892B-6F56E8C35DDE" --@compilation
 
 --http请求链接地址
 --yl.HTTP_URL								= " " --@http_url
---yl.HTTP_URL								= " " --@http_url
 yl.HTTP_URL								= "http://47.94.252.125:8081" --@http_url
+--yl.HTTP_URL								    = "http://59.110.240.93:8081" --@http_url
 
 -- http请求支持(loginScene)
 yl.HTTP_SUPPORT							= true
 -- 是否显示信息弹窗的ip和位置信息
 yl.SHOW_IP_ADDRESS                      = true
 -- 是否单游戏模式(游戏列表数目为1生效)
-yl.SINGLE_GAME_MODOLE                   = true
+yl.SINGLE_GAME_MODOLE                   = false
+
 -- 是否自动登录
 yl.AUTO_LOGIN                           = false
 
@@ -83,7 +85,12 @@ yl.SCENE_FEEDBACK					 	= 31		--反馈界面
 yl.SCENE_FEEDBACKLIST				 	= 32		--反馈列表
 yl.SCENE_FAQ							= 33		--常见问题
 yl.SCENE_BINDINGREG						= 34		--绑定注册
+yl.SCENE_MA_JIANG                       = 35        --麻将界面
 
+yl.SCENE_NOTICE						    = 36		--大厅公告页面
+yl.SCENE_INGOT						    = 37		--元宝界面
+yl.SCENE_SHARE						    = 38		--大厅分享
+yl.SCENE_ZHANJI						    = 39		--战绩
 yl.SCENE_EX_END 						= 50
 
 yl.MAIN_SOCKET_INFO						= 0
@@ -407,7 +414,7 @@ yl.SocialShare =
 	title 								= "游戏大厅", --@share_title_social
 	content 							= "来自游戏大厅的分享", --@share_content_social
 	url 								= yl.HTTP_URL,
-	AppKey							 	= " ", --@share_appkey_social
+	AppKey							 	= "59ba4bdb677baa5d2f00000d", --@share_appkey_social
 }
 
 -- 分享错误代码
@@ -419,12 +426,12 @@ yl.ShareErrorCode =
 --微信配置定义
 yl.WeChat = 
 {
-	AppID 								= " ", --@wechat_appid_wx
-	AppSecret 							= " ", --@wechat_secret_wx
+	AppID 								= "wxc2389c1fbee2d83e", --@wechat_appid_wx
+	AppSecret 							= "5d0bd0cc441a3e2ea30f287d513ae401", --@wechat_secret_wx
 	-- 商户id
-	PartnerID 							= " ", --@wechat_partnerid_wx
+	PartnerID 							= "", --@wechat_partnerid_wx
 	-- 支付密钥					        
-	PayKey 								= " ", --@wechat_paykey_wx
+	PayKey 								= "", --@wechat_paykey_wx
 	URL 								= yl.HTTP_URL,
 }
 
@@ -448,7 +455,8 @@ yl.JFT =
 	--商户支付密钥
 	PayKey 								= " ", --@jft_paykey_jtpay
 	--商户id											
-	PartnerID 							= " ", --@jft_partnerid_jtpay
+	--PartnerID 							= " ", --@jft_partnerid_jtpay
+    PartnerID 							= "", --@jft_partnerid_jtpay
 	--token												
 	TokenURL							= "http://api.jtpay.com/jft/sdk/token/", --@jft_tokenurl_jtpay
 	--后台通知url
@@ -459,7 +467,6 @@ yl.JFT =
 	JftAesVec 							= " ", --@jft_aesvec_jtpay
 }
 
---高德配置
 yl.AMAP = 
 {
 	-- 开发KEY

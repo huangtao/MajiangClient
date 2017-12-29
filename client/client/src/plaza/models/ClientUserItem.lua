@@ -16,6 +16,7 @@ function ClientUserItem:ctor()
 
 	self.lScore 			= 0
 	self.lIngot 			= 0
+    self.lRoomCrad 			= 0
 	self.dBeans 			= 0
 	self.lGrade				= 0
 	self.lInsure			= 0
@@ -46,6 +47,7 @@ function ClientUserItem:testlog()
 
 	print("lScore="..self.lScore)
 	print("lIngot="..self.lIngot)
+    print("lRoomCrad="..self.lRoomCrad)
 	print("dBeans="..self.dBeans)
 
 	print("dwWinCount="..self.dwWinCount)

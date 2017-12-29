@@ -40,16 +40,16 @@ end
 --msg 显示信息
 --callback 交互回调
 --txtsize 字体大小
-function QueryDialog:ctor(msg, callback, txtsize, queryType)
-	queryType = queryType or QueryDialog.QUERY_SURE_CANCEL
+function QueryDialog:ctor(msg, callback, txtsize, queryType,queryShow,tabData)
+
+
+    queryType = queryType or QueryDialog.QUERY_SURE_CANCEL
 	self._callback = callback
 	self._canTouchOutside = true
-
-	local this = self 
-	self:setContentSize(appdf.WIDTH,appdf.HEIGHT)
-	self:move(0,appdf.HEIGHT)
-
-	--回调函数
+    local this = self 
+    self:setContentSize(appdf.WIDTH,appdf.HEIGHT)
+    self:move(0,appdf.HEIGHT)
+    --回调函数
 	self:registerScriptHandler(function(eventType)
 		if eventType == "enterTransitionFinish" then	-- 进入场景而且过渡动画结束时候触发。
 			this:onEnterTransitionFinish()
@@ -57,15 +57,13 @@ function QueryDialog:ctor(msg, callback, txtsize, queryType)
 			this:onExitTransitionStart()
 		end
 	end)
-
-	--按键监听
+    --按键监听
 	local  btcallback = function(ref, type)
         if type == ccui.TouchEventType.ended then
          	this:onButtonClickedEvent(ref:getTag(),ref)
         end
     end
-
-	--区域外取消显示
+    --区域外取消显示
 	local  onQueryExitTouch = function(eventType, x, y)
 		if not self._canTouchOutside then
 			return true
@@ -85,49 +83,63 @@ function QueryDialog:ctor(msg, callback, txtsize, queryType)
     end
 	self:setTouchEnabled(true)
 	self:registerScriptTouchHandler(onQueryExitTouch)
+    display.newSprite("query_bg.png")
+	    	:setTag(QueryDialog.DG_QUERY_EXIT)
+	    	:move(appdf.WIDTH/2,appdf.HEIGHT/2)
+	    	:addTo(self)
+    cc.Label:createWithTTF(msg, "fonts/round_body.ttf", not txtsize and QueryDialog.DEF_TEXT_SIZE or txtsize)
+	    	:setTextColor(cc.c4b(255,255,255,255))
+	    	:setAnchorPoint(cc.p(0.5,0.5))
+	    	:setDimensions(600, 180)
+	    	:setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER)
+	    	:setVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
+	    	:move(appdf.WIDTH/2 ,375 )
+	    	:addTo(self)
+--	    cc.Label:createWithTTF("系统消息", "fonts/round_body.ttf", 36)
+--	    	:setTextColor(cc.c4b(255,221,65,255))
+--	    	:setAnchorPoint(cc.p(0.5,0.5))
+--	    	:setDimensions(600, 120)
+--	    	:setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER)
+--	    	:setVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
+--	    	:move(appdf.WIDTH/2 ,545 )
+--	    	:addTo(self)
+    if  queryShow ~= nil and queryShow == yl.SCENE_GAME then
+        ccui.Button:create("bt_query_leave_0.png","bt_query_leave_1.png")
+	    		:move(appdf.WIDTH/2, 200 )
+	    		:setTag(QueryDialog.BT_CONFIRM)
+	    		:addTo(self)
+	    		:addTouchEventListener(btcallback)
 
-	display.newSprite("query_bg.png")
-		:setTag(QueryDialog.DG_QUERY_EXIT)
-		:move(appdf.WIDTH/2,appdf.HEIGHT/2)
-		:addTo(self)
+	    ccui.Button:create("bt_query_close_0.png","bt_query_close_1.png")
+	    		:move(appdf.WIDTH*0.8,580)
+	    		:setTag(QueryDialog.BT_CANCEL)
+	    		:addTo(self)
+	    		:addTouchEventListener(btcallback)
+        display.newSprite("sp_dissolve_room.png")
+	    	:move(appdf.WIDTH/2, 370)
+	    	:addTo(self)
+         
+    else	   
+	    if QueryDialog.QUERY_SURE == queryType then
+	    	ccui.Button:create("bt_query_confirm_0.png","bt_query_confirm_1.png")
+	    		:move(appdf.WIDTH/2 , 200 )
+	    		:setTag(QueryDialog.BT_CONFIRM)
+	    		:addTo(self)
+	    		:addTouchEventListener(btcallback)
+	    else
+	    	ccui.Button:create("bt_query_confirm_0.png","bt_query_confirm_1.png")
+	    		:move(appdf.WIDTH/2+169 , 200 )
+	    		:setTag(QueryDialog.BT_CONFIRM)
+	    		:addTo(self)
+	    		:addTouchEventListener(btcallback)
 
-	if QueryDialog.QUERY_SURE == queryType then
-		ccui.Button:create("bt_query_confirm_0.png","bt_query_confirm_1.png")
-			:move(appdf.WIDTH/2 , 200 )
-			:setTag(QueryDialog.BT_CONFIRM)
-			:addTo(self)
-			:addTouchEventListener(btcallback)
-	else
-		ccui.Button:create("bt_query_confirm_0.png","bt_query_confirm_1.png")
-			:move(appdf.WIDTH/2+169 , 200 )
-			:setTag(QueryDialog.BT_CONFIRM)
-			:addTo(self)
-			:addTouchEventListener(btcallback)
-
-		ccui.Button:create("bt_query_cancel_0.png","bt_query_cancel_1.png")
-			:move(appdf.WIDTH/2-169 ,200 )
-			:setTag(QueryDialog.BT_CANCEL)
-			:addTo(self)
-			:addTouchEventListener(btcallback)
-	end
-
-	cc.Label:createWithTTF("系统消息", "fonts/round_body.ttf", 36)
-		:setTextColor(cc.c4b(255,221,65,255))
-		:setAnchorPoint(cc.p(0.5,0.5))
-		:setDimensions(600, 120)
-		:setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER)
-		:setVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
-		:move(appdf.WIDTH/2 ,545 )
-		:addTo(self)
-
-	cc.Label:createWithTTF(msg, "fonts/round_body.ttf", not txtsize and QueryDialog.DEF_TEXT_SIZE or txtsize)
-		:setTextColor(cc.c4b(255,255,255,255))
-		:setAnchorPoint(cc.p(0.5,0.5))
-		:setDimensions(600, 180)
-		:setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER)
-		:setVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
-		:move(appdf.WIDTH/2 ,375 )
-		:addTo(self)
+	    	ccui.Button:create("bt_query_cancel_0.png","bt_query_cancel_1.png")
+	    		:move(appdf.WIDTH/2-169 ,200 )
+	    		:setTag(QueryDialog.BT_CANCEL)
+	    		:addTo(self)
+	    		:addTouchEventListener(btcallback)
+	    end	   
+    end 
 	self._dismiss  = false
 	self:runAction(cc.MoveTo:create(0.3,cc.p(0,0)))
 end
@@ -157,6 +169,13 @@ function QueryDialog:dismiss()
 					this:removeSelf()
 				end)
 			))	
+end
+--取消清空
+function QueryDialog:dismiss2()
+	self._dismiss = true
+	local this = self
+	self:stopAllActions()
+    this:removeSelf()
 end
 
 return QueryDialog

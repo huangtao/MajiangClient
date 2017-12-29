@@ -147,7 +147,7 @@ function HeadSprite:updateHead( useritem )
 		--根据会员等级配置
 		local vipIdx = self.m_useritem.cbMemberOrder or 0
 		local framestr = string.format("sp_frame_%d_0.png", vipIdx)
-		local deScale = 0.72
+		local deScale = 1.2
 
 		local framefile = self.m_tabFrameParam._framefile or framestr
 		local scaleRate = self.m_tabFrameParam._scaleRate or deScale
@@ -189,6 +189,8 @@ function HeadSprite:updateHeadByFrame(frame)
 	end
 	print("width " .. self.m_spRender:getContentSize().width .. " height " .. self.m_spRender:getContentSize().height)
 	
+    print("<DrawThirdFace> [initHeadSprite] [updateHeadByFrame]")
+
 	self:setContentSize(self.m_spRender:getContentSize())
 	self.m_fScale = self.m_headSize / SYS_HEADSIZE
 	self:setScale(self.m_fScale)
@@ -240,7 +242,7 @@ function HeadSprite:enableHeadFrame( bEnable, frameparam )
 	--根据会员等级配置
 	local vipIdx = self.m_useritem.cbMemberOrder or 0
 	local framestr = string.format("sp_frame_%d_0.png", vipIdx)
-	local deScale = 0.72
+	local deScale = 1.2
 
 	frameparam = frameparam or {}
 	self.m_tabFrameParam = frameparam
@@ -265,7 +267,8 @@ function HeadSprite:updateHeadFrame(framefile, scaleRate)
 	if nil == self.m_spFrame then
 		local selfSize = self:getContentSize()
 		self.m_spFrame = cc.Sprite:createWithSpriteFrame(frame)
-		local positionRate = self.m_tabFrameParam._posPer or cc.p(0.5, 0.64)
+		local positionRate = self.m_tabFrameParam._posPer or cc.p(0.5, 0.50)
+        --local positionRate = self.m_tabFrameParam._posPer or cc.p(0.5, 0.64)
 		self.m_spFrame:setPosition(selfSize.width * positionRate.x, selfSize.height * positionRate.y)
 		self:addChild(self.m_spFrame)
 	else
@@ -287,7 +290,13 @@ function HeadSprite:initHeadSprite( useritem )
 		--直接使用系统头像
 		faceid = 0
 	elseif isThirdParty and nil ~= useritem.szThirdPartyUrl and string.len(useritem.szThirdPartyUrl) > 0 then
-		local filename = string.gsub(useritem.szThirdPartyUrl, "[/.:+]", "") .. ".png"
+
+        print("<DrawThirdFace> [initHeadSprite] ---------------------")
+        print("<DrawThirdFace> [initHeadSprite] ThirdPartyUrl:" .. useritem.szThirdPartyUrl )
+
+        local name = string.gsub(useritem.szThirdPartyUrl, "[/.:+-]", "")
+		local filename =  name .. ".png" -- 目标文件
+        local filename_T = name .. "_T.png" -- 临时文件
 
 		--判断是否有缓存或者本地文件
 		local framename = filename
@@ -295,8 +304,11 @@ function HeadSprite:initHeadSprite( useritem )
 		local filepath = path .. "/" .. filename
 		local bHave, spRender = self:haveCacheOrLocalFile(framename, filepath, false) 
 		if bHave then
+            print("<DrawThirdFace> [initHeadSprite] [bHave]")
 			return spRender
 		else
+
+            print("<DrawThirdFace> [initHeadSprite] [No bHave]")
 			--判断是否有旧头像
 			local infofile = path .. "/face.ry"
 			if cc.FileUtils:getInstance():isFileExist(infofile) then
@@ -315,9 +327,21 @@ function HeadSprite:initHeadSprite( useritem )
 
 			--网络请求
 			local url = useritem.szThirdPartyUrl
-			self:downloadFace(url, path, filename, function(downloadfile)
-				local selffile = filename
-				if selffile == downloadfile then
+
+
+            print("<DrawThirdFace> [initHeadSprite] [downloadFace] url:" ..url)
+            print("<DrawThirdFace> [initHeadSprite] [downloadFace] path:" ..path)
+            print("<DrawThirdFace> [initHeadSprite] [downloadFace] filenameT:" ..filename_T)
+            print("<DrawThirdFace> [initHeadSprite] [downloadFace] filename:" ..filename)
+
+
+			self:downloadFace(url, path, filename_T, function(downloadfile)
+
+                print("<DrawThirdFace> [initHeadSprite] [downloadFace end] downloadfile:" ..downloadfile)
+
+                local selffile = filename
+				local selffile_T = filename_T
+				if selffile_T == downloadfile then
             		--保存头像信息
             		local infotable = {}
             		--导入新的图片信息
@@ -325,10 +349,13 @@ function HeadSprite:initHeadSprite( useritem )
             		local jsonStr = cjson.encode(infotable)
 					cc.FileUtils:getInstance():writeStringToFile(jsonStr, infofile)
 
-            		local filepath = path .. "/" .. selffile
+            		local filepath_old = path .. "/" .. selffile_T
+                    local filepath_new = path .. "/" .. selffile
+
+                    print("<DrawThirdFace> [initHeadSprite] [downloadFace end] reSizeGivenFile:" ..filepath_old)
 
             		--处理图片大小
-            		reSizeGivenFile(filepath, filepath, "g_FaceResizeListener", SYS_HEADSIZE)
+            		reSizeGivenFile(filepath_old, filepath_new, "g_FaceResizeListener", SYS_HEADSIZE)
             		local function eventReSizeListener(event)
             			print("resize")
             			if nil == event.oldpath or nil == event.newpath then
@@ -336,7 +363,7 @@ function HeadSprite:initHeadSprite( useritem )
             			end
 
             			--是否是自己文件
-            			if event.newpath == filepath then
+            			if event.newpath == filepath_new then
             				local sp = cc.Sprite:create(event.newpath)
             				if nil == sp then
             					return
@@ -356,11 +383,11 @@ function HeadSprite:initHeadSprite( useritem )
 
 							--发送上传头像
 							local url = yl.HTTP_URL .. "/WS/Account.ashx?action=uploadface"
-							local uploader = CurlAsset:createUploader(url,filepath)
+							local uploader = CurlAsset:createUploader(url,filepath_new)
 							if nil == uploader then
 								return
 							end
-							local nres = uploader:addToFileForm("file", filepath, "image/png")
+							local nres = uploader:addToFileForm("file", filepath_new, "image/png")
 							--用户标示
 							nres = uploader:addToForm("userID", useritem.dwUserID or "thrid")
 							--登陆时间差
@@ -503,11 +530,17 @@ function HeadSprite:downloadFace(url, path, filename, onDownLoadSuccess)
 	end			
 
 	local function eventCustomListener(event)
+
+        print("<DrawThirdFace> [downloadFace end] eventCustomListener:" ..event.filename.." msg:"..event.msg.." code:"..event.code)
+
         if nil ~= event.filename and 0 == event.code then
         	if nil ~= onDownLoadSuccess 
         		and type(onDownLoadSuccess) == "function" 
         		and nil ~= event.filename 
         		and type(event.filename) == "string" then
+
+                print("<DrawThirdFace> [downloadFace end] onDownLoadSuccess:" ..event.filename)
+
         		onDownLoadSuccess(event.filename)
         	end        	
         end
